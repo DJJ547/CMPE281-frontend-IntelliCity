@@ -10,8 +10,8 @@ import { MdSpaceDashboard } from "react-icons/md";
 import { GiDeliveryDrone } from "react-icons/gi";
 import { GiCctvCamera } from "react-icons/gi";
 import { MdOutlineSensors } from "react-icons/md";
+import AnimatedButton from "./Animatedbutton";
 
-// ...
 export default function Sidebar() {
   const handleClick = (path) => () => {
     window.location.href = path;
@@ -25,28 +25,28 @@ export default function Sidebar() {
           <ListItemPrefix>
             <MdSpaceDashboard className="h-6 w-6" />
           </ListItemPrefix>
-          Dashboard
+          <AnimatedButton>Dashboard</AnimatedButton>
         </ListItem>
 
         <ListItem onClick={handleClick("/camera")}>
           <ListItemPrefix>
             <GiCctvCamera className="h-6 w-6" />
           </ListItemPrefix>
-          Camera Manager
+          <AnimatedButton>Camera Manager</AnimatedButton>
         </ListItem>
 
         <ListItem onClick={handleClick("/iot")}>
           <ListItemPrefix>
             <MdOutlineSensors className="h-6 w-6" />
           </ListItemPrefix>
-          IoT Manager
+          <AnimatedButton>IoT Manager</AnimatedButton>
         </ListItem>
 
         <ListItem onClick={handleClick("/drone")}>
           <ListItemPrefix>
             <GiDeliveryDrone className="h-6 w-6" />
           </ListItemPrefix>
-          Drone Manager
+          <AnimatedButton>Drone Manager</AnimatedButton>
         </ListItem>
       </List>
     </Card>

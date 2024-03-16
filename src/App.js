@@ -22,7 +22,7 @@ export default function App() {
     <div>
       <Routes>
         <>
-          <Route path="/test" element={<Test />} />
+          <Route path="/test" element={<PageLayout><Test /></PageLayout>} />
         </>
 
         {/* <Route>
