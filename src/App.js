@@ -1,25 +1,44 @@
-import logo from './logo.svg';
-import './App.css';
+import React from "react";
+import { Routes, Route } from "react-router-dom";
+// ... other imports
+import "./index.css";
 
-function App() {
+//utilities
+// import ProtectedRoute from "./utilitiies/ProtectedRoute";
+
+//components
+import PageLayout from "./components/PageLayout";
+
+//pages
+import Test from "./pages/Test";
+// import Login from "./pages/auth/Login";
+import Dashboard from "./pages/Dashboard";
+import CameraManager from "./pages/CameraManager";
+import IotManager from "./pages/IotManager";
+import DroneManager from "./pages/DroneManager";
+
+export default function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div>
+      <Routes>
+        <>
+          <Route path="/test" element={<Test />} />
+        </>
+
+        {/* <Route>
+          <Route path="/auth/login" element={<Login />} />
+          <Route path="/auth/signup" element={<Signup />} />
+          <Route path="/" element={<Navigate to="/auth/login" replace />} />
+        </Route> */}
+
+        <Route>
+          {/* <Route path="/dashboard" element={<ProtectedRoute><PageLayout><Dashboard /></PageLayout></ProtectedRoute>} /> */}
+          <Route path="/" element={<PageLayout><Dashboard /></PageLayout>} />
+          <Route path="/camera" element={<PageLayout><CameraManager /></PageLayout>} />
+          <Route path="/iot" element={<PageLayout><IotManager /></PageLayout>} />
+          <Route path="/drone" element={<PageLayout><DroneManager /></PageLayout>} />
+        </Route>
+      </Routes>
     </div>
   );
 }
-
-export default App;

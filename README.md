@@ -43,3 +43,12 @@ npm install
 ```
 npm start
 ``` 
+
+## Please list all libraries that you've installed before pushing into GitHub repo
+npm i react-router-dom
+npm i @material-tailwind/react
+npm i react-icons
+
+## Additional resources
+# This is react-icons library (already installed)
+https://react-icons.github.io/react-icons/search/#q=drone
