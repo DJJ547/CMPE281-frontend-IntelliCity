@@ -49,6 +49,13 @@ npm i react-router-dom
 npm i @material-tailwind/react
 npm i react-icons
 
-## Additional resources
-# This is react-icons library (already installed)
+# Useful resources
+## react-icons library (already installed)
 https://react-icons.github.io/react-icons/search/#q=drone
+## YT tutorial and source code for button animations
+https://www.youtube.com/watch?v=lOo8diyD2fg
+https://www.hover.dev/components/links
+## react-google-maps/api
+https://www.npmjs.com/package/@react-google-maps/api
+## example using this library
+https://www.nycmesh.net/map/
