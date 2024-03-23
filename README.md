@@ -48,14 +48,26 @@ npm start
 npm i react-router-dom
 npm i @material-tailwind/react
 npm i react-icons
+npm i -S @react-google-maps/api
+npm install dotenv --save
+npm i recharts
 
 # Useful resources
 ## react-icons library (already installed)
 https://react-icons.github.io/react-icons/search/#q=drone
+
 ## YT tutorial and source code for button animations
 https://www.youtube.com/watch?v=lOo8diyD2fg
 https://www.hover.dev/components/links
+
 ## react-google-maps/api
 https://www.npmjs.com/package/@react-google-maps/api
-## example using this library
-https://www.nycmesh.net/map/
+
+## Dumentation of react-google-maps/api (the one posted on npmjs.com doesn't work)
+https://web.archive.org/web/20230701010714mp_/https://react-google-maps-api-docs.netlify.app/#section-introduction
+
+## note: for Google Maps API, You'll need a Google Maps API key to access Google Maps services. To obtain an API key, follow these steps:
+Go to the Google Cloud Console.
+Create a new project or select an existing one.
+Enable the "Google Maps JavaScript API" for your project.
+Create an API key and restrict it if needed (for security)
