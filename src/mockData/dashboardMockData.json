@@ -1,0 +1,122 @@
+[
+  {
+    "id": "1",
+    "name": "Drone1",
+    "lat": 37.337889,
+    "lng": -121.893012,
+    "type": "drone",
+    "status": "active"
+  },
+  {
+    "id": "2",
+    "name": "Drone2",
+    "lat": 37.357889,
+    "lng": -121.893012,
+    "type": "drone",
+    "status": "active"
+  },
+  {
+    "id": "3",
+    "name": "Drone3",
+    "lat": 37.338889,
+    "lng": -121.993012,
+    "type": "drone",
+    "status": "active"
+  },
+  {
+    "id": "4",
+    "name": "Drone4",
+    "lat": 37.338889,
+    "lng": -121.898012,
+    "type": "drone",
+    "status": "defective"
+  },
+  {
+    "id": "5",
+    "name": "Drone5",
+    "lat": 37.437889,
+    "lng": -121.894012,
+    "type": "drone",
+    "status": "disabled"
+  },
+  {
+    "id": "6",
+    "name": "Iot1",
+    "lat": 37.337899,
+    "lng": -121.803012,
+    "type": "iot",
+    "status": "active"
+  },
+  {
+    "id": "7",
+    "name": "Iot2",
+    "lat": 37.337489,
+    "lng": -121.894012,
+    "type": "iot",
+    "status": "active"
+  },
+  {
+    "id": "8",
+    "name": "Iot3",
+    "lat": 37.537889,
+    "lng": -121.853012,
+    "type": "iot",
+    "status": "active"
+  },
+  {
+    "id": "9",
+    "name": "Iot4",
+    "lat": 37.336889,
+    "lng": -121.896012,
+    "type": "iot",
+    "status": "defective"
+  },
+  {
+    "id": "10",
+    "name": "Iot5",
+    "lat": 37.337789,
+    "lng": -121.793012,
+    "type": "iot",
+    "status": "disabled"
+  },
+  {
+    "id": "11",
+    "name": "Camera1",
+    "lat": 37.137789,
+    "lng": -121.793112,
+    "type": "camera",
+    "status": "active"
+  },
+  {
+    "id": "12",
+    "name": "Camera2",
+    "lat": 37.337709,
+    "lng": -121.703012,
+    "type": "camera",
+    "status": "active"
+  },
+  {
+    "id": "13",
+    "name": "Camera3",
+    "lat": 37.337689,
+    "lng": -121.763012,
+    "type": "camera",
+    "status": "active"
+  },
+  {
+    "id": "14",
+    "name": "Camera4",
+    "lat": 37.437789,
+    "lng": -121.794012,
+    "type": "camera",
+    "status": "defective"
+  },
+  {
+    "id": "15",
+    "name": "Camera5",
+    "lat": 37.337589,
+    "lng": -121.795012,
+    "type": "camera",
+    "status": "disabled"
+  }
+]

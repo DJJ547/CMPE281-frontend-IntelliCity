@@ -29,7 +29,7 @@ export default function DonutChart(props) {
               props.donutChartData[2]["value"]}
           </h1> */}
           <Label value={props.donutChartData[props.name][0]["value"] + "/" + total} position="centerBottom" fontSize="20px" />
-          <Label value="Active/Total" position="centerTop" fontSize="14px" />
+          <Label value="active/total" position="centerTop" fontSize="14px" />
           {props.donutChartData[props.name].map((entry, index) => (
             <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
           ))}

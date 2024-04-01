@@ -6,7 +6,7 @@ import IotPic from "../medias/iotImage.png";
 import CameraPic from "../medias/cameraImage.png";
 import DronePic from "../medias/droneImage.png";
 import IncidentPic from "../medias/incidentImage.png";
-import mockData from "../mockData/allDeviceMockData.json";
+import mockData from "../mockData/dashboardMockData.json";
 import {
   LineChart,
   Line,

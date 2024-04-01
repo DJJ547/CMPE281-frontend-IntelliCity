@@ -53,8 +53,11 @@ npm install dotenv --save
 npm i recharts
 
 # Useful resources
-## react-icons library (already installed)
+## react-icons library
 https://react-icons.github.io/react-icons/search/#q=drone
+
+# recharts chart and graph library
+https://recharts.org/en-US
 
 ## YT tutorial and source code for button animations
 https://www.youtube.com/watch?v=lOo8diyD2fg
