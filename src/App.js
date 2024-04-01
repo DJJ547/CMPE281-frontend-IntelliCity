@@ -7,7 +7,7 @@ import "./index.css";
 // import ProtectedRoute from "./utilitiies/ProtectedRoute";
 
 //components
-import PageLayout from "./components/PageLayout";
+import PageLayout from "./components/pageLayout/PageLayout";
 
 //pages
 import Test from "./pages/Test";
@@ -17,6 +17,9 @@ import CameraManager from "./pages/CameraManager";
 import IotManager from "./pages/IotManager";
 import DroneManager from "./pages/DroneManager";
 
+import Login from "./pages/auth/Login";
+import Signup from "./pages/auth/Signup";
+
 export default function App() {
   return (
     <div>
@@ -25,11 +28,11 @@ export default function App() {
           <Route path="/test" element={<PageLayout><Test /></PageLayout>} />
         </>
 
-        {/* <Route>
+        <Route>
           <Route path="/auth/login" element={<Login />} />
           <Route path="/auth/signup" element={<Signup />} />
-          <Route path="/" element={<Navigate to="/auth/login" replace />} />
-        </Route> */}
+          {/* <Route path="/" element={<Navigate to="/auth/login" replace />} /> */}
+        </Route>
 
         <Route>
           {/* <Route path="/dashboard" element={<ProtectedRoute><PageLayout><Dashboard /></PageLayout></ProtectedRoute>} /> */}

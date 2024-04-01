@@ -13,7 +13,7 @@ export default function Sidebar() {
             IntelliCity
           </span>
         </div>
-        < ShiftingDropDown />
+        <ShiftingDropDown />
       </div>
     </nav>
   );

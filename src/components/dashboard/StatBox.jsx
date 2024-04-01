@@ -8,7 +8,7 @@ export default function StatBox(props) {
         <img className="" src={props.img} alt="device" />
         <h1 className="font-bold text-xl">{props.name}</h1>
       </div>
-      <div className="flex w-30 h-30">
+      <div className="flex w-30 h-30 z-10">
         <DonutChart name={props.name} donutChartData={props.donutChartData} />
       </div>
     </div>

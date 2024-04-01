@@ -11,7 +11,7 @@ import { PiBellSimpleRingingFill } from "react-icons/pi";
 import { FaUser } from "react-icons/fa";
 import { AnimatePresence, motion } from "framer-motion";
 
-import ProfilePic from "../medias/profilePic.jpeg";
+import ProfilePic from "../../medias/profilePic.jpeg";
 
 export default function ShiftingDropDown() {
   return <Tabs />;
@@ -34,7 +34,7 @@ const Tabs = () => {
   return (
     <div
       onMouseLeave={() => handleSetSelected(null)}
-      className="relative flex h-fit gap-2"
+      className="relative flex h-fit gap-2 z-20"
     >
       {TABS.map((t) => {
         return (

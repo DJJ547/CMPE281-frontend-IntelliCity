@@ -1,5 +1,5 @@
 import React from "react";
-import StatBox from "../components/StatBox";
+import StatBox from "../components/dashboard/StatBox";
 import Map from "../components/Map";
 import Accordian, { AccordianItem } from "../components/Accordions";
 import IotPic from "../medias/iotImage.png";
@@ -64,19 +64,19 @@ const lineChartData = [
 
 const donutChartData = {
   cameras: [
-    {name: 'active', value: 45},
-    {name: 'defective', value: 2},
-    {name: 'active', value: 3}
+    { name: "active", value: 45 },
+    { name: "defective", value: 2 },
+    { name: "active", value: 3 },
   ],
   iots: [
-    {name: 'active', value: 75},
-    {name: 'defective', value: 10},
-    {name: 'active', value: 15}
+    { name: "active", value: 75 },
+    { name: "defective", value: 10 },
+    { name: "active", value: 15 },
   ],
   drones: [
-    {name: 'active', value: 9},
-    {name: 'defective', value: 1},
-    {name: 'active', value: 10}
+    { name: "active", value: 9 },
+    { name: "defective", value: 1 },
+    { name: "active", value: 10 },
   ],
 };
 
@@ -84,7 +84,11 @@ export default function Dashboard() {
   return (
     <div className="flex flex-col w-full h-full">
       <div className="flex space-x-5 mb-4">
-        <StatBox img={CameraPic} name="cameras" donutChartData={donutChartData} />
+        <StatBox
+          img={CameraPic}
+          name="cameras"
+          donutChartData={donutChartData}
+        />
         <StatBox img={IotPic} name="iots" donutChartData={donutChartData} />
         <StatBox img={DronePic} name="drones" donutChartData={donutChartData} />
         {/* <DisplayBox img={ IncidentPic } /> */}

@@ -45,12 +45,13 @@ npm start
 ``` 
 
 ## Please list all libraries that you've installed before pushing into GitHub repo
-npm i react-router-dom
-npm i @material-tailwind/react
-npm i react-icons
-npm i -S @react-google-maps/api
-npm install dotenv --save
-npm i recharts
+- npm i react-router-dom
+- npm i @material-tailwind/react
+- npm i react-icons
+- npm i -S @react-google-maps/api
+- npm install dotenv --save
+- npm i recharts
+- npm install react-switch
 
 # Useful resources
 ## react-icons library

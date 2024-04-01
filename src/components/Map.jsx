@@ -6,15 +6,15 @@ import {
   Marker,
 } from "@react-google-maps/api";
 
-import CameraGreen from "../medias/camera_green_20.png";
-import CameraYellow from "../medias/camera_yellow_20.png";
-import CameraGray from "../medias/camera_gray_20.png";
-import IotGreen from "../medias/iot_green_20.png";
-import IotYellow from "../medias/iot_yellow_20.png";
-import IotGray from "../medias/iot_gray_20.png";
-import DroneGreen from "../medias/drone_green_20.png";
-import DroneYellow from "../medias/drone_yellow_20.png";
-import DroneGray from "../medias/drone_gray_20.png";
+import CameraGreen from "../medias/map/camera_green_20.png";
+import CameraYellow from "../medias/map/camera_yellow_20.png";
+import CameraGray from "../medias/map/camera_gray_20.png";
+import IotGreen from "../medias/map/iot_green_20.png";
+import IotYellow from "../medias/map/iot_yellow_20.png";
+import IotGray from "../medias/map/iot_gray_20.png";
+import DroneGreen from "../medias/map/drone_green_20.png";
+import DroneYellow from "../medias/map/drone_yellow_20.png";
+import DroneGray from "../medias/map/drone_gray_20.png";
 
 const containerStyle = {
   width: "110vh",
