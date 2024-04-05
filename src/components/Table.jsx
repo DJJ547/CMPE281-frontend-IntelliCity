@@ -2,6 +2,13 @@ import React, { useState } from "react";
 import Switch from "react-switch";
 
 export default function Table(props) {
+  // State to manage the checked state of the switch
+  const [checked, setChecked] = useState(false);
+
+  // Function to handle switch state change
+  const handleChange = (newChecked) => {
+    setChecked(newChecked);
+  };
 
   return (
     <div className="overflow-x-auto">
@@ -25,15 +32,22 @@ export default function Table(props) {
               <td className="border px-4 py-2 text-center">{item.location}</td>
               <td className="border px-4 py-2 text-center">
                 {item.status}
-                <Switch />
+                <Switch
+                  checked={checked} // Specify the current state of the switch
+                  onChange={handleChange} // Handle switch state change
+                />
               </td>
             </tr>
           ))}
         </tbody>
       </table>
       <div className="flex space-x-5 justify-center m-3">
-        <button className="w-24 bg-blue-500 text-white font-bold py-2 px-4 rounded">Confirm</button>
-        <button className="w-24 bg-blue-500 text-white font-bold py-2 px-4 rounded">Cancel</button>
+        <button className="w-24 bg-blue-500 text-white font-bold py-2 px-4 rounded">
+          Confirm
+        </button>
+        <button className="w-24 bg-blue-500 text-white font-bold py-2 px-4 rounded">
+          Cancel
+        </button>
       </div>
     </div>
   );

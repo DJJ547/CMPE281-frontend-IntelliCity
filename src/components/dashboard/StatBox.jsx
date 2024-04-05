@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 import DonutChart from "./DonutChart";
 
 export default function StatBox(props) {

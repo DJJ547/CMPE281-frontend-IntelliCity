@@ -1,10 +1,7 @@
 import React, { useEffect, useState } from "react";
 import {
   FiArrowRight,
-  FiBarChart2,
   FiChevronDown,
-  FiHome,
-  FiPieChart,
 } from "react-icons/fi";
 import { IoIosSettings } from "react-icons/io";
 import { PiBellSimpleRingingFill } from "react-icons/pi";
@@ -15,6 +12,11 @@ import ProfilePic from "../../medias/profilePic.jpeg";
 
 export default function ShiftingDropDown() {
   return <Tabs />;
+}
+
+function logout() {
+  localStorage.clear();
+  window.location.href = "/auth/login";
 }
 
 const Tabs = () => {
@@ -173,11 +175,6 @@ const Settings = () => {
           Manage Notification
         </a>
       </div>
-
-      {/* <button className="ml-auto mt-4 flex items-center gap-1 text-sm text-indigo-300">
-        <span>View more</span>
-        <FiArrowRight />
-      </button> */}
     </div>
   );
 };
@@ -229,9 +226,9 @@ const Profile = () => {
             <span className="text-neutral-400">Asummers@gmail.com</span>
           </div>
         </div>
-        <a href="#" className="block text-sm text-neutral-400">
+        <button onClick={logout} className="block text-md text-neutral-400">
           Logout
-        </a>
+        </button>
       </div>
     </div>
   );

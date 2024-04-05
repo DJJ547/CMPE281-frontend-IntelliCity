@@ -1,5 +1,5 @@
 import React from "react";
-import { PieChart, Pie, Cell, Label, ResponsiveContainer } from "recharts";
+import { PieChart, Pie, Cell, Label } from "recharts";
 
 //Below are the donut chart colors in order: green, red, grey
 const COLORS = ["#008000", "#B22222", "#808080"];

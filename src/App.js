@@ -4,7 +4,7 @@ import { Routes, Route } from "react-router-dom";
 import "./index.css";
 
 //utilities
-// import ProtectedRoute from "./utilitiies/ProtectedRoute";
+import ProtectedRoute from "././utils/ProtectedRoute";
 
 //components
 import PageLayout from "./components/pageLayout/PageLayout";
@@ -36,10 +36,10 @@ export default function App() {
 
         <Route>
           {/* <Route path="/dashboard" element={<ProtectedRoute><PageLayout><Dashboard /></PageLayout></ProtectedRoute>} /> */}
-          <Route path="/" element={<PageLayout><Dashboard /></PageLayout>} />
-          <Route path="/camera" element={<PageLayout><CameraManager /></PageLayout>} />
-          <Route path="/iot" element={<PageLayout><IotManager /></PageLayout>} />
-          <Route path="/drone" element={<PageLayout><DroneManager /></PageLayout>} />
+          <Route path="/" element={<ProtectedRoute><PageLayout><Dashboard /></PageLayout></ProtectedRoute>} />
+          <Route path="/camera" element={<ProtectedRoute><PageLayout><CameraManager /></PageLayout></ProtectedRoute>} />
+          <Route path="/iot" element={<ProtectedRoute><PageLayout><IotManager /></PageLayout></ProtectedRoute>} />
+          <Route path="/drone" element={<ProtectedRoute><PageLayout><DroneManager /></PageLayout></ProtectedRoute>} />
         </Route>
       </Routes>
     </div>
