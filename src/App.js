@@ -10,7 +10,7 @@ import ProtectedRoute from "././utils/ProtectedRoute";
 import PageLayout from "./components/pageLayout/PageLayout";
 
 //pages
-import Test from "./pages/Test";
+// import Test from "./pages/Test";
 // import Login from "./pages/auth/Login";
 import Dashboard from "./pages/Dashboard";
 import CameraManager from "./pages/CameraManager";
@@ -24,9 +24,9 @@ export default function App() {
   return (
     <div>
       <Routes>
-        <>
+        {/* <>
           <Route path="/test" element={<PageLayout><Test /></PageLayout>} />
-        </>
+        </> */}
 
         <Route>
           <Route path="/auth/login" element={<Login />} />
