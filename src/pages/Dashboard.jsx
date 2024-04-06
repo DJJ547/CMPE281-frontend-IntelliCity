@@ -6,7 +6,7 @@ import IotPic from "../medias/iotImage.png";
 import CameraPic from "../medias/cameraImage.png";
 import DronePic from "../medias/droneImage.png";
 import IncidentPic from "../medias/incidentImage.png";
-import mockData from "../mockData/dashboardMockData.json";
+import allDevices from "../mockData/allDevices.json";
 import {
   LineChart,
   Line,
@@ -94,7 +94,7 @@ export default function Dashboard() {
         {/* <DisplayBox img={ IncidentPic } /> */}
       </div>
       <div className="flex w-auto h-2/3">
-        <Map data={mockData} />
+        <Map data={allDevices} />
         <div className="flex ml-5">
           <Accordian className="">
             <AccordianItem value="1" trigger="Graph 1">

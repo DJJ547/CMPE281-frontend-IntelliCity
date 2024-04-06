@@ -1,0 +1,300 @@
+{
+    "0": {
+        "cameras": [
+            {
+                "id": "cam1",
+                "dist_id": 1,
+                "longitude": -123.808,
+                "latitude": 39.42002,
+                "status": "active"
+            },
+            {
+                "id": "cam2",
+                "dist_id": 2,
+                "longitude": -122.34276,
+                "latitude": 41.34496,
+                "status": "active"
+            },
+            {
+                "id": "cam3",
+                "dist_id": 3,
+                "longitude": -121.510528,
+                "latitude": 38.481128,
+                "status": "active"
+            },
+            {
+                "id": "cam4",
+                "dist_id": 4,
+                "longitude": -122.27291,
+                "latitude": 37.82539,
+                "status": "active"
+            },
+            {
+                "id": "cam5",
+                "dist_id": 5,
+                "longitude": -121.653231,
+                "latitude": 36.687188,
+                "status": "active"
+            },
+            {
+                "id": "cam6",
+                "dist_id": 6,
+                "longitude": -118.92301,
+                "latitude": 34.912901,
+                "status": "active"
+            },
+            {
+                "id": "cam7",
+                "dist_id": 7,
+                "longitude": -118.2215,
+                "latitude": 34.0837,
+                "status": "active"
+            },
+            {
+                "id": "cam8",
+                "dist_id": 8,
+                "longitude": -117.704026,
+                "latitude": 34.081538,
+                "status": "active"
+            },
+            {
+                "id": "cam9",
+                "dist_id": 9,
+                "longitude": -118.91848,
+                "latitude": 37.64111,
+                "status": "active"
+            },
+            {
+                "id": "cam10",
+                "dist_id": 10,
+                "longitude": -121.28509,
+                "latitude": 37.84451,
+                "status": "active"
+            },
+            {
+                "id": "cam11",
+                "dist_id": 11,
+                "longitude": -117.160577,
+                "latitude": 32.772126,
+                "status": "active"
+            },
+            {
+                "id": "cam12",
+                "dist_id": 12,
+                "longitude": -117.97886,
+                "latitude": 33.85629,
+                "status": "active"
+            }
+        ],
+        "iots": [
+
+        ],
+        "drones": [
+
+        ]
+    },
+    "1": {
+        "cameras": [
+            {
+                "id": "cam1",
+                "dist_id": 1,
+                "longitude": -123.808,
+                "latitude": 39.42002,
+                "status": "active"
+            }
+        ],
+        "iots": [
+
+        ],
+        "drones": [
+
+        ]
+    },
+    "2": {
+        "cameras": [
+            {
+                "id": "cam2",
+                "dist_id": 2,
+                "longitude": -122.34276,
+                "latitude": 41.34496,
+                "status": "active"
+            }
+        ],
+        "iots": [
+
+        ],
+        "drones": [
+
+        ]
+    },
+    "3": {
+        "cameras": [
+            {
+                "id": "cam3",
+                "dist_id": 3,
+                "longitude": -121.510528,
+                "latitude": 38.481128,
+                "status": "active"
+            }
+        ],
+        "iots": [
+
+        ],
+        "drones": [
+
+        ]
+    },
+    "4": {
+        "cameras": [
+            {
+                "id": "cam4",
+                "dist_id": 4,
+                "longitude": -122.27291,
+                "latitude": 37.82539,
+                "status": "active"
+            }
+        ],
+        "iots": [
+
+        ],
+        "drones": [
+
+        ]
+    },
+    "5": {
+        "cameras": [
+            {
+                "id": "cam5",
+                "dist_id": 5,
+                "longitude": -121.653231,
+                "latitude": 36.687188,
+                "status": "active"
+            }
+        ],
+        "iots": [
+
+        ],
+        "drones": [
+
+        ]
+    },
+    "6": {
+        "cameras": [
+            {
+                "id": "cam6",
+                "dist_id": 6,
+                "longitude": -118.92301,
+                "latitude": 34.912901,
+                "status": "active"
+            }
+        ],
+        "iots": [
+
+        ],
+        "drones": [
+
+        ]
+    },
+    "7": {
+        "cameras": [
+            {
+                "id": "cam7",
+                "dist_id": 7,
+                "longitude": -118.2215,
+                "latitude": 34.0837,
+                "status": "active"
+            }
+        ],
+        "iots": [
+
+        ],
+        "drones": [
+
+        ]
+    },
+    "8": {
+        "cameras": [
+            {
+                "id": "cam8",
+                "dist_id": 8,
+                "longitude": -117.704026,
+                "latitude": 34.081538,
+                "status": "active"
+            }
+        ],
+        "iots": [
+
+        ],
+        "drones": [
+
+        ]
+    },
+    "9": {
+        "cameras": [
+            {
+                "id": "cam9",
+                "dist_id": 9,
+                "longitude": -118.91848,
+                "latitude": 37.64111,
+                "status": "active"
+            }
+        ],
+        "iots": [
+
+        ],
+        "drones": [
+
+        ]
+    },
+    "10": {
+        "cameras": [
+            {
+                "id": "cam10",
+                "dist_id": 10,
+                "longitude": -121.28509,
+                "latitude": 37.84451,
+                "status": "active"
+            }
+        ],
+        "iots": [
+
+        ],
+        "drones": [
+
+        ]
+    },
+    "11": {
+        "cameras": [
+            {
+                "id": "cam11",
+                "dist_id": 11,
+                "longitude": -117.160577,
+                "latitude": 32.772126,
+                "status": "active"
+            }
+        ],
+        "iots": [
+
+        ],
+        "drones": [
+
+        ]
+    },
+    "12": {
+        "cameras": [
+            {
+                "id": "cam12",
+                "dist_id": 12,
+                "longitude": -117.97886,
+                "latitude": 33.85629,
+                "status": "active"
+            }
+        ],
+        "iots": [
+
+        ],
+        "drones": [
+
+        ]
+    }
+}
