@@ -19,8 +19,8 @@ import DroneGray from "../medias/map/drone_gray_20.png";
 import { districts } from "../utils/mapDistrictCoordinates";
 
 const containerStyle = {
-  width: "110vh",
-  height: "110%",
+  width: "80vw",
+  height: "70vh",
 };
 
 const defaultCenter = {
