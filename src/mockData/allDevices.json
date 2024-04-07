@@ -87,7 +87,34 @@
             }
         ],
         "iots": [
-
+            {
+                "id": "iot1",
+                "dist_id": 1,
+                "longitude": -122.808,
+                "latitude": 42.42002,
+                "status": "active"
+            },
+            {
+                "id": "iot2",
+                "dist_id": 2,
+                "longitude": -121.34276,
+                "latitude": 40.34496,
+                "status": "active"
+            },
+            {
+                "id": "iot3",
+                "dist_id": 3,
+                "longitude": -120.510528,
+                "latitude": 37.481128,
+                "status": "active"
+            },
+            {
+                "id": "iot4",
+                "dist_id": 4,
+                "longitude": -121.27291,
+                "latitude": 36.82539,
+                "status": "active"
+            }
         ],
         "drones": [
 
@@ -104,7 +131,55 @@
             }
         ],
         "iots": [
-
+            {
+                "id": "iot1",
+                "dist_id": 1,
+                "longitude": -122.808,
+                "latitude": 42.42002,
+                "status": "active"
+            },
+            {
+                "id": "iot2",
+                "dist_id": 2,
+                "longitude": -121.34276,
+                "latitude": 40.34496,
+                "status": "active"
+            },
+            {
+                "id": "iot3",
+                "dist_id": 3,
+                "longitude": -120.510528,
+                "latitude": 37.481128,
+                "status": "active"
+            },
+            {
+                "id": "iot4",
+                "dist_id": 4,
+                "longitude": -121.27291,
+                "latitude": 36.82539,
+                "status": "active"
+            },
+            {
+                "id": "iot5",
+                "dist_id": 5,
+                "longitude": -120.653231,
+                "latitude": 35.687188,
+                "status": "active"
+            },
+            {
+                "id": "iot6",
+                "dist_id": 6,
+                "longitude": -117.92301,
+                "latitude": 33.912901,
+                "status": "active"
+            },
+            {
+                "id": "iot7",
+                "dist_id": 7,
+                "longitude": -117.2215,
+                "latitude": 33.0837,
+                "status": "active"
+            }
         ],
         "drones": [
 
