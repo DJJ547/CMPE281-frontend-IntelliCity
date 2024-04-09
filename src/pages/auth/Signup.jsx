@@ -15,7 +15,7 @@ export default function Signup() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     console.log(formData);
-    fetch("http://localhost:8000/auth/signup/", {
+    fetch(`${process.env.REACT_APP_API_URL}auth/signup/`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -29,7 +29,7 @@ export default function Signup() {
         return response.json();
       })
       .then((data) => {
-        console.log(data)
+        console.log(data);
         window.location.href = "/";
       })
       .catch((error) => {

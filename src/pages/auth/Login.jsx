@@ -14,7 +14,7 @@ export default function Login() {
     e.preventDefault();
     console.log(formData);
 
-    fetch("http://localhost:8000/auth/login/", {
+    fetch(`${process.env.REACT_APP_API_URL}auth/login/`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
