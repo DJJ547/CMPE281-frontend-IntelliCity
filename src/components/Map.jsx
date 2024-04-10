@@ -66,7 +66,10 @@ function Map(props) {
       </div>
       <LoadScript googleMapsApiKey="AIzaSyCBdsxfnuAQqHRDm-G3ykk2RQDFsYjZl-g">
         <GoogleMap
-          mapContainerStyle={containerStyle}
+          mapContainerStyle={{
+            width: props.container_width,
+            height: props.container_height,
+          }}
           center={{ lat: selectedMapRegion.lat, lng: selectedMapRegion.lng }}
           zoom={selectedMapRegion.zoom}
         >

@@ -3,6 +3,9 @@ import { PlusCircleIcon, TrashIcon, PencilIcon, EyeIcon } from '@heroicons/react
 import Map from '../components/Map';
 import allDevices from '../mockData/allDevices.json';
 
+const container_height = "70vh";
+const container_width = "80vw";
+
 export default function IotManager() {
 
   const [showForm, setShowForm] = useState(false);
@@ -23,8 +26,6 @@ export default function IotManager() {
 
   return (
     <div className="flex flex-col w-full h-full">
-      <h1>IoT Manager</h1>
-
       <div className="flex space-x-2">
         <button onClick={handleAddClick}
                 className="flex items-center space-x-2 bg-blue-500 text-white px-4 py-2 rounded">
@@ -81,7 +82,7 @@ export default function IotManager() {
       )}
 
       <div className="flex w-auto h-2/3">
-        <Map data={allDevices} />
+        <Map data={allDevices} container_height={container_height} container_width={container_width}/>
       </div>
     </div>
   );

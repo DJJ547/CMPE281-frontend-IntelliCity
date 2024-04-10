@@ -17,6 +17,9 @@ import {
   Legend,
 } from "recharts";
 
+const container_height = "65vh";
+const container_width = "55vw";
+
 const lineChartData = [
   {
     name: "Page A",
@@ -94,7 +97,7 @@ export default function Dashboard() {
         {/* <DisplayBox img={ IncidentPic } /> */}
       </div>
       <div className="flex w-auto h-2/3">
-        <Map data={allDevices} />
+        <Map data={allDevices} container_height={container_height} container_width={container_width}/>
         <div className="flex ml-5">
           <Accordian className="">
             <AccordianItem value="1" trigger="Graph 1">
