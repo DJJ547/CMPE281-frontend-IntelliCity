@@ -52,12 +52,20 @@ npm start
 - npm install dotenv --save
 - npm i recharts
 - npm install react-switch
+- npm i @heroicons/react
+- npm i --save @fortawesome/free-solid-svg-icons
 
 # Useful resources
 ## react-icons library
 https://react-icons.github.io/react-icons/search/#q=drone
 
-# recharts chart and graph library
+## Font-Awesome Icons library
+https://fontawesome.com/icons
+
+## Google Fonts Icons
+https://fonts.google.com/icons
+
+## recharts chart and graph library
 https://recharts.org/en-US
 
 ## YT tutorial and source code for button animations

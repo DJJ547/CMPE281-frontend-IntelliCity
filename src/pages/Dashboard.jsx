@@ -2,11 +2,10 @@ import React from "react";
 import StatBox from "../components/dashboard/StatBox";
 import Map from "../components/Map";
 import Accordian, { AccordianItem } from "../components/Accordions";
-import IotPic from "../medias/iotImage.png";
-import CameraPic from "../medias/cameraImage.png";
-import DronePic from "../medias/droneImage.png";
-import IncidentPic from "../medias/incidentImage.png";
 import allDevices from "../mockData/allDevices.json";
+import allIncidents from "../mockData/allIncidents.json";
+import allCongestion from "../mockData/allCongestions.json";
+
 import {
   LineChart,
   Line,
@@ -88,16 +87,44 @@ export default function Dashboard() {
     <div className="flex flex-col w-full h-full">
       <div className="flex space-x-5 mb-4">
         <StatBox
-          img={CameraPic}
+          imgKey="photo_camera"
           name="cameras"
+          backgroundColor="bg-red-600"
           donutChartData={donutChartData}
         />
-        <StatBox img={IotPic} name="iots" donutChartData={donutChartData} />
-        <StatBox img={DronePic} name="drones" donutChartData={donutChartData} />
-        {/* <DisplayBox img={ IncidentPic } /> */}
+        <StatBox
+          imgKey="sensors"
+          name="iots"
+          backgroundColor="bg-red-600"
+          donutChartData={donutChartData}
+        />
+        <StatBox
+          imgKey="flight"
+          name="drones"
+          backgroundColor="bg-red-600"
+          donutChartData={donutChartData}
+        />
+        <StatBox
+          imgKey="warning"
+          name="incidents"
+          backgroundColor="bg-yellow-600"
+          statNum="34"
+        />
+        <StatBox
+          imgKey="warning"
+          name="congestions"
+          backgroundColor="bg-blue-600"
+          statNum="21"
+        />
       </div>
       <div className="flex w-auto h-2/3">
-        <Map data={allDevices} container_height={container_height} container_width={container_width}/>
+        <Map
+          deviceData={allDevices}
+          incidentData={allIncidents}
+          congestionData={allCongestion}
+          container_height={container_height}
+          container_width={container_width}
+        />
         <div className="flex ml-5">
           <Accordian className="">
             <AccordianItem value="1" trigger="Graph 1">

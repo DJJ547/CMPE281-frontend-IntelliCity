@@ -6,29 +6,35 @@ import {
   Marker,
 } from "@react-google-maps/api";
 
-import CameraGreen from "../medias/map/camera_green_20.png";
-import CameraYellow from "../medias/map/camera_yellow_20.png";
-import CameraGray from "../medias/map/camera_gray_20.png";
-import IotGreen from "../medias/map/iot_green_20.png";
-import IotYellow from "../medias/map/iot_yellow_20.png";
-import IotGray from "../medias/map/iot_gray_20.png";
-import DroneGreen from "../medias/map/drone_green_20.png";
-import DroneYellow from "../medias/map/drone_yellow_20.png";
-import DroneGray from "../medias/map/drone_gray_20.png";
+import { faTriangleExclamation } from "@fortawesome/free-solid-svg-icons";
 
 import { districts } from "../utils/mapDistrictCoordinates";
 
-const containerStyle = {
-  width: "80vw",
-  height: "70vh",
+const IncidentIcon = {
+  path: faTriangleExclamation.icon[4],
+  fillColor: "#dea821",
+  fillOpacity: 1,
+  anchor: {
+    x: faTriangleExclamation.icon[0] / 2, // width
+    y: faTriangleExclamation.icon[1], // height
+  },
+  strokeWeight: 1,
+  strokeColor: "#000000",
+  scale: 0.045,
 };
 
-const defaultCenter = {
-  lat: 40.731588,
-  lng: -123.692638,
+const CongestionIcon = {
+  path: faTriangleExclamation.icon[4],
+  fillColor: "#4169E1",
+  fillOpacity: 1,
+  anchor: {
+    x: faTriangleExclamation.icon[0] / 2, // width
+    y: faTriangleExclamation.icon[1], // height
+  },
+  strokeWeight: 1,
+  strokeColor: "#000000",
+  scale: 0.045,
 };
-
-const defaultZoom = 8; // This is the desired zoom
 
 function Map(props) {
   const [selectedMarker, setSelectedMarker] = useState("");
@@ -41,7 +47,7 @@ function Map(props) {
     setSelectedDistrict(event.target.value);
     setSelectedMapRegion(districts[event.target.value]);
   };
-  console.log(props.data[1].cameras[0].latitude);
+  console.log(props.congestionData)
 
   return (
     <div>
@@ -74,20 +80,17 @@ function Map(props) {
           zoom={selectedMapRegion.zoom}
         >
           {/* camera markers */}
-          {props.data[selectedDistrict].cameras.map((device, i) => (
+          {props.deviceData[selectedDistrict].cameras.map((device, i) => (
             <Marker
               key={i}
               position={{ lat: device.latitude, lng: device.longitude }}
-              options={{
-                icon:
-                  device.status === "active"
-                    ? CameraGreen
-                    : device.status === "defective"
-                    ? CameraYellow
-                    : device.status === "disabled"
-                    ? CameraGray
-                    : "",
+              label={{
+                text: "\ue412",
+                fontFamily: "Material Icons, sans-serif",
+                color: device.status === "active" ? "#ffffff" : "#000000",
+                fontSize: "20px",
               }}
+              title="Camera Marker"
               onClick={() => {
                 setSelectedMarker(device);
               }}
@@ -111,20 +114,17 @@ function Map(props) {
             </InfoWindow>
           )}
           {/* iot markers */}
-          {props.data[selectedDistrict].iots.map((device, i) => (
+          {props.deviceData[selectedDistrict].iots.map((device, i) => (
             <Marker
               key={i}
               position={{ lat: device.latitude, lng: device.longitude }}
-              options={{
-                icon:
-                  device.status === "active"
-                    ? IotGreen
-                    : device.status === "defective"
-                    ? IotYellow
-                    : device.status === "disabled"
-                    ? IotGray
-                    : "",
+              label={{
+                text: "\ue51e",
+                fontFamily: "Material Icons, sans-serif",
+                color: device.status === "active" ? "#ffffff" : "#000000",
+                fontSize: "20px",
               }}
+              title="Iot Marker"
               onClick={() => {
                 setSelectedMarker(device);
               }}
@@ -149,22 +149,80 @@ function Map(props) {
           )}
 
           {/* drone markers */}
-          {props.data[selectedDistrict].drones.map((device, i) => (
+          {props.deviceData[selectedDistrict].drones.map((device, i) => (
             <Marker
               key={i}
               position={{ lat: device.latitude, lng: device.longitude }}
-              options={{
-                icon:
-                  device.status === "active"
-                    ? DroneGreen
-                    : device.status === "defective"
-                    ? DroneYellow
-                    : device.status === "disabled"
-                    ? DroneGray
-                    : "",
+              label={{
+                text: "\ue539",
+                fontFamily: "Material Icons, sans-serif",
+                color: device.status === "active" ? "#ffffff" : "#000000",
+
+                fontSize: "20px",
               }}
+              title="Drone Marker"
               onClick={() => {
                 setSelectedMarker(device);
+              }}
+            />
+          ))}
+          {selectedMarker && (
+            <InfoWindow
+              position={{
+                lat: selectedMarker.latitude,
+                lng: selectedMarker.longitude,
+              }}
+              onCloseClick={() => {
+                setSelectedMarker("");
+              }}
+              options={{ pixelOffset: new window.google.maps.Size(0, -25) }}
+            >
+              <div className="text-md">
+                <h1>id: {selectedMarker["id"]}</h1>
+                <h1>status: {selectedMarker["status"]}</h1>
+              </div>
+            </InfoWindow>
+          )}
+
+          {/* incident markers */}
+          {props.incidentData[selectedDistrict].map((incident, i) => (
+            <Marker
+              key={i}
+              position={{ lat: incident.latitude, lng: incident.longitude }}
+              icon={IncidentIcon}
+              title="Incident Marker"
+              onClick={() => {
+                setSelectedMarker(incident);
+              }}
+            />
+          ))}
+          {selectedMarker && (
+            <InfoWindow
+              position={{
+                lat: selectedMarker.latitude,
+                lng: selectedMarker.longitude,
+              }}
+              onCloseClick={() => {
+                setSelectedMarker("");
+              }}
+              options={{ pixelOffset: new window.google.maps.Size(0, -25) }}
+            >
+              <div className="text-md">
+                <h1>id: {selectedMarker["id"]}</h1>
+                <h1>status: {selectedMarker["status"]}</h1>
+              </div>
+            </InfoWindow>
+          )}
+
+          {/* congestion markers */}
+          {props.congestionData[selectedDistrict].map((congestion, i) => (
+            <Marker
+              key={i}
+              position={{ lat: congestion.latitude, lng: congestion.longitude }}
+              icon={CongestionIcon}
+              title="Incident Marker"
+              onClick={() => {
+                setSelectedMarker(congestion);
               }}
             />
           ))}

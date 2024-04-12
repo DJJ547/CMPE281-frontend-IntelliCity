@@ -38,7 +38,7 @@ const Tabs = () => {
       onMouseLeave={() => handleSetSelected(null)}
       className="relative flex h-fit gap-2 z-20"
     >
-      {TABS.map((t) => {
+      {TABS.map((t, i) => {
         return (
           <Tab
             key={t.id}

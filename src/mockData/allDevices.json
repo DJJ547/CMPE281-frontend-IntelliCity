@@ -117,6 +117,13 @@
             }
         ],
         "drones": [
+            {
+                "id": "drone1",
+                "dist_id": 1,
+                "longitude": -121.27291,
+                "latitude": 36.99539,
+                "status": "active"
+            }
 
         ]
     },
