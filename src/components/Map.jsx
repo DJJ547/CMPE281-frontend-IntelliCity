@@ -47,7 +47,7 @@ function Map(props) {
     setSelectedDistrict(event.target.value);
     setSelectedMapRegion(districts[event.target.value]);
   };
-  console.log(props.congestionData)
+  console.log(Object.keys(props.deviceData)[0]);
 
   return (
     <div>
@@ -79,153 +79,144 @@ function Map(props) {
           center={{ lat: selectedMapRegion.lat, lng: selectedMapRegion.lng }}
           zoom={selectedMapRegion.zoom}
         >
-          {/* camera markers */}
-          {props.deviceData[selectedDistrict].cameras.map((device, i) => (
-            <Marker
-              key={i}
-              position={{ lat: device.latitude, lng: device.longitude }}
-              label={{
-                text: "\ue412",
-                fontFamily: "Material Icons, sans-serif",
-                color: device.status === "active" ? "#ffffff" : "#000000",
-                fontSize: "20px",
-              }}
-              title="Camera Marker"
-              onClick={() => {
-                setSelectedMarker(device);
-              }}
-            />
-          ))}
-          {selectedMarker && (
-            <InfoWindow
-              position={{
-                lat: selectedMarker.latitude,
-                lng: selectedMarker.longitude,
-              }}
-              onCloseClick={() => {
-                setSelectedMarker("");
-              }}
-              options={{ pixelOffset: new window.google.maps.Size(0, -25) }}
-            >
-              <div className="text-md">
-                <h1>id: {selectedMarker["id"]}</h1>
-                <h1>status: {selectedMarker["status"]}</h1>
-              </div>
-            </InfoWindow>
-          )}
-          {/* iot markers */}
-          {props.deviceData[selectedDistrict].iots.map((device, i) => (
-            <Marker
-              key={i}
-              position={{ lat: device.latitude, lng: device.longitude }}
-              label={{
-                text: "\ue51e",
-                fontFamily: "Material Icons, sans-serif",
-                color: device.status === "active" ? "#ffffff" : "#000000",
-                fontSize: "20px",
-              }}
-              title="Iot Marker"
-              onClick={() => {
-                setSelectedMarker(device);
-              }}
-            />
-          ))}
-          {selectedMarker && (
-            <InfoWindow
-              position={{
-                lat: selectedMarker.latitude,
-                lng: selectedMarker.longitude,
-              }}
-              onCloseClick={() => {
-                setSelectedMarker("");
-              }}
-              options={{ pixelOffset: new window.google.maps.Size(0, -25) }}
-            >
-              <div className="text-md">
-                <h1>id: {selectedMarker["id"]}</h1>
-                <h1>status: {selectedMarker["status"]}</h1>
-              </div>
-            </InfoWindow>
-          )}
+          {Object.keys(props.deviceData)[0] === "all" ? (
+            props.deviceData.all[selectedDistrict].map((device, i) =>
+              device.type === "camera" ? (
+                <Marker
+                  key={i}
+                  position={{ lat: device.latitude, lng: device.longitude }}
+                  label={{
+                    text: "\ue412",
+                    fontFamily: "Material Icons, sans-serif",
+                    color: device.status === "active" ? "#ffffff" : "#000000",
+                    fontSize: "20px",
+                  }}
+                  title="Camera Marker"
+                  onClick={() => {
+                    setSelectedMarker(device);
+                  }}
+                />
+              ) : device.type === "iot" ? (
+                <Marker
+                  key={i}
+                  position={{ lat: device.latitude, lng: device.longitude }}
+                  label={{
+                    text: "\ue51e",
+                    fontFamily: "Material Icons, sans-serif",
+                    color: device.status === "active" ? "#ffffff" : "#000000",
+                    fontSize: "20px",
+                  }}
+                  title="Iot Marker"
+                  onClick={() => {
+                    setSelectedMarker(device);
+                  }}
+                />
+              ) : device.type === "drone" ? (
+                <Marker
+                  key={i}
+                  position={{ lat: device.latitude, lng: device.longitude }}
+                  label={{
+                    text: "\ue539",
+                    fontFamily: "Material Icons, sans-serif",
+                    color: device.status === "active" ? "#ffffff" : "#000000",
 
-          {/* drone markers */}
-          {props.deviceData[selectedDistrict].drones.map((device, i) => (
-            <Marker
-              key={i}
-              position={{ lat: device.latitude, lng: device.longitude }}
-              label={{
-                text: "\ue539",
-                fontFamily: "Material Icons, sans-serif",
-                color: device.status === "active" ? "#ffffff" : "#000000",
+                    fontSize: "20px",
+                  }}
+                  title="Drone Marker"
+                  onClick={() => {
+                    setSelectedMarker(device);
+                  }}
+                />
+              ) : (
+                <></>
+              )
+            )
+          ) : Object.keys(props.deviceData)[0] === "cameras" ? (
+            props.deviceData.cameras[selectedDistrict].map((device, i) => (
+              <Marker
+                key={i}
+                position={{ lat: device.latitude, lng: device.longitude }}
+                label={{
+                  text: "\ue412",
+                  fontFamily: "Material Icons, sans-serif",
+                  color: device.status === "active" ? "#ffffff" : "#000000",
+                  fontSize: "20px",
+                }}
+                title="Camera Marker"
+                onClick={() => {
+                  setSelectedMarker(device);
+                }}
+              />
+            ))
+          ) : Object.keys(props.deviceData)[0] === "iots" ? (
+            props.deviceData.iots[selectedDistrict].map((device, i) => (
+              <Marker
+                key={i}
+                position={{ lat: device.latitude, lng: device.longitude }}
+                label={{
+                  text: "\ue51e",
+                  fontFamily: "Material Icons, sans-serif",
+                  color: device.status === "active" ? "#ffffff" : "#000000",
+                  fontSize: "20px",
+                }}
+                title="Iot Marker"
+                onClick={() => {
+                  setSelectedMarker(device);
+                }}
+              />
+            ))
+          ) : Object.keys(props.deviceData)[0] === "drones" ? (
+            props.deviceData.drones[selectedDistrict].map((device, i) => (
+              <Marker
+                key={i}
+                position={{ lat: device.latitude, lng: device.longitude }}
+                label={{
+                  text: "\ue539",
+                  fontFamily: "Material Icons, sans-serif",
+                  color: device.status === "active" ? "#ffffff" : "#000000",
 
-                fontSize: "20px",
-              }}
-              title="Drone Marker"
-              onClick={() => {
-                setSelectedMarker(device);
-              }}
-            />
-          ))}
-          {selectedMarker && (
-            <InfoWindow
-              position={{
-                lat: selectedMarker.latitude,
-                lng: selectedMarker.longitude,
-              }}
-              onCloseClick={() => {
-                setSelectedMarker("");
-              }}
-              options={{ pixelOffset: new window.google.maps.Size(0, -25) }}
-            >
-              <div className="text-md">
-                <h1>id: {selectedMarker["id"]}</h1>
-                <h1>status: {selectedMarker["status"]}</h1>
-              </div>
-            </InfoWindow>
+                  fontSize: "20px",
+                }}
+                title="Drone Marker"
+                onClick={() => {
+                  setSelectedMarker(device);
+                }}
+              />
+            ))
+          ) : (
+            <></>
           )}
 
           {/* incident markers */}
-          {props.incidentData[selectedDistrict].map((incident, i) => (
-            <Marker
-              key={i}
-              position={{ lat: incident.latitude, lng: incident.longitude }}
-              icon={IncidentIcon}
-              title="Incident Marker"
-              onClick={() => {
-                setSelectedMarker(incident);
-              }}
-            />
-          ))}
-          {selectedMarker && (
-            <InfoWindow
-              position={{
-                lat: selectedMarker.latitude,
-                lng: selectedMarker.longitude,
-              }}
-              onCloseClick={() => {
-                setSelectedMarker("");
-              }}
-              options={{ pixelOffset: new window.google.maps.Size(0, -25) }}
-            >
-              <div className="text-md">
-                <h1>id: {selectedMarker["id"]}</h1>
-                <h1>status: {selectedMarker["status"]}</h1>
-              </div>
-            </InfoWindow>
-          )}
+          {props.incidentData &&
+            props.incidentData[selectedDistrict].map((incident, i) => (
+              <Marker
+                key={i}
+                position={{ lat: incident.latitude, lng: incident.longitude }}
+                icon={IncidentIcon}
+                title="Incident Marker"
+                onClick={() => {
+                  setSelectedMarker(incident);
+                }}
+              />
+            ))}
 
           {/* congestion markers */}
-          {props.congestionData[selectedDistrict].map((congestion, i) => (
-            <Marker
-              key={i}
-              position={{ lat: congestion.latitude, lng: congestion.longitude }}
-              icon={CongestionIcon}
-              title="Incident Marker"
-              onClick={() => {
-                setSelectedMarker(congestion);
-              }}
-            />
-          ))}
+          {props.congestionData &&
+            props.congestionData[selectedDistrict].map((congestion, i) => (
+              <Marker
+                key={i}
+                position={{
+                  lat: congestion.latitude,
+                  lng: congestion.longitude,
+                }}
+                icon={CongestionIcon}
+                title="Incident Marker"
+                onClick={() => {
+                  setSelectedMarker(congestion);
+                }}
+              />
+            ))}
           {selectedMarker && (
             <InfoWindow
               position={{

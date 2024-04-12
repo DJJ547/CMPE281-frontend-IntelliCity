@@ -2,7 +2,7 @@ import React from "react";
 import Map from "../components/Map";
 import ADD from "../medias/plus.png";
 import view from "../medias/view.svg";
-import allDevices from "../mockData/allDevices.json";
+import allCameras from "../mockData/allCameras.json";
 
 const container_height = "65vh";
 const container_width = "55vw";
@@ -35,7 +35,7 @@ export default function Dashboard() {
 
       </div>
       <div className="flex w-auto h-2/3">
-        <Map data={allDevices} container_height={container_height} container_width={container_width}/>
+        <Map deviceData={allCameras} container_height={container_height} container_width={container_width}/>
         <div className="flex ml-5">
           <div className="flex flex-col w-96 h-96 bg-white shadow-lg">
             <div className="flex justify-between p-2">

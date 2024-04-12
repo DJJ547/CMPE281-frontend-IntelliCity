@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { PlusCircleIcon, TrashIcon, PencilIcon, EyeIcon } from '@heroicons/react/16/solid'
 import Map from '../components/Map';
-import allDevices from '../mockData/allDevices.json';
+import allIots from '../mockData/allIots.json';
 
 const container_height = "70vh";
 const container_width = "80vw";
@@ -82,7 +82,7 @@ export default function IotManager() {
       )}
 
       <div className="flex w-auto h-2/3">
-        <Map data={allDevices} container_height={container_height} container_width={container_width}/>
+        <Map deviceData={allIots} container_height={container_height} container_width={container_width}/>
       </div>
     </div>
   );
