@@ -211,7 +211,7 @@ function Map(props) {
                   lng: congestion.longitude,
                 }}
                 icon={CongestionIcon}
-                title="Incident Marker"
+                title="Congestion Marker"
                 onClick={() => {
                   setSelectedMarker(congestion);
                 }}

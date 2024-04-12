@@ -65,17 +65,17 @@ const lineChartData = [
 ];
 
 const donutChartData = {
-  cameras: [
+  Cameras: [
     { name: "active", value: 45 },
     { name: "defective", value: 2 },
     { name: "active", value: 3 },
   ],
-  iots: [
+  Iots: [
     { name: "active", value: 75 },
     { name: "defective", value: 10 },
     { name: "active", value: 15 },
   ],
-  drones: [
+  Drones: [
     { name: "active", value: 9 },
     { name: "defective", value: 1 },
     { name: "active", value: 10 },
@@ -88,31 +88,31 @@ export default function Dashboard() {
       <div className="flex space-x-5 mb-4">
         <StatBox
           imgKey="photo_camera"
-          name="cameras"
+          name="Cameras"
           backgroundColor="bg-red-600"
           donutChartData={donutChartData}
         />
         <StatBox
           imgKey="sensors"
-          name="iots"
+          name="Iots"
           backgroundColor="bg-red-600"
           donutChartData={donutChartData}
         />
         <StatBox
           imgKey="flight"
-          name="drones"
+          name="Drones"
           backgroundColor="bg-red-600"
           donutChartData={donutChartData}
         />
         <StatBox
           imgKey="warning"
-          name="incidents"
+          name="Incidents"
           backgroundColor="bg-yellow-600"
           statNum="34"
         />
         <StatBox
           imgKey="warning"
-          name="congestions"
+          name="Congestions"
           backgroundColor="bg-blue-600"
           statNum="21"
         />
