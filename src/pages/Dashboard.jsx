@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import StatBox from "../components/dashboard/StatBox";
 import Map from "../components/Map";
 import Accordian, { AccordianItem } from "../components/Accordions";
@@ -118,13 +118,13 @@ export default function Dashboard() {
         />
       </div>
       <div className="flex w-auto h-2/3">
-        <Map
-          deviceData={allDevices}
-          incidentData={allIncidents}
-          congestionData={allCongestion}
-          container_height={container_height}
-          container_width={container_width}
-        />
+          <Map
+            deviceData={allDevices}
+            incidentData={allIncidents}
+            congestionData={allCongestion}
+            container_height={container_height}
+            container_width={container_width}
+          />
         <div className="flex ml-5">
           <Accordian className="">
             <AccordianItem value="1" trigger="Graph 1">
