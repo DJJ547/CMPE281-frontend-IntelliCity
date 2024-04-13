@@ -45,7 +45,6 @@ export default function Dashboard() {
 
   const handleDelete = () => {
     console.log("Deleting drone with ID:", deleteDroneId);
-    // Add your delete logic here
     // For now, just log the ID
     setDeleteDroneId(""); // Clear the deleteDroneId state
     setShowDeleteModal(false); // Close the delete modal
