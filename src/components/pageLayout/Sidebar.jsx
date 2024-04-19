@@ -18,7 +18,7 @@ export default function Sidebar() {
   };
 
   return (
-    <Card className="h-[calc(100vh-2rem)] w-full max-w-[16rem] p-4 text-xl shadow-xl shadow-blue-gray-900">
+    <Card className="h-[calc(100vh-7rem)] w-full max-w-[16rem] p-4 text-xl shadow-xl shadow-blue-gray-900">
       <div className="flex flex-col mb-5 p-4 w-full justify-center items-center">
         <img src={ProfilePic} alt="Icon" className="w-20 h-20 rounded-full" />
         <h1 className="text-2xl font-bold">{capitalizeFirstLetter(localStorage.getItem('firstname')) + " " + capitalizeFirstLetter(localStorage.getItem('lastname'))}</h1>

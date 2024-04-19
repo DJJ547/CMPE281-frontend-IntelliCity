@@ -89,6 +89,7 @@ function Map(props) {
     lat: selectedDistrict.lat,
     lng: selectedDistrict.lng,
   });
+  const [mapZoom, setMapZoom] = useState(selectedDistrict.zoom);
 
   // Function to handle change in selected district
   const handleDistrictChange = (event) => {
@@ -98,18 +99,18 @@ function Map(props) {
       lng: districts[event.target.value].lng,
     });
   };
-  console.log(selectedMarker)
   return (
     <div>
-      <div>
-        <label htmlFor="district">Select District:</label>
+      <div className="space-x-3">
+        <label className="font-bold" htmlFor="district">Select District:</label>
         <select
+          className="bg-gray-300"
           id="district"
           value={selectedDistrict.id}
           onChange={handleDistrictChange}
         >
           <option key={0} value={0}>
-            All District
+            All Districts
           </option>
           {districts.map((district, i) =>
             district.id === 0 ? null : (
@@ -127,7 +128,7 @@ function Map(props) {
             height: props.container_height,
           }}
           center={mapCenter}
-          zoom={selectedDistrict.zoom}
+          zoom={mapZoom}
         >
           {/* all markers on dashboard */}
           {Object.keys(props.deviceData)[0] === "all" ? (
