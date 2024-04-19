@@ -54,6 +54,7 @@ npm start
 - npm install react-switch
 - npm i @heroicons/react
 - npm i --save @fortawesome/free-solid-svg-icons
+- npm install --save react-places-autocomplete
 
 # Useful resources
 ## react-icons library

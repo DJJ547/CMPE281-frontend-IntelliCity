@@ -6,6 +6,10 @@ import {
   Marker,
   MarkerClusterer,
 } from "@react-google-maps/api";
+import PlacesAutocomplete, {
+  geocodeByAddress,
+  getLatLng,
+} from "react-places-autocomplete";
 
 import { faTriangleExclamation } from "@fortawesome/free-solid-svg-icons";
 
@@ -82,6 +86,7 @@ const CongestionIcon = {
 };
 
 function Map(props) {
+  const [address, setAddress] = useState("");
   const [selectedMarker, setSelectedMarker] = useState(null);
   // State to store the selected district
   const [selectedDistrict, setSelectedDistrict] = useState(districts[0]);
@@ -91,6 +96,20 @@ function Map(props) {
   });
   const [mapZoom, setMapZoom] = useState(selectedDistrict.zoom);
 
+  const handleSearch = async (value) => {
+    try {
+      const results = await geocodeByAddress(value);
+      const latLng = await getLatLng(results[0]);
+      setSelectedDistrict(districts[0]);
+      setAddress(value);
+      setMapCenter(latLng);
+      setMapZoom(15);
+    } catch (error) {
+      alert("Invalid input. Please enter a valid address.");
+      // You can use other methods to display a popup window or handle the error.
+    }
+  };
+
   // Function to handle change in selected district
   const handleDistrictChange = (event) => {
     setSelectedDistrict(districts[event.target.value]);
@@ -98,11 +117,14 @@ function Map(props) {
       lat: districts[event.target.value].lat,
       lng: districts[event.target.value].lng,
     });
+    setMapZoom(districts[event.target.value].zoom);
   };
   return (
     <div>
       <div className="space-x-3">
-        <label className="font-bold" htmlFor="district">Select District:</label>
+        <label className="font-bold" htmlFor="district">
+          Select District:
+        </label>
         <select
           className="bg-gray-300"
           id="district"
@@ -121,7 +143,45 @@ function Map(props) {
           )}
         </select>
       </div>
-      <LoadScript googleMapsApiKey="AIzaSyCBdsxfnuAQqHRDm-G3ykk2RQDFsYjZl-g">
+      <LoadScript
+        googleMapsApiKey="AIzaSyCBdsxfnuAQqHRDm-G3ykk2RQDFsYjZl-g"
+        libraries={["places"]}
+      >
+        <PlacesAutocomplete
+          value={address}
+          onChange={setAddress}
+          onSelect={handleSearch}
+        >
+          {({
+            getInputProps,
+            suggestions,
+            getSuggestionItemProps,
+            loading,
+          }) => (
+            <div className="flex">
+              <label className="font-bold" htmlFor="district">
+                Enter address/location:
+              </label>
+              <input
+                className="bg-gray-300 ml-3"
+                {...getInputProps({ placeholder: "Search Places..." })}
+              />
+              <div>
+                {loading ? <div>Loading...</div> : null}
+                {suggestions.map((suggestion) => {
+                  const style = {
+                    backgroundColor: suggestion.active ? "#41b6e6" : "#fff",
+                  };
+                  return (
+                    <div {...getSuggestionItemProps(suggestion, { style })}>
+                      {suggestion.description}
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+          )}
+        </PlacesAutocomplete>
         <GoogleMap
           mapContainerStyle={{
             width: props.container_width,
@@ -369,7 +429,10 @@ function Map(props) {
           {/* marker pop up window */}
           {selectedMarker && (
             <InfoWindow
-              position={{lat: selectedMarker.latitude, lng: selectedMarker.longitude}}
+              position={{
+                lat: selectedMarker.latitude,
+                lng: selectedMarker.longitude,
+              }}
               onCloseClick={() => {
                 setMapCenter({
                   lat: selectedMarker.latitude,

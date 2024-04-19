@@ -6,7 +6,7 @@ import allDevices from "../mockData/allDevices.json";
 import allIncidents from "../mockData/allIncidents.json";
 import allCongestions from "../mockData/allCongestions.json";
 
-const container_height = "65vh";
+const container_height = "63vh";
 const container_width = "50vw";
 
 const donutChartData = {
