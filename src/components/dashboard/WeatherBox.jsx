@@ -9,19 +9,19 @@ export default function WeatherBox(props) {
     fetch(API_URL)
       .then((response) => response.json())
       .then((data) => {
-        if(data.weather[0].main == 'Thunderstorm') {
+        if(data.weather[0].main === 'Thunderstorm') {
             data['weather_img_str'] = 'thunderstorm';
-        }else if(data.weather[0].main == 'Drizzle') {
+        }else if(data.weather[0].main === 'Drizzle') {
             data['weather_img_str'] = 'weather_mix';
-        }else if(data.weather[0].main == 'Rain') {
+        }else if(data.weather[0].main === 'Rain') {
             data['weather_img_str'] = 'rainy';
-        }else if(data.weather[0].main == 'Snow') {
+        }else if(data.weather[0].main === 'Snow') {
             data['weather_img_str'] = 'cloudy_snowing';
-        }else if(data.weather[0].main == 'Clear') {
+        }else if(data.weather[0].main === 'Clear') {
             data['weather_img_str'] = 'sunny';
-        }else if(data.weather[0].main == 'Clouds') {
+        }else if(data.weather[0].main === 'Clouds') {
             data['weather_img_str'] = 'cloud';
-        }else if(data.weather[0].main == 'Mist' || data.weather[0].main == 'Fog') {
+        }else if(data.weather[0].main === 'Mist' || data.weather[0].main === 'Fog') {
             data['weather_img_str'] = 'foggy';
         }
         setWeatherData(data);

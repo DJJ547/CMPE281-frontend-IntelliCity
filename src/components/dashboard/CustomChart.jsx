@@ -62,7 +62,7 @@ export default function Chart(props) {
         </select>
       </div>
       <ResponsiveContainer width="100%" height={370}>
-        {selectChartType == 1 ? (
+        {parseInt(selectChartType) === 1 ? (
           <BarChart data={reformatData()}>
             <CartesianGrid strokeDasharray="3 3" />
             <XAxis
@@ -78,7 +78,7 @@ export default function Chart(props) {
             <Bar dataKey="congestions" fill="#0000CD" />
             <Bar dataKey="incidents" fill="#B8860B" />
           </BarChart>
-        ) : selectChartType == 2 ? (
+        ) : parseInt(selectChartType) === 2 ? (
           <LineChart
             data={reformatData()}
             margin={{
