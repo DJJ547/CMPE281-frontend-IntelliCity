@@ -56,14 +56,17 @@ export default function Dashboard() {
     } catch (error) {
       console.error("Error:", error);
     }
-  }
+  };
 
   useEffect(() => {
     const fetchDevices = async () => {
       try {
-        const response = await fetch("http://localhost:8000/api/GetAllDevices", { method: "GET" });
+        const response = await fetch(
+          "http://localhost:8000/api/GetAllDevices",
+          { method: "GET" }
+        );
         const data = await response.json();
-  
+
         // Only update the state if the data has changed
         if (JSON.stringify(data) !== JSON.stringify(Devices)) {
           setDevices(data);
@@ -72,7 +75,7 @@ export default function Dashboard() {
         console.error("Error:", error);
       }
     };
-  
+
     fetchDevices();
   }, [updateUI]);
 
@@ -131,7 +134,12 @@ export default function Dashboard() {
         />
       )}
       <div className="flex w-auto h-2/3">
-        <Map getMapCoordinates={getMapCoordinates} deviceData={Devices} container_height={container_height} container_width={container_width}/>
+        <Map
+          getMapCoordinates={getMapCoordinates}
+          deviceData={Devices}
+          container_height={container_height}
+          container_width={container_width}
+        />
         <div className="flex ml-5">
           <div className="flex flex-col w-96 h-96 bg-white shadow-lg">
             <div className="flex justify-between p-2">

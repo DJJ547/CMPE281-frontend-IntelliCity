@@ -21,7 +21,11 @@ export default function WeatherBox(props) {
             data['weather_img_str'] = 'sunny';
         }else if(data.weather[0].main === 'Clouds') {
             data['weather_img_str'] = 'cloud';
-        }else if(data.weather[0].main === 'Mist' || data.weather[0].main === 'Fog') {
+        }else if(data.weather[0].main === 'Squall') {
+            data['weather_img_str'] = 'air';
+        }else if(data.weather[0].main === 'Tornado') {
+            data['weather_img_str'] = 'tornado';
+        }else if(data.weather[0].main === 'Mist' || data.weather[0].main === 'Fog' || data.weather[0].main === 'Haze' || data.weather[0].main === 'Smoke' || data.weather[0].main === 'Dust' || data.weather[0].main === 'Sand' || data.weather[0].main === 'Ash') {
             data['weather_img_str'] = 'foggy';
         }
         setWeatherData(data);
@@ -31,7 +35,7 @@ export default function WeatherBox(props) {
   }, [API_URL, props.latState, props.lngState]);
 
   if (!weatherData) {
-    return <div>Loading...</div>;
+    return <div>Click on a Marker to See Weather Info</div>;
   }
 
   return (
