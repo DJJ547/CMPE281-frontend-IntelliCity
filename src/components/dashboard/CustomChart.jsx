@@ -61,7 +61,7 @@ export default function Chart(props) {
           </option>
         </select>
       </div>
-      <ResponsiveContainer width="100%" height={350}>
+      <ResponsiveContainer width="100%" height={370}>
         {selectChartType == 1 ? (
           <BarChart data={reformatData()}>
             <CartesianGrid strokeDasharray="3 3" />

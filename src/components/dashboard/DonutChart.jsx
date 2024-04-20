@@ -16,8 +16,8 @@ export default function DonutChart(props) {
           data={props.donutChartData[props.name]}
           // cx={120}
           // cy={200}
-          innerRadius={40}
-          outerRadius={50}
+          innerRadius={35}
+          outerRadius={45}
           fill="#8884d8"
           paddingAngle={5}
           dataKey="value"

@@ -1,5 +1,6 @@
-import React from "react";
+import React, { useState } from "react";
 import StatBox from "../components/dashboard/StatBox";
+import WeatherBox from "../components/dashboard/WeatherBox";
 import Map from "../components/Map";
 import CustomChart from "../components/dashboard/CustomChart";
 import allDevices from "../mockData/allDevices.json";
@@ -28,9 +29,17 @@ const donutChartData = {
 };
 
 export default function Dashboard() {
+  const [selectLat, setSelectLat] = useState(null);
+  const [selectLng, setSelectLng] = useState(null);
+
+  const getMapCoordinates = (lat, lng) => {
+    setSelectLat(lat);
+    setSelectLng(lng);
+  };
+  console.log("dash", selectLat)
   return (
     <div className="flex flex-col w-full h-full">
-      <div className="flex space-x-5 mb-4">
+      <div className="flex space-x-5 mb-2">
         <StatBox
           imgKey="photo_camera"
           name="Cameras"
@@ -61,9 +70,11 @@ export default function Dashboard() {
           backgroundColor="bg-blue-600"
           statNum="21"
         />
+        <WeatherBox latState={selectLat} lngState={selectLng}/>
       </div>
       <div className="flex w-full h-2/3">
         <Map
+          getMapCoordinates={getMapCoordinates}
           deviceData={allDevices}
           incidentData={allIncidents}
           congestionData={allCongestions}
