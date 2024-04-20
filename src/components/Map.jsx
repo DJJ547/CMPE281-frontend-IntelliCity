@@ -213,10 +213,10 @@ function Map(props) {
                           lng: device.longitude,
                         }}
                         label={{
-                          text: "\ue412",
+                          text: device.status === "active" ? "\ue412":"\uf1a8",
                           fontFamily: "Material Icons, sans-serif",
                           color:
-                            device.status === "active" ? "#ffffff" : "#000000",
+                          device.status === "active" ? "#ffffff" : "#000000",
                           fontSize: "20px",
                         }}
                         title="Camera Marker"
@@ -238,7 +238,7 @@ function Map(props) {
                           lng: device.longitude,
                         }}
                         label={{
-                          text: "\ue51e",
+                          text: device.status === "active" ? "\ue51e" : "\uf239",
                           fontFamily: "Material Icons, sans-serif",
                           color:
                             device.status === "active" ? "#ffffff" : "#000000",
@@ -263,7 +263,7 @@ function Map(props) {
                           lng: device.longitude,
                         }}
                         label={{
-                          text: "\ue539",
+                          text: device.status === "active" ? "\ue539": "\ue194",
                           fontFamily: "Material Icons, sans-serif",
                           color:
                             device.status === "active" ? "#ffffff" : "#000000",
@@ -303,7 +303,7 @@ function Map(props) {
                           lng: device.longitude,
                         }}
                         label={{
-                          text: "\ue412",
+                          text: device.status === "active" ? "\ue412":"\uf1a8",
                           fontFamily: "Material Icons, sans-serif",
                           color:
                             device.status === "active" ? "#ffffff" : "#000000",
@@ -340,7 +340,7 @@ function Map(props) {
                           lng: device.longitude,
                         }}
                         label={{
-                          text: "\ue51e",
+                          text: device.status === "active" ? "\ue51e" : "\uf239",
                           fontFamily: "Material Icons, sans-serif",
                           color:
                             device.status === "active" ? "#ffffff" : "#000000",
@@ -377,7 +377,7 @@ function Map(props) {
                           lng: device.longitude,
                         }}
                         label={{
-                          text: "\ue539",
+                          text: device.status === "active" ? "\ue539": "\ue194",
                           fontFamily: "Material Icons, sans-serif",
                           color:
                             device.status === "active" ? "#ffffff" : "#000000",
