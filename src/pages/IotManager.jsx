@@ -9,6 +9,9 @@ const container_width = "80vw";
 export default function IotManager() {
 
   const [showForm, setShowForm] = useState(false);
+  //return map component selected marker coodinates
+  const [selectLat, setSelectLat] = useState(null);
+  const [selectLng, setSelectLng] = useState(null);
 
   const handleAddClick = () => {
     setShowForm(true);
@@ -23,6 +26,10 @@ export default function IotManager() {
     setShowForm(false);
   };
 
+  const getMapCoordinates = (lat, lng) => {
+    setSelectLat(lat);
+    setSelectLng(lng);
+  };
 
   return (
     <div className="flex flex-col w-full h-full">
@@ -82,7 +89,7 @@ export default function IotManager() {
       )}
 
       <div className="flex w-auto h-2/3">
-        <Map deviceData={allIots} container_height={container_height} container_width={container_width}/>
+        <Map getMapCoordinates={getMapCoordinates} deviceData={allIots} container_height={container_height} container_width={container_width}/>
       </div>
     </div>
   );

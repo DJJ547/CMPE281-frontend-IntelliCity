@@ -8,6 +8,16 @@ const container_height = "65vh";
 const container_width = "55vw";
 
 export default function Dashboard() {
+  const [selectLat, setSelectLat] = useState(null);
+  const [selectLng, setSelectLng] = useState(null);
+
+  function addDevice() {
+    console.log("Add device");
+  }
+  const getMapCoordinates = (lat, lng) => {
+    setSelectLat(lat);
+    setSelectLng(lng);
+  };
   const [updateUI, setUpdateUI] = useState(false);
   const [showPopup, setShowPopup] = useState(false);
   const [Devices, setDevices] = useState({
@@ -144,6 +154,7 @@ export default function Dashboard() {
       )}
       <div className="flex w-auto h-2/3">
         <Map
+          getMapCoordinates={getMapCoordinates}
           deviceData={Devices}
           container_height={container_height}
           container_width={container_width}
