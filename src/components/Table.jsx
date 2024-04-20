@@ -1,13 +1,22 @@
 import React, { useState, useEffect } from "react";
 import Switch from "react-switch";
+import ConfirmationPopup from "../components/confirmationPopup";
 
 export default function Table(props) {
   // State to manage the checked state of the switch
-  const [checked, setChecked] = useState(props.data.map(item => {if (item.status == 'active') {return true;} else {return false;}}));
+  const [checked, setChecked] = useState(
+    props.data.map((item) => {
+      if (item.status == "active") {
+        return true;
+      } else {
+        return false;
+      }
+    })
+  );
 
   // Function to handle switch state change
-  const handleChange = (id,index,newStatus) => {
-    setChecked(prevChecked => {
+  const handleChange = (id, index, newStatus) => {
+    setChecked((prevChecked) => {
       const newChecked = [...prevChecked];
       newChecked[index] = newStatus;
       return newChecked;
@@ -41,11 +50,20 @@ export default function Table(props) {
               <td className="border px-4 py-2 text-center">
                 <Switch
                   checked={checked[index]} // Specify the current state of the switch
-                  onChange={()=>handleChange(item.id, index, !checked[index])} // Handle switch state change
+                  onChange={() => handleChange(item.id, index, !checked[index])} // Handle switch state change
                 />
               </td>
+              {/* <td className="border px-4 py-2 text-center">
+                <button
+                  type="button"
+                  onClick={() => props.callback2(item.id)}
+                  class="focus:outline-none text-white bg-red-700 hover:bg-red-800 focus:ring-4 focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-900"
+                >
+                  Delete
+                </button>
+              </td> */}
               <td className="border px-4 py-2 text-center">
-                <button type="button" class="focus:outline-none text-white bg-red-700 hover:bg-red-800 focus:ring-4 focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-900">Delete</button>
+                <ConfirmationPopup message="Are you sure to delete this device?" onConfirm={() => props.callback2(item.id)} />
               </td>
             </tr>
           ))}

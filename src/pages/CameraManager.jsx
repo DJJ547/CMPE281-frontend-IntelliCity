@@ -31,6 +31,7 @@ export default function Dashboard() {
   function ViewPopUp() {
     setShowPopup(true);
   }
+  //callback function to disable the device
   const callback = async (id) => {
     try {
       const response = await fetch("http://localhost:8000/api/DisableDevice/", {
@@ -46,14 +47,34 @@ export default function Dashboard() {
     } catch (error) {
       console.error("Error:", error);
     }
-  }
+  };
 
+  //callback function to delete the device
+  const callback2 = async (id) => {
+    try {
+      const response = await fetch(
+        `http://localhost:8000/api/DeleteDevice?index=${id}`,
+        {
+          method: "DELETE",
+        }
+      );
+      const data = await response.json();
+      setUpdateUI(!updateUI);
+    } catch (error) {
+      console.error("Error:", error);
+    }
+  };
+
+  //get the devices data from backend
   useEffect(() => {
     const fetchDevices = async () => {
       try {
-        const response = await fetch("http://localhost:8000/api/GetAllDevices", { method: "GET" });
+        const response = await fetch(
+          "http://localhost:8000/api/GetAllDevices",
+          { method: "GET" }
+        );
         const data = await response.json();
-  
+
         // Only update the state if the data has changed
         if (JSON.stringify(data) !== JSON.stringify(Devices)) {
           setDevices(data);
@@ -62,7 +83,7 @@ export default function Dashboard() {
         console.error("Error:", error);
       }
     };
-  
+
     fetchDevices();
   }, [updateUI]);
 
@@ -118,6 +139,7 @@ export default function Dashboard() {
           onClick={() => setShowPopup(false)}
           data={Devices.cameras[0]}
           callback={callback}
+          callback2={callback2}
         />
       )}
       <div className="flex w-auto h-2/3">
