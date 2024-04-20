@@ -47,12 +47,12 @@ export default function WeatherBox(props) {
 
   if (!weatherData) {
     return (
-      <div className="font-bold">Click on a Marker to See Weather Info</div>
+      <div className="flex w-96 h-32 bg-white items-center justify-center rounded-lg shadow-xl shadow-blue-gray-900"><h1 className="font-bold text-center">Click on a Marker to See Weather Info</h1></div>
     );
   }
 
   return (
-    <div className="w-full h-32 p-2 bg-white rounded-lg shadow-xl shadow-blue-gray-900">
+    <div className="flex flex-col w-96 h-32 p-2 bg-white rounded-lg shadow-xl shadow-blue-gray-900">
       <h2 className="text-lg font-bold mb-2">
         Current Weather in{" "}
         <span className="text-blue-600">{weatherData.name}</span>
