@@ -186,13 +186,6 @@
       }
     ],
     "12": [
-      {
-        "id": "cam12",
-        "dist_id": 12,
-        "longitude": -117.97886,
-        "latitude": 33.85629,
-        "status": "active"
-      }
     ]
   }
 }
