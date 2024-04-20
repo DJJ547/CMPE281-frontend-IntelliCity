@@ -48,7 +48,6 @@ export default function WeatherBox(props) {
       <div className="font-bold">Click on a Marker to See Weather Info</div>
     );
   }
-  console.log(props.latState, props.lngState);
 
   return (
     <div className="w-full h-32 p-2 bg-white rounded-lg shadow-xl shadow-blue-gray-900">
