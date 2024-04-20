@@ -82,7 +82,7 @@ export default function Dashboard() {
           container_width={container_width}
         />
         <div className="flex flex-col w-full h-full">
-          <h1 className="w-auto text-center text-lg font-bold">Notification:</h1>
+          <h1 className="w-auto text-center text-lg font-bold">Notifications:</h1>
           <div className="flex h-80 bg-white overflow-y-scroll shadow-xl shadow-blue-gray-900 ml-5 mb-7 p-2">
             <ul class="w-96 text-surface dark:text-white">
               <li class="w-full border-b-2 border-neutral-100 py-2 dark:border-white/10">
