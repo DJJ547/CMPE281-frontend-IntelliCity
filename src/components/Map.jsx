@@ -493,7 +493,7 @@ function Map(props) {
                   <h1>Status: {selectedMarker.status}</h1>
                   <h1>Latitude: {selectedMarker.latitude}</h1>
                   <h1>Longitude: {selectedMarker.longitude}</h1>
-                  <h1>Type: {selectedMarker.type}</h1>
+                  {selectedMarker.type && <h1>Type: {selectedMarker.type}</h1>}
                 </div>
               </InfoWindow>
             )}
