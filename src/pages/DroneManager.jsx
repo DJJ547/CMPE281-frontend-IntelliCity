@@ -18,6 +18,10 @@ export default function Dashboard() {
   });
   const [deleteDroneId, setDeleteDroneId] = useState(""); // New state for delete modal
 
+  //return map component selected marker coodinates
+  const [selectLat, setSelectLat] = useState(null);
+  const [selectLng, setSelectLng] = useState(null);
+
   const handleChange = (e) => {
     const { name, value } = e.target;
     setDroneDetails((prevDetails) => ({
@@ -50,6 +54,11 @@ export default function Dashboard() {
     setShowDeleteModal(false); // Close the delete modal
   };
 
+  const getMapCoordinates = (lat, lng) => {
+    setSelectLat(lat);
+    setSelectLng(lng);
+  };
+
   return (
     <div className="flex flex-col w-full h-full">
       <div className="flex mb-4 justify-between">
@@ -74,7 +83,7 @@ export default function Dashboard() {
         {/* Other buttons */}
       </div>
       <div className="flex w-auto h-2/3">
-        <Map deviceData={allDrones} container_height={container_height} container_width={container_width}/>
+        <Map getMapCoordinates={getMapCoordinates} deviceData={allDrones} container_height={container_height} container_width={container_width}/>
         <div className="flex ml-5">
           <div className="flex flex-col w-96 h-96 bg-white shadow-lg">
             <div className="flex justify-between p-2">

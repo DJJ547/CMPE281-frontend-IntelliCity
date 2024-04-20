@@ -28,7 +28,7 @@ export default function WeatherBox(props) {
         console.log(data);
       })
       .catch((error) => console.error("Error fetching data:", error));
-  }, [props.latState, props.lngState]);
+  }, [API_URL, props.latState, props.lngState]);
 
   if (!weatherData) {
     return <div>Loading...</div>;

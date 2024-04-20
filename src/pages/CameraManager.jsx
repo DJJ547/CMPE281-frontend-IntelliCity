@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import Map from "../components/Map";
 import ADD from "../medias/plus.png";
 import view from "../medias/view.svg";
@@ -8,9 +8,16 @@ const container_height = "65vh";
 const container_width = "55vw";
 
 export default function Dashboard() {
+  const [selectLat, setSelectLat] = useState(null);
+  const [selectLng, setSelectLng] = useState(null);
+
   function addDevice() {
     console.log("Add device");
   }
+  const getMapCoordinates = (lat, lng) => {
+    setSelectLat(lat);
+    setSelectLng(lng);
+  };
   return (
     <div className="flex flex-col w-full h-full">
       <div className="flex mb-4 justify-between">
@@ -32,10 +39,9 @@ export default function Dashboard() {
           <img src={view} alt="Camera" className="w-16 h-16 mr-2 shadow-sm p-2"/>
           View
         </button>
-
       </div>
       <div className="flex w-auto h-2/3">
-        <Map deviceData={allCameras} container_height={container_height} container_width={container_width}/>
+        <Map getMapCoordinates={getMapCoordinates} deviceData={allCameras} container_height={container_height} container_width={container_width}/>
         <div className="flex ml-5">
           <div className="flex flex-col w-96 h-96 bg-white shadow-lg">
             <div className="flex justify-between p-2">

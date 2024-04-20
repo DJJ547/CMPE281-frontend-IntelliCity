@@ -36,7 +36,7 @@ export default function Dashboard() {
     setSelectLat(lat);
     setSelectLng(lng);
   };
-  console.log("dash", selectLat)
+  
   return (
     <div className="flex flex-col w-full h-full">
       <div className="flex space-x-5 mb-2">
