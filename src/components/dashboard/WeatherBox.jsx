@@ -6,7 +6,9 @@ export default function WeatherBox(props) {
   const API_URL = `https://api.openweathermap.org/data/2.5/weather?lat=${props.latState}&lon=${props.lngState}&appid=${API_KEY}`;
 
   useEffect(() => {
-    if (props.latState !== null && props.lngState !== null) {
+    if (props.latState === null && props.lngState === null) {
+        setWeatherData(null);
+    }else {
       fetch(API_URL)
         .then((response) => response.json())
         .then((data) => {
@@ -39,7 +41,7 @@ export default function WeatherBox(props) {
           }
           setWeatherData(data);
         })
-        .catch((error) => console.log("Error fetching data:", error));
+        .catch((error) => console.error("Error fetching data:", error));
     }
   }, [API_URL, props.latState, props.lngState]);
 

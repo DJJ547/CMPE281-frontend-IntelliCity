@@ -39,36 +39,41 @@ export default function Dashboard() {
 
   return (
     <div className="flex flex-col w-full h-full">
-      <div className="flex space-x-5 mb-2">
+      <div className="flex justify-between space-x-2 mb-2">
         <StatBox
           imgKey="photo_camera"
           name="Cameras"
           backgroundColor="bg-red-600"
           donutChartData={donutChartData}
+          size="w-60 h-32"
         />
         <StatBox
           imgKey="sensors"
           name="Iots"
           backgroundColor="bg-red-600"
           donutChartData={donutChartData}
+          size="w-60 h-32"
         />
         <StatBox
           imgKey="flight"
           name="Drones"
           backgroundColor="bg-red-600"
           donutChartData={donutChartData}
+          size="w-60 h-32"
         />
         <StatBox
           imgKey="warning"
           name="Incidents"
           backgroundColor="bg-yellow-600"
           statNum="34"
+          size="w-48 h-32"
         />
         <StatBox
           imgKey="warning"
-          name="Congestions"
+          name="Congestion"
           backgroundColor="bg-blue-600"
           statNum="21"
+          size="w-48 h-32"
         />
         <WeatherBox latState={selectLat} lngState={selectLng}/>
       </div>
