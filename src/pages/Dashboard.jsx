@@ -1,68 +1,14 @@
-import React from "react";
+import React, { useState } from "react";
 import StatBox from "../components/dashboard/StatBox";
+import WeatherBox from "../components/dashboard/WeatherBox";
 import Map from "../components/Map";
-import Accordian, { AccordianItem } from "../components/Accordions";
+import CustomChart from "../components/dashboard/CustomChart";
 import allDevices from "../mockData/allDevices.json";
 import allIncidents from "../mockData/allIncidents.json";
-import allCongestion from "../mockData/allCongestions.json";
+import allCongestions from "../mockData/allCongestions.json";
 
-import {
-  LineChart,
-  Line,
-  XAxis,
-  YAxis,
-  CartesianGrid,
-  Tooltip,
-  Legend,
-} from "recharts";
-
-const container_height = "65vh";
-const container_width = "55vw";
-
-const lineChartData = [
-  {
-    name: "Page A",
-    uv: 4000,
-    pv: 2400,
-    amt: 2400,
-  },
-  {
-    name: "Page B",
-    uv: 3000,
-    pv: 1398,
-    amt: 2210,
-  },
-  {
-    name: "Page C",
-    uv: 2000,
-    pv: 9800,
-    amt: 2290,
-  },
-  {
-    name: "Page D",
-    uv: 2780,
-    pv: 3908,
-    amt: 2000,
-  },
-  {
-    name: "Page E",
-    uv: 1890,
-    pv: 4800,
-    amt: 2181,
-  },
-  {
-    name: "Page F",
-    uv: 2390,
-    pv: 3800,
-    amt: 2500,
-  },
-  {
-    name: "Page G",
-    uv: 3490,
-    pv: 4300,
-    amt: 2100,
-  },
-];
+const container_height = "63vh";
+const container_width = "50vw";
 
 const donutChartData = {
   Cameras: [
@@ -83,9 +29,17 @@ const donutChartData = {
 };
 
 export default function Dashboard() {
+  const [selectLat, setSelectLat] = useState(null);
+  const [selectLng, setSelectLng] = useState(null);
+
+  const getMapCoordinates = (lat, lng) => {
+    setSelectLat(lat);
+    setSelectLng(lng);
+  };
+  console.log("dash", selectLat)
   return (
     <div className="flex flex-col w-full h-full">
-      <div className="flex space-x-5 mb-4">
+      <div className="flex space-x-5 mb-2">
         <StatBox
           imgKey="photo_camera"
           name="Cameras"
@@ -116,96 +70,37 @@ export default function Dashboard() {
           backgroundColor="bg-blue-600"
           statNum="21"
         />
+        <WeatherBox latState={selectLat} lngState={selectLng}/>
       </div>
-      <div className="flex w-auto h-2/3">
+      <div className="flex w-full h-2/3">
         <Map
+          getMapCoordinates={getMapCoordinates}
           deviceData={allDevices}
           incidentData={allIncidents}
-          congestionData={allCongestion}
+          congestionData={allCongestions}
           container_height={container_height}
           container_width={container_width}
         />
-        <div className="flex ml-5">
-          <Accordian className="">
-            <AccordianItem value="1" trigger="Graph 1">
-              <LineChart
-                width={500}
-                height={300}
-                data={lineChartData}
-                margin={{
-                  top: 5,
-                  right: 30,
-                  left: 20,
-                  bottom: 5,
-                }}
-              >
-                <CartesianGrid strokeDasharray="3 3" />
-                <XAxis dataKey="name" />
-                <YAxis />
-                <Tooltip />
-                <Legend />
-                <Line
-                  type="monotone"
-                  dataKey="pv"
-                  stroke="#8884d8"
-                  activeDot={{ r: 8 }}
-                />
-                <Line type="monotone" dataKey="uv" stroke="#82ca9d" />
-              </LineChart>
-            </AccordianItem>
-            <AccordianItem value="2" trigger="Graph 2">
-              <LineChart
-                width={500}
-                height={300}
-                data={lineChartData}
-                margin={{
-                  top: 5,
-                  right: 30,
-                  left: 20,
-                  bottom: 5,
-                }}
-              >
-                <CartesianGrid strokeDasharray="3 3" />
-                <XAxis dataKey="name" />
-                <YAxis />
-                <Tooltip />
-                <Legend />
-                <Line
-                  type="monotone"
-                  dataKey="pv"
-                  stroke="#8884d8"
-                  activeDot={{ r: 8 }}
-                />
-                <Line type="monotone" dataKey="uv" stroke="#82ca9d" />
-              </LineChart>
-            </AccordianItem>
-            <AccordianItem value="3" trigger="Graph 3">
-              <LineChart
-                width={500}
-                height={300}
-                data={lineChartData}
-                margin={{
-                  top: 5,
-                  right: 30,
-                  left: 20,
-                  bottom: 5,
-                }}
-              >
-                <CartesianGrid strokeDasharray="3 3" />
-                <XAxis dataKey="name" />
-                <YAxis />
-                <Tooltip />
-                <Legend />
-                <Line
-                  type="monotone"
-                  dataKey="pv"
-                  stroke="#8884d8"
-                  activeDot={{ r: 8 }}
-                />
-                <Line type="monotone" dataKey="uv" stroke="#82ca9d" />
-              </LineChart>
-            </AccordianItem>
-          </Accordian>
+        <div className="flex flex-col w-full h-full">
+          <h1 className="w-auto text-center text-lg font-bold">Notifications:</h1>
+          <div className="flex h-80 bg-white overflow-y-scroll shadow-xl shadow-blue-gray-900 ml-5 mb-7 p-2">
+            <ul class="w-96 text-surface dark:text-white">
+              <li class="w-full border-b-2 border-neutral-100 py-2 dark:border-white/10">
+                An item
+              </li>
+              <li class="w-full border-b-2 border-neutral-100 py-2 dark:border-white/10">
+                A second item
+              </li>
+              <li class="w-full border-b-2 border-neutral-100 py-2 dark:border-white/10">
+                A third item
+              </li>
+              <li class="w-full border-b-2 border-neutral-100 py-2 dark:border-white/10">
+                A fourth item
+              </li>
+              <li class="w-full py-4">And a fifth one</li>
+            </ul>
+          </div>
+          <CustomChart incidents={allIncidents[0]} congestions={allCongestions[0]}/>
         </div>
       </div>
     </div>

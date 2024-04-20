@@ -54,6 +54,7 @@ npm start
 - npm install react-switch
 - npm i @heroicons/react
 - npm i --save @fortawesome/free-solid-svg-icons
+- npm install --save react-places-autocomplete
 
 # Useful resources
 ## react-icons library
@@ -77,6 +78,9 @@ https://www.npmjs.com/package/@react-google-maps/api
 
 ## Dumentation of react-google-maps/api (the one posted on npmjs.com doesn't work)
 https://web.archive.org/web/20230701010714mp_/https://react-google-maps-api-docs.netlify.app/#section-introduction
+
+## Documentation of OpenWeatherMap api
+https://openweathermap.org/current
 
 ## note: for Google Maps API, You'll need a Google Maps API key to access Google Maps services. To obtain an API key, follow these steps:
 Go to the Google Cloud Console.
