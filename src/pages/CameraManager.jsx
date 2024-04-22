@@ -128,6 +128,15 @@ export default function Dashboard() {
     fetchDevices();
   }, [updateUI]);
 
+  const [screenshot, setscreenshot] = useState('');
+
+ const camerashot = async (id) => {
+    let screenshot1 = Devices.cameras[0].filter((item) => item.id === id)[0].image_url;
+    setscreenshot(screenshot1);
+    console.log(screenshot1);
+    setUpdateUI(!updateUI);
+  }
+
   return (
     <div className="flex flex-col w-full h-full">
       <div className="flex mb-4 justify-between">
@@ -168,11 +177,20 @@ export default function Dashboard() {
           deviceData={Devices}
           container_height={container_height}
           container_width={container_width}
+          camerashot= {camerashot}
         />
-        <div className="flex ml-5">
+        <div className="flex ml-5 flex-col ">
           <div className="flex flex-col w-96 h-96 bg-white shadow-lg">
             <div className="flex justify-between p-2">
               <h2 className="text-lg font-bold">Status</h2>
+            </div>
+          </div>
+          <div className="flex flex-col w-96 h-96 bg-white shadow-lg">
+            <div className="flex justify-between p-2">
+              <h2 className="text-lg font-bold">Camera Shot</h2>
+            </div>
+            <div className="flex justify-center">
+              <img src={screenshot} alt="screenshot" className="w-96 h-96"/>
             </div>
           </div>
         </div>
