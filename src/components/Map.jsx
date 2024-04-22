@@ -311,7 +311,7 @@ function Map(props) {
                         }}
                         title="Camera Marker"
                         onClick={() => {
-                          props.camerashot(device.id);
+                          props.Selected(device.id);
                           setSelectedMarker(device);
                           props.getMapCoordinates(device.latitude, device.longitude);
                           setMapCenter({
