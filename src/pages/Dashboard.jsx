@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import StatBox from "../components/dashboard/StatBox";
 import WeatherBox from "../components/dashboard/WeatherBox";
 import Map from "../components/Map";
@@ -41,8 +41,6 @@ export default function Dashboard() {
 
   //this is the map center call back function
   const updateMapCoordinates = (lat, lng) => {
-    console.log("lat", lat);
-    console.log("lng", lng);
     setMapCenterLat(lat);
     setMapCenterLng(lng);
   };
@@ -50,15 +48,43 @@ export default function Dashboard() {
   //this is the map zoom state
   const [mapZoom, setMapZoom] = useState(6);
   //this is the map zoom call back function
-  const updateMapZoom = (zoom) => {
-    setMapZoom(zoom);
+  const updateMapZoomOnView = () => {
+    setMapZoom(15);
   };
+
+  //this is the map selected marker state
+  const [selectedMarker, setSelectedMarker] = useState("");
+  //this is the map selected marker call back function
+  const updateSelectedMarker = (marker) => {
+    setSelectedMarker(marker);
+  };
+
+  useEffect(() => {
+    setAllDevices(allDevicesData)
+  }, [mapCenterLat, mapCenterLng, mapZoom, selectedMarker]);
   //==============================================================
 
   const [mapCenterLatInput, setMapCenterLatInput] = useState("");
   const [mapCenterLngInput, setMapCenterLngInput] = useState("");
 
-  const [allDevices, setAllDevices] = useState(allDevicesData);
+  const [allDevices, setAllDevices] = useState({
+    "all": {
+      "0": [],
+      "1": [],
+      "2": [],
+      "3": [],
+      "4": [],
+      "5": [],
+      "6": [],
+      "7": [],
+      "8": [],
+      "9": [],
+      "10": [],
+      "11": [],
+      "12": []
+    }
+  }
+  );
 
   const getMapCoordinates = (lat, lng) => {
     setSelectLat(lat);
@@ -66,19 +92,28 @@ export default function Dashboard() {
   };
 
   const handleMapCenterLatChange = (e) => {
-    setMapCenterLatInput(parseFloat(e.target.value));
+    setMapCenterLatInput(e.target.value);
   };
 
   const handleMapCenterLngChange = (e) => {
-    setMapCenterLngInput(parseFloat(e.target.value));
+    setMapCenterLngInput(e.target.value);
   };
 
-  const handleSearchSubmit = (e) => {
+  const handleSearchSubmit = async (e) => {
     e.preventDefault();
-    updateMapCoordinates(mapCenterLatInput, mapCenterLngInput);
-    updateMapZoom(15);
-    console.log("mapCenterLat:", mapCenterLatInput);
-    console.log("mapCenterLng:", mapCenterLngInput);
+    setMapCenterLat(parseFloat(mapCenterLatInput));
+    setMapCenterLng(parseFloat(mapCenterLngInput));
+    console.log(mapCenterLatInput)
+    console.log(mapCenterLngInput)
+    console.log(typeof(allDevices.all[0].latitude))
+    let marker = allDevices.all[0].find(
+      (device) =>
+      parseFloat(device.latitude) === parseFloat(mapCenterLatInput) &&
+      parseFloat(device.longitude) === parseFloat(mapCenterLngInput)
+    );
+    console.log(marker);
+    setMapZoom(15);
+    setSelectedMarker(marker);
   };
 
   return (
@@ -149,8 +184,10 @@ export default function Dashboard() {
           centerLatState={mapCenterLat}
           centerLngState={mapCenterLng}
           mapZoomState={mapZoom}
+          selectedMarkerState={selectedMarker}
+          updateSelectedMarkerCallback={updateSelectedMarker}
           updateMapCoordinatesCallback={updateMapCoordinates}
-          updateMapZoomCallback={updateMapZoom}
+          updateMapZoomCallback={updateMapZoomOnView}
           getMapCoordinates={getMapCoordinates}
           deviceData={allDevices}
           incidentData={allIncidents}

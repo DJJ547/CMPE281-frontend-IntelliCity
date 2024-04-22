@@ -62,7 +62,7 @@ const Tab = ({ children, tab, handleSetSelected, selected }) => {
       }`}
     >
       <span>{children}</span>
-      <span class="material-symbols-outlined text-sm">keyboard_arrow_down</span>
+      <span className="material-symbols-outlined text-sm">keyboard_arrow_down</span>
     </button>
   );
 };
@@ -225,15 +225,15 @@ const Profile = () => {
 
 const TABS = [
   {
-    icon: <span class="material-symbols-outlined text-3xl">settings</span>,
+    icon: <span className="material-symbols-outlined text-3xl">settings</span>,
     Component: Settings,
   },
   {
-    icon: <span class="material-symbols-outlined text-3xl">notifications</span>,
+    icon: <span className="material-symbols-outlined text-3xl">notifications</span>,
     Component: Notifications,
   },
   {
-    icon: <span class="material-symbols-outlined text-3xl">person</span>,
+    icon: <span className="material-symbols-outlined text-3xl">person</span>,
     Component: Profile,
   },
 ].map((n, idx) => ({ ...n, id: idx + 1 }));

@@ -30,8 +30,6 @@ export default function Dashboard() {
 
   //this is the map center call back function
   const updateMapCoordinates = (lat, lng) => {
-    console.log("lat", lat);
-    console.log("lng", lng);
     setMapCenterLat(lat);
     setMapCenterLng(lng);
   };
@@ -39,8 +37,15 @@ export default function Dashboard() {
   //this is the map zoom state
   const [mapZoom, setMapZoom] = useState(6);
   //this is the map zoom call back function
-  const updateMapZoom = (zoom) => {
-    setMapZoom(zoom);
+  const updateMapZoomOnView = () => {
+    setMapZoom(15);
+  };
+
+  //this is the map selected marker state
+  const [selectedMarker, setSelectedMarker] = useState("");
+  //this is the map selected marker call back function
+  const updateSelectedMarker = (marker) => {
+    setSelectedMarker(marker);
   };
   //==============================================================
 
@@ -131,8 +136,10 @@ export default function Dashboard() {
           centerLatState={mapCenterLat}
           centerLngState={mapCenterLng}
           mapZoomState={mapZoom}
+          selectedMarkerState={selectedMarker}
+          updateSelectedMarkerCallback={updateSelectedMarker}
           updateMapCoordinatesCallback={updateMapCoordinates}
-          updateMapZoomCallback={updateMapZoom}
+          updateMapZoomCallback={updateMapZoomOnView}
           getMapCoordinates={getMapCoordinates}
           deviceData={allDrones}
           container_height={container_height}

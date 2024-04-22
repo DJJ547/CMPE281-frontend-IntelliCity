@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import {
   GoogleMap,
   InfoWindow,
@@ -88,7 +88,7 @@ const CongestionIcon = {
 
 function Map(props) {
   const [address, setAddress] = useState("");
-  const [selectedMarker, setSelectedMarker] = useState(null);
+  // const [selectedMarker, setSelectedMarker] = useState(null);
   // State to store the selected district
   const [selectedDistrict, setSelectedDistrict] = useState(districts[0]);
   // const [mapCenter, setMapCenter] = useState({
@@ -103,6 +103,10 @@ function Map(props) {
 
   const setMapZoom = (zoom) => {
     props.updateMapZoomCallback(zoom);
+  }
+
+  const setSelectedMarker = (marker) => {
+    props.updateSelectedMarkerCallback(marker);
   }
 
   const handleSearch = async (value) => {
@@ -479,16 +483,16 @@ function Map(props) {
             </MarkerClusterer>
 
             {/* marker pop up window */}
-            {selectedMarker && (
+            {props.selectedMarkerState && (
               <InfoWindow
                 position={{
-                  lat: selectedMarker.latitude,
-                  lng: selectedMarker.longitude,
+                  lat: props.selectedMarkerState.latitude,
+                  lng: props.selectedMarkerState.longitude,
                 }}
                 onCloseClick={() => {
                   setMapCenter({
-                    lat: selectedMarker.latitude,
-                    lng: selectedMarker.longitude,
+                    lat: props.selectedMarkerState.latitude,
+                    lng: props.selectedMarkerState.longitude,
                   });
                   setSelectedMarker(null);
                   props.getMapCoordinates(null, null);
@@ -499,12 +503,12 @@ function Map(props) {
                 }}
               >
                 <div className="w-50 text-md">
-                  <h1>ID: {selectedMarker.id}</h1>
-                  <h1>District ID: {selectedMarker.dist_id}</h1>
-                  <h1>Status: {selectedMarker.status}</h1>
-                  <h1>Latitude: {selectedMarker.latitude}</h1>
-                  <h1>Longitude: {selectedMarker.longitude}</h1>
-                  {selectedMarker.type && <h1>Type: {selectedMarker.type}</h1>}
+                  <h1>ID: {props.selectedMarkerState.id}</h1>
+                  <h1>District ID: {props.selectedMarkerState.dist_id}</h1>
+                  <h1>Status: {props.selectedMarkerState.status}</h1>
+                  <h1>Latitude: {props.selectedMarkerState.latitude}</h1>
+                  <h1>Longitude: {props.selectedMarkerState.longitude}</h1>
+                  {props.selectedMarkerState.type && <h1>Type: {props.selectedMarkerState.type}</h1>}
                 </div>
               </InfoWindow>
             )}

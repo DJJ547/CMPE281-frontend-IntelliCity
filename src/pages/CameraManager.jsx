@@ -24,8 +24,6 @@ export default function Dashboard() {
 
   //this is the map center call back function
   const updateMapCoordinates = (lat, lng) => {
-    console.log("lat", lat);
-    console.log("lng", lng);
     setMapCenterLat(lat);
     setMapCenterLng(lng);
   };
@@ -33,8 +31,15 @@ export default function Dashboard() {
   //this is the map zoom state
   const [mapZoom, setMapZoom] = useState(6);
   //this is the map zoom call back function
-  const updateMapZoom = (zoom) => {
-    setMapZoom(zoom);
+  const updateMapZoomOnView = () => {
+    setMapZoom(15);
+  };
+
+  //this is the map selected marker state
+  const [selectedMarker, setSelectedMarker] = useState("");
+  //this is the map selected marker call back function
+  const updateSelectedMarker = (marker) => {
+    setSelectedMarker(marker);
   };
   //==============================================================
 
@@ -57,16 +62,18 @@ export default function Dashboard() {
     },
   });
   const [searched_data, setSearchedData] = useState([]);
-  const [screenshot, setscreenshot] = useState('');
+  const [screenshot, setscreenshot] = useState("");
   const [selectedDevice, setSelectedDevice] = useState(null);
 
   //----------------------variables-------------------------------------------------------------
-  let device = Devices.cameras[0].filter((item) => item.id === selectedDevice)[0];
-  let status = device ? device.status : 'N/A';
-  let location = device ? `(${device.latitude}, ${device.longitude})` : 'N/A';
-  let dist_id = device ? device.dist_id : 'N/A';
-  let address = device ? device.address : 'N/A';
-  
+  let device = Devices.cameras[0].filter(
+    (item) => item.id === selectedDevice
+  )[0];
+  let status = device ? device.status : "N/A";
+  let location = device ? `(${device.latitude}, ${device.longitude})` : "N/A";
+  let dist_id = device ? device.dist_id : "N/A";
+  let address = device ? device.address : "N/A";
+
   //----------------------API Request-------------------------------------------------------------
   //callback function to disable the device
   const callback_switch_status = async (id) => {
@@ -159,15 +166,16 @@ export default function Dashboard() {
     };
 
     fetchDevices();
-  }, [updateUI]);
+  }, [updateUI, mapCenterLat, mapCenterLng, mapZoom, selectedMarker]);
 
   //----------------------functions-------------------------------------------------------------
- const Selected = async (id) => {
-    let screenshot1 = Devices.cameras[0].filter((item) => item.id === id)[0].image_url;
+  const Selected = async (id) => {
+    let screenshot1 = Devices.cameras[0].filter((item) => item.id === id)[0]
+      .image_url;
     setSelectedDevice(id);
     setscreenshot(screenshot1);
     setUpdateUI(!updateUI);
-  }
+  };
 
   //----------------------return-------------------------------------------------------------
   return (
@@ -205,32 +213,48 @@ export default function Dashboard() {
           centerLatState={mapCenterLat}
           centerLngState={mapCenterLng}
           mapZoomState={mapZoom}
+          selectedMarkerState={selectedMarker}
+          updateSelectedMarkerCallback={updateSelectedMarker}
           updateMapCoordinatesCallback={updateMapCoordinates}
-          updateMapZoomCallback={updateMapZoom}
+          updateMapZoomCallback={updateMapZoomOnView}
           getMapCoordinates={getMapCoordinates}
           deviceData={Devices}
           container_height={container_height}
           container_width={container_width}
-          Selected= {Selected}
+          Selected={Selected}
         />
         <div className="flex ml-5 flex-col ">
           <div className="flex flex-col w-96 h-96 bg-white shadow-lg mb-6">
             <div className="flex flex-col p-2">
               <h2 className="text-lg font-bold text-center">Status</h2>
-              <h3 className="text-lg"><strong>Device ID: </strong>{selectedDevice}</h3>
-              <h3 className="text-lg"><strong>Device Status: </strong>{status}</h3>
-              <h3 className="text-lg"><strong>Location: </strong>{location}</h3>
-              <h3 className="text-lg"><strong>Dist ID: </strong>{dist_id}</h3>
-              <h3 className="text-lg"><strong>Address: </strong>{address}</h3>
+              <h3 className="text-lg">
+                <strong>Device ID: </strong>
+                {selectedDevice}
+              </h3>
+              <h3 className="text-lg">
+                <strong>Device Status: </strong>
+                {status}
+              </h3>
+              <h3 className="text-lg">
+                <strong>Location: </strong>
+                {location}
+              </h3>
+              <h3 className="text-lg">
+                <strong>Dist ID: </strong>
+                {dist_id}
+              </h3>
+              <h3 className="text-lg">
+                <strong>Address: </strong>
+                {address}
+              </h3>
             </div>
           </div>
           <div className="flex flex-col w-96 h-96 bg-white shadow-lg">
             <div className="flex justify-between p-2">
               <h2 className="text-lg font-bold">Camera Shot</h2>
-              
             </div>
             <div className="flex justify-center">
-              <img src={screenshot} alt="screenshot" className="w-96 h-96"/>
+              <img src={screenshot} alt="screenshot" className="w-96 h-96" />
             </div>
           </div>
         </div>
