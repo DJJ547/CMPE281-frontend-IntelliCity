@@ -13,6 +13,9 @@ export default function ButtonCRUD(props) {
     setShowPopup(true);
   }
   function handleOnClick() {
+    if (props.text === "View") {
+        return;
+    }
     if (props.text === "Add") {
       ViewAddWindow();
     } else {
@@ -23,7 +26,7 @@ export default function ButtonCRUD(props) {
     <div>
       <button
         onClick={handleOnClick}
-        className="flex items-center justify-center w-60 h-25 bg-white shadow-lg transform transition duration-500 ease-in-out active:scale-90"
+        className="flex items-center justify-center w-60 h-25 bg-white shadow-lg transform transition duration-500 ease-in-ou hover:scale-110 active:scale-90"
       >
         <img
           src={props.imgSrc}
