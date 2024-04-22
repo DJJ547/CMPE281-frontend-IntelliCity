@@ -14,8 +14,8 @@ export default function AddDevice(props) {
         </button>
         <div className="p-8">
           <h1 className="text-2xl font-bold text-center mb-4">Devices</h1>
-          <SearchBar callback2={props.callback2} />
-          <Table2 data={props.data} callback={props.callback}/>
+          <SearchBar callback4={props.callback4} />
+          <Table2 data={props.data} callback3={props.callback3}/>
         </div>
       </div>
     </div>
@@ -24,7 +24,7 @@ export default function AddDevice(props) {
 function SearchBar(props) {
   const [searchquery, setSearchQuery] = useState("");
   function handlesearch() {
-    props.callback2(searchquery);
+    props.callback4(searchquery);
   }
   return (
     <div className="flex justify-center mb-4">
@@ -79,7 +79,7 @@ function Table2(props) {
               <td className="border px-4 py-2 text-center">
                 <ConfirmationPopup
                   message="Are you sure to Deploy this device?"
-                  onConfirm={() => props.callback(item.id)}
+                  onConfirm={() => props.callback3(item.id)}
                   buttonText="Deploy"
                 />
               </td>
