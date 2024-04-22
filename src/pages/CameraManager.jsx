@@ -3,6 +3,7 @@ import Map from "../components/Map";
 import ADD from "../medias/plus.png";
 import view from "../medias/view.svg";
 import PopupWindow from "../components/PopupWindow";
+import AddDevice from "../components/AddDevice";
 
 const container_height = "65vh";
 const container_width = "55vw";
@@ -10,16 +11,13 @@ const container_width = "55vw";
 export default function Dashboard() {
   const [selectLat, setSelectLat] = useState(null);
   const [selectLng, setSelectLng] = useState(null);
-
-  function addDevice() {
-    console.log("Add device");
-  }
   const getMapCoordinates = (lat, lng) => {
     setSelectLat(lat);
     setSelectLng(lng);
   };
+
   const [updateUI, setUpdateUI] = useState(false);
-  const [showPopup, setShowPopup] = useState(false);
+
   const [Devices, setDevices] = useState({
     cameras: {
       0: [],
@@ -38,11 +36,20 @@ export default function Dashboard() {
     },
   });
 
+  const [searched_data, setSearchedData] = useState([]);
+
+  const [showAddWindow, setShowAddWindow] = useState(false);
+  function ViewAddWindow() {
+    setShowAddWindow(true);
+  }
+  //show the popup window
+  const [showPopup, setShowPopup] = useState(false);
   function ViewPopUp() {
     setShowPopup(true);
   }
+
   //callback function to disable the device
-  const callback = async (id) => {
+  const callback_switch_status = async (id) => {
     try {
       const response = await fetch("http://localhost:8000/api/DisableDevice/", {
         method: "POST",
@@ -60,7 +67,7 @@ export default function Dashboard() {
   };
 
   //callback function to delete the device
-  const callback2 = async (id) => {
+  const callback2_delete_device = async (id) => {
     try {
       const response = await fetch(
         `http://localhost:8000/api/DeleteDevice?index=${id}`,
@@ -70,6 +77,40 @@ export default function Dashboard() {
       );
       const data = await response.json();
       setUpdateUI(!updateUI);
+    } catch (error) {
+      console.error("Error:", error);
+    }
+  };
+
+  //callback3 function to add the device
+  const callback3_add_device = async (id) => {
+    try {
+      const response = await fetch(
+        `http://localhost:8000/api/AddDevice/?index=${id}`,
+        {
+          method: "POST",
+        }
+      );
+      const res = await response.json();
+      console.log("res", res);
+      setUpdateUI(!updateUI);
+    } catch (error) {
+      console.error("Error:", error);
+    }
+  };
+
+  //callback4 function to show real time searched results devices from backend
+  const callback4_search_results = async (search_term) => {
+    if (search_term === "") {
+      setSearchedData([]);
+    }
+    try {
+      const response = await fetch(`http://localhost:8000/api/SearchedDevice?search=${search_term}`, {
+        method: "GET",
+      });
+      const res = await response.json();
+
+      setSearchedData(res);
     } catch (error) {
       console.error("Error:", error);
     }
@@ -100,7 +141,10 @@ export default function Dashboard() {
   return (
     <div className="flex flex-col w-full h-full">
       <div className="flex mb-4 justify-between">
-        <button className="flex items-center justify-center w-60 h-25 bg-white shadow-lg transform transition duration-500 ease-in-out active:scale-90">
+        <button
+          className="flex items-center justify-center w-60 h-25 bg-white shadow-lg transform transition duration-500 ease-in-out hover:scale-110 active:scale-90"
+          onClick={ViewAddWindow}
+        >
           <img
             src={ADD}
             alt="Camera"
@@ -109,7 +153,7 @@ export default function Dashboard() {
           ADD
         </button>
         <button
-          className="flex items-center justify-center w-60 h-25 bg-white shadow-lg transform transition duration-500 ease-in-out active:scale-90"
+          className="flex items-center justify-center w-60 h-25 bg-white shadow-lg transform transition duration-500 ease-in-out hover:scale-110 active:scale-90"
           onClick={ViewPopUp}
         >
           <img
@@ -122,7 +166,7 @@ export default function Dashboard() {
           Delete
         </button>
         <button
-          className="flex items-center justify-center w-60 h-25 bg-white shadow-lg transform transition duration-500 ease-in-out active:scale-90"
+          className="flex items-center justify-center w-60 h-25 bg-white shadow-lg transform transition duration-500 ease-in-out hover:scale-110 active:scale-90"
           onClick={ViewPopUp}
         >
           <img
@@ -135,7 +179,7 @@ export default function Dashboard() {
           Manage
         </button>
 
-        <button className="flex items-center justify-center w-60 h-25 bg-white shadow-lg transform transition duration-500 ease-in-out active:scale-90">
+        <button className="flex items-center justify-center w-60 h-25 bg-white shadow-lg transform transition duration-500 ease-in-out hover:scale-110 active:scale-90">
           <img
             src={view}
             alt="Camera"
@@ -148,8 +192,16 @@ export default function Dashboard() {
         <PopupWindow
           onClick={() => setShowPopup(false)}
           data={Devices.cameras[0]}
-          callback={callback}
-          callback2={callback2}
+          callback={callback_switch_status}
+          callback2={callback2_delete_device}
+        />
+      )}
+      {showAddWindow && (
+        <AddDevice
+          onClick={() => setShowAddWindow(false)}
+          data={searched_data}
+          callback={callback3_add_device}
+          callback2={callback4_search_results}
         />
       )}
       <div className="flex w-auto h-2/3">

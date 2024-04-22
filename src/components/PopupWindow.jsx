@@ -14,7 +14,7 @@ export default function PopupWindow(props) {
         </button>
         <div className="p-8">
           <h1 className="text-2xl font-bold text-center mb-4">Devices</h1>
-          <Table data={props.data} callback={props.callback} callback2={props.callback2}/>
+          <Table data={props.data} callback={props.callback} callback2={props.callback2} />
         </div>
       </div>
     </div>

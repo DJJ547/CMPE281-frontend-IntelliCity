@@ -1,42 +1,59 @@
-import React, { useState, useEffect } from "react";
-import Switch from "react-switch";
+import React, { useState } from "react";
 import ConfirmationPopup from "./ConfirmationPopup";
 
-export default function Table(props) {
-  // State to manage the checked state of the switch
-  const [checked, setChecked] = useState(
-    props.data.map((item) => {
-      if (item.status == "active") {
-        return true;
-      } else {
-        return false;
-      }
-    })
+export default function AddDevice(props) {
+  return (
+    <div className="fixed inset-0 flex items-center justify-center z-50">
+      <div className="absolute inset-0 bg-black opacity-50"></div>
+      <div className="relative bg-white rounded-lg w-3/5 h-auto">
+        <button
+          onClick={props.onClick}
+          className="absolute top-0 right-0 m-3 text-gray-500 hover:text-gray-800 text-3xl font-bold focus:outline-none border-none border"
+        >
+          &times;
+        </button>
+        <div className="p-8">
+          <h1 className="text-2xl font-bold text-center mb-4">Devices</h1>
+          <SearchBar callback2={props.callback2} />
+          <Table2 data={props.data} callback={props.callback}/>
+        </div>
+      </div>
+    </div>
   );
-
+}
+function SearchBar(props) {
+  const [searchquery, setSearchQuery] = useState("");
+  function handlesearch() {
+    props.callback2(searchquery);
+  }
+  return (
+    <div className="flex justify-center mb-4">
+      <input
+        type="text"
+        className="border-2 border-gray-300 bg-white h-10 px-5 pr-60 rounded-lg text-sm focus:outline-none"
+        placeholder="Search Available devices..."
+        value={searchquery}
+        onChange={(e) => setSearchQuery(e.target.value)}
+        onKeyUp={handlesearch}
+      />
+      <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+        Search
+      </button>
+    </div>
+  );
+}
+function Table2(props) {
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 10;
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
   const currentItems = props.data.slice(indexOfFirstItem, indexOfLastItem);
   const totalPages = Math.ceil(props.data.length / itemsPerPage);
-
   const handlePageChange = (page) => {
     setCurrentPage(page);
   };
-
-  // Function to handle switch state change
-  const handleChange = (id, index, newStatus) => {
-    setChecked((prevChecked) => {
-      const newChecked = [...prevChecked];
-      newChecked[index] = newStatus;
-      return newChecked;
-    });
-    props.callback(id);
-  };
-
   return (
-    <div className="overflow-x-auto">
+    <div className="overflow-auto">
       <table className="table-auto w-full">
         <thead>
           <tr>
@@ -44,8 +61,7 @@ export default function Table(props) {
             <th className="px-4 py-2">dist_id</th>
             <th className="px-4 py-2">latitude</th>
             <th className="px-4 py-2">longitude</th>
-            <th className="px-4 py-2">Address</th>
-            <th className="px-4 py-2">Status</th>
+            <th className="px-4 py-2">address</th>
             <th className="px-4 py-2">Action</th>
           </tr>
         </thead>
@@ -61,17 +77,10 @@ export default function Table(props) {
               <td className="border px-4 py-2 text-center">{item.longitude}</td>
               <td className="border px-4 py-2 text-center">{item.address}</td>
               <td className="border px-4 py-2 text-center">
-                <Switch
-                  checked={checked[index]} // Specify the current state of the switch
-                  onChange={() => handleChange(item.id, index, !checked[index])} // Handle switch state change
-                />
-              </td>
-
-              <td className="border px-4 py-2 text-center">
                 <ConfirmationPopup
-                  message="Are you sure to delete this device?"
-                  onConfirm={() => props.callback2(item.id)}
-                  buttonText="Delete"
+                  message="Are you sure to Deploy this device?"
+                  onConfirm={() => props.callback(item.id)}
+                  buttonText="Deploy"
                 />
               </td>
             </tr>

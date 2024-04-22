@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState } from "react";
 
-const ConfirmationPopup = ({ message, onConfirm }) => {
+export default function ConfirmationPopup ({ message, onConfirm, buttonText }) {
   const [isOpen, setIsOpen] = useState(false);
 
   const handleConfirm = () => {
@@ -14,8 +14,9 @@ const ConfirmationPopup = ({ message, onConfirm }) => {
         onClick={() => setIsOpen(true)}
         className="bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded"
       >
-        Delete
+        {buttonText}
       </button>
+
       {isOpen && (
         <div className="fixed top-0 left-0 w-full h-full flex items-center justify-center bg-gray-800 bg-opacity-50">
           <div className="bg-white rounded-lg p-8">
@@ -40,5 +41,3 @@ const ConfirmationPopup = ({ message, onConfirm }) => {
     </>
   );
 };
-
-export default ConfirmationPopup;
