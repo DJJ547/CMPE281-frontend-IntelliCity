@@ -22,57 +22,46 @@ export default function DroneManager() {
   const [deleteFormData, setDeleteFormData] = useState({
     drone_id: ""
   });
-const [updateFormData, setUpdateFormData] = useState({
-  update_drone_id: "",
-  update_latitude: "",
-  update_longitude: "",
-  update_altitude: "",
-  update_timestamp: "",
-  update_district_id: ""
-});
+  const [updateFormData, setUpdateFormData] = useState({
+    update_drone_id: "",
+    update_latitude: "",
+    update_longitude: "",
+    update_altitude: "",
+    update_timestamp: "",
+    update_district_id: ""
+  });
 
-const [showViewModal, setShowViewModal] = useState(false);
-const [viewDroneData, setViewDroneData] = useState({
-  drone_id: ""
-});
+  const [showViewModal, setShowViewModal] = useState(false);
+  const [viewDroneData, setViewDroneData] = useState({
+    drone_id: "",
+    latitude: "",
+    longitude: "",
+    altitude: "",
+    timestamp: "",
+    district_id: ""
+  });
 
-//return map component selected marker coodinates
-const [selectLat, setSelectLat] = useState(null);
-const [selectLng, setSelectLng] = useState(null);
+  const [statusMessage, setStatusMessage] = useState("");
 
+  //return map component selected marker coodinates
+  const [selectLat, setSelectLat] = useState(null);
+  const [selectLng, setSelectLng] = useState(null);
 
-const handleUpdateInputChange = (e) => {
-  const { name, value } = e.target;
-  setUpdateFormData((prevUpdateFormData) => ({
-    ...prevUpdateFormData,
-    [name]: value
-  }));
-};
-
-const handleInputChange = (e) => {
-  const { name, value } = e.target;
-  setFormData((prevFormData) => ({
-    ...prevFormData,
-    [name]: value
-  }));
-};
-
-  /*const handleInputChange = (e, formType) => {
+  const handleUpdateInputChange = (e) => {
     const { name, value } = e.target;
-    if (formType === 'add') {
-      setFormData((prevFormData) => ({
-        ...prevFormData,
-        [name]: value
-      }));
-    } else if (formType === 'update') {
-      setUpdateFormData((prevUpdateFormData) => ({
-        ...prevUpdateFormData,
-        [name]: value
-      }));
-    }
+    setUpdateFormData((prevUpdateFormData) => ({
+      ...prevUpdateFormData,
+      [name]: value
+    }));
   };
-  */
-  
+
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prevFormData) => ({
+      ...prevFormData,
+      [name]: value
+    }));
+  };
 
   const handleDeleteInputChange = (e) => {
     const { name, value } = e.target;
@@ -84,6 +73,7 @@ const handleInputChange = (e) => {
 
   const handleAddDevice = () => {
     setShowAddForm(true);
+    clearStatusAndModal();
   };
 
   const handleFormSubmit = async () => {
@@ -95,16 +85,16 @@ const handleInputChange = (e) => {
         },
         body: JSON.stringify(formData),
       });
-  
+
       if (!response.ok) {
         throw new Error("Failed to add drone");
       }
-  
-      console.log("Drone added successfully");
+
+      setStatusMessage("Drone added successfully");
       resetForm();
       setShowAddForm(false);
     } catch (error) {
-      console.error("Error adding drone:", error.message);
+      setStatusMessage(`Error adding drone: ${error.message}`);
     }
   };
 
@@ -133,18 +123,19 @@ const handleInputChange = (e) => {
         throw new Error("Failed to delete drone");
       }
 
-      console.log("Drone deleted successfully");
+      setStatusMessage("Drone deleted successfully");
       setDeleteFormData({
         drone_id: ""
       });
       setShowDeleteForm(false);
     } catch (error) {
-      console.error("Error deleting drone:", error.message);
+      setStatusMessage(`Error deleting drone: ${error.message}`);
     }
   };
 
   const handleUpdateDevice = () => {
     setShowUpdateForm(true);
+    clearStatusAndModal();
   };
 
   const handleUpdate = async () => {
@@ -156,13 +147,12 @@ const handleInputChange = (e) => {
         },
         body: JSON.stringify(updateFormData),
       });
-  
+
       if (!response.ok) {
         throw new Error("Failed to update drone");
       }
-  
-      console.log("Drone updated successfully");
-      // Reset the update form after update
+
+      setStatusMessage("Drone updated successfully");
       setUpdateFormData({
         update_drone_id: "",
         update_latitude: "",
@@ -171,62 +161,48 @@ const handleInputChange = (e) => {
         update_timestamp: "",
         update_district_id: ""
       });
-      setShowUpdateForm(false); // Hide update form after successful update
+      setShowUpdateForm(false);
     } catch (error) {
-      console.error("Error updating drone:", error.message);
-      // Handle error as needed
+      setStatusMessage(`Error updating drone: ${error.message}`);
     }
   };
- 
-  const closeUpdateForm = () => {
-    setShowUpdateForm(false);
-  };
-  const closeUpdateForm1 = () => {
-    setShowUpdateForm(false);
-  };
-  const closeUpdateForm2= () => {
-    setShowUpdateForm(false);
-  };
+
   const handleViewDevice = async () => {
     try {
-      // Prompt the user to enter the drone ID
       const droneId = prompt("Enter the Drone ID:");
-    
+
       if (!droneId) {
-        // If the user cancels or leaves the input empty, do nothing
         return;
       }
-    
-      // Fetch the drone details using the entered drone ID
+
       const response = await fetch("http://127.0.0.1:8000/GetDevice", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ drone_id: droneId }), // Send the entered drone ID
+        body: JSON.stringify({ drone_id: droneId }),
       });
-  
+
       if (!response.ok) {
         throw new Error("Failed to fetch drone data");
       }
-  
-      // Parse the response data
+
       const data = await response.json();
-      setViewDroneData(data); // Update the state with fetched data
-      setShowViewModal(true); // Show the modal with fetched data
+      setViewDroneData(data);
+      setShowViewModal(true);
     } catch (error) {
-      console.error("Error fetching drone data:", error.message);
-      // Handle error as needed
+      setStatusMessage(`Error fetching drone data: ${error.message}`);
     }
   };
-  
+
+  const clearStatusAndModal = () => {
+    setStatusMessage("");
+    setShowViewModal(false);
+  };
+
   const closeViewModal = () => {
     setShowViewModal(false);
   };
-  
-  
-
-  
   
   const getMapCoordinates = (lat, lng) => {
     setSelectLat(lat);
@@ -252,17 +228,6 @@ const handleInputChange = (e) => {
           View
         </button>
       </div>
-     {/* <div className="flex w-auto h-2/3">
-        <Map getMapCoordinates={getMapCoordinates} deviceData={allDrones} container_height={container_height} container_width={container_width}/>
-        <div className="flex ml-5">
-          <div className="flex flex-col w-96 h-96 bg-white shadow-lg">
-            <div className="flex justify-between p-2">
-              <h2 className="text-lg font-bold">Status</h2>
-            </div>
-          </div> 
-        </div>
-  </div>*/}
-      {/*<Map deviceData={allDrones} container_height={container_height} container_width={container_width}/>*/}
       {showAddForm && (
         <div className="absolute top-0 left-0 z-10 w-full h-full flex items-center justify-center bg-gray-900 bg-opacity-50">
           <div className="flex flex-col w-96 h-110 bg-white shadow-lg">
@@ -299,11 +264,14 @@ const handleInputChange = (e) => {
                 Add Drone
               </button>
               <button
-          onClick={closeUpdateForm}
-          className="inline-flex justify-center py-2 px-4 ml-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-gray-600 hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500"
-        >
-          Close
-        </button>
+                onClick={() => {
+                  setShowAddForm(false);
+                  setStatusMessage("");
+                }}
+                className="inline-flex justify-center py-2 px-4 ml-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-gray-600 hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500"
+              >
+                Close
+              </button>
             </form>
           </div>
         </div>
@@ -335,131 +303,134 @@ const handleInputChange = (e) => {
                 Delete Drone
               </button>
               <button
-          onClick={closeUpdateForm1}
-          className="inline-flex justify-center py-2 px-4 ml-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-gray-600 hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500"
-        >
-          Close
-        </button>
+                onClick={() => {
+                  setShowDeleteForm(false);
+                  setStatusMessage("");
+                }}
+                className="inline-flex justify-center py-2 px-4 ml-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-gray-600 hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500"
+              >
+                Close
+              </button>
             </form>
           </div>
         </div>
       )}
 
-{showUpdateForm && (
-  <div className="absolute top-0 left-0 z-10 w-full h-full flex items-center justify-center bg-gray-900 bg-opacity-50">
-    <div className="flex flex-col w-96 h-110 bg-white shadow-lg">
-      <div className="flex justify-between p-2">
-        <h2 className="text-lg font-bold">Update Drone Details</h2>
-      </div>
-      <form className="p-4">
-        <div className="mb-4">
-          <label htmlFor="update_drone_id" className="block text-sm font-medium text-gray-700">Drone ID</label>
-          <input
-            type="number"
-            id="update_drone_id"
-            name="update_drone_id"
-            value={updateFormData.update_drone_id}
-            onChange={(e) => handleUpdateInputChange(e)}
-            className="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
-          />
-        </div>
-        <div className="mb-4">
-          <label htmlFor="update_latitude" className="block text-sm font-medium text-gray-700">Latitude</label>
-          <input
-            type="number"
-            id="update_latitude"
-            name="update_latitude"
-            value={updateFormData.update_latitude}
-            onChange={(e) => handleUpdateInputChange(e)}
-            className="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
-          />
-        </div>
-        <div className="mb-4">
-          <label htmlFor="update_longitude" className="block text-sm font-medium text-gray-700">Longitude</label>
-          <input
-            type="number"
-            id="update_longitude"
-            name="update_longitude"
-            value={updateFormData.update_longitude}
-            onChange={(e) => handleUpdateInputChange(e)}
-            className="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
-          />
-        </div>
-        <div className="mb-4">
-          <label htmlFor="update_altitude" className="block text-sm font-medium text-gray-700">Altitude</label>
-          <input
-            type="number"
-            id="update_altitude"
-            name="update_altitude"
-            value={updateFormData.update_altitude}
-            onChange={(e) => handleUpdateInputChange(e)}
-            className="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
-          />
-        </div>
-        <div className="mb-4">
-          <label htmlFor="update_timestamp" className="block text-sm font-medium text-gray-700">TimeStamp</label>
-          <input
-            type="text"
-            id="update_timestamp"
-            name="update_timestamp"
-            value={updateFormData.update_timestamp}
-            onChange={(e) => handleUpdateInputChange(e)}
-            className="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
-          />
-        </div>
+      {showUpdateForm && (
+        <div className="absolute top-0 left-0 z-10 w-full h-full flex items-center justify-center bg-gray-900 bg-opacity-50">
+          <div className="flex flex-col w-96 h-110 bg-white shadow-lg">
+            <div className="flex justify-between p-2">
+              <h2 className="text-lg font-bold">Update Drone Details</h2>
+            </div>
+            <form className="p-4">
+              <div className="mb-4">
+                <label htmlFor="update_drone_id" className="block text-sm font-medium text-gray-700">Drone ID</label>
+                <input
+                  type="number"
+                  id="update_drone_id"
+                  name="update_drone_id"
+                  value={updateFormData.update_drone_id}
+                  onChange={(e) => handleUpdateInputChange(e)}
+                  className="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
+                />
+              </div>
+              <div className="mb-4">
+                <label htmlFor="update_latitude" className="block text-sm font-medium text-gray-700">Latitude</label>
+                <input
+                  type="number"
+                  id="update_latitude"
+                  name="update_latitude"
+                  value={updateFormData.update_latitude}
+                  onChange={(e) => handleUpdateInputChange(e)}
+                  className="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
+                />
+              </div>
+              <div className="mb-4">
+                <label htmlFor="update_longitude" className="block text-sm font-medium text-gray-700">Longitude</label>
+                <input
+                  type="number"
+                  id="update_longitude"
+                  name="update_longitude"
+                  value={updateFormData.update_longitude}
+                  onChange={(e) => handleUpdateInputChange(e)}
+                  className="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
+                />
+              </div>
+              <div className="mb-4">
+                <label htmlFor="update_altitude" className="block text-sm font-medium text-gray-700">Altitude</label>
+                <input
+                  type="number"
+                  id="update_altitude"
+                  name="update_altitude"
+                  value={updateFormData.update_altitude}
+                  onChange={(e) => handleUpdateInputChange(e)}
+                  className="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
+                />
+              </div>
+              <div className="mb-4">
+                <label htmlFor="update_timestamp" className="block text-sm font-medium text-gray-700">TimeStamp</label>
+                <input
+                  type="text"
+                  id="update_timestamp"
+                  name="update_timestamp"
+                  value={updateFormData.update_timestamp}
+                  onChange={(e) => handleUpdateInputChange(e)}
+                  className="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
+                />
+              </div>
 
-        <div className="mb-4">
-          <label htmlFor="update_district_id" className="block text-sm font-medium text-gray-700">District ID</label>
-          <input
-            type="number"
-            id="update_district_id"
-            name="update_district_id"
-            value={updateFormData.update_district_id}
-            onChange={(e) => handleUpdateInputChange(e)}
-            className="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
-          />
-        </div>        
-        <button
-          type="button"
-          onClick={handleUpdate}
-          className="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
-        >
-          Update Drone
-        </button>
-        <button
-          onClick={closeUpdateForm2}
-          className="inline-flex justify-center py-2 px-4 ml-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-gray-600 hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500"
-        >
-          Close
-        </button>
-      </form>
-    </div>
-  </div>
-)}
-<div className="flex w-auto h-2/3">
-  <Map getMapCoordinates={getMapCoordinates} deviceData={allDrones} container_height={container_height} container_width={container_width}/>
-  <div className="flex ml-5">
-    <div className="flex flex-col w-96 h-96 bg-white shadow-lg status-container">
-      <div className="flex justify-between p-2">
-        <h2 className="text-lg font-bold">Status</h2>
-      </div>
-      {showViewModal && (
-        <div className="p-4">
-          <p><strong>Drone ID:</strong> {viewDroneData.drone_id}</p>
-          <p><strong>Latitude:</strong> {viewDroneData.latitude}</p>
-          <p><strong>Longitude:</strong> {viewDroneData.longitude}</p>
-          <p><strong>Altitude:</strong> {viewDroneData.altitude}</p>
-          <p><strong>Timestamp:</strong> {viewDroneData.timestamp}</p>
-          <p><strong>District ID:</strong> {viewDroneData.district_id}</p>
+              <div className="mb-4">
+                <label htmlFor="update_district_id" className="block text-sm font-medium text-gray-700">District ID</label>
+                <input
+                  type="number"
+                  id="update_district_id"
+                  name="update_district_id"
+                  value={updateFormData.update_district_id}
+                  onChange={(e) => handleUpdateInputChange(e)}
+                  className="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
+                />
+              </div>        
+              <button
+                type="button"
+                onClick={handleUpdate}
+                className="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+              >
+                Update Drone
+              </button>
+              <button
+                onClick={() => {
+                  setShowUpdateForm(false);
+                  setStatusMessage("");
+                }}
+                className="inline-flex justify-center py-2 px-4 ml-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-gray-600 hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500"
+              >
+                Close
+              </button>
+            </form>
+          </div>
         </div>
       )}
-    </div> 
-  </div>
-</div>
-
+      <div className="flex w-auto h-2/3">
+        <Map getMapCoordinates={getMapCoordinates} deviceData={allDrones} container_height={container_height} container_width={container_width}/>
+        <div className="flex ml-5">
+          <div className="flex flex-col w-96 h-96 bg-white shadow-lg status-container">
+            <div className="flex justify-between p-2">
+              <h2 className="text-lg font-bold">Status</h2>
+            </div>
+            <p>{statusMessage}</p>
+            {showViewModal && (
+              <div className="p-4">
+                <p><strong>Drone ID:</strong> {viewDroneData.drone_id}</p>
+                <p><strong>Latitude:</strong> {viewDroneData.latitude}</p>
+                <p><strong>Longitude:</strong> {viewDroneData.longitude}</p>
+                <p><strong>Altitude:</strong> {viewDroneData.altitude}</p>
+                <p><strong>Timestamp:</strong> {viewDroneData.timestamp}</p>
+                <p><strong>District ID:</strong> {viewDroneData.district_id}</p>
+              </div>
+            )}
+          </div>
+        </div>
+      </div>
     </div>
   );
 }
-
-
-
