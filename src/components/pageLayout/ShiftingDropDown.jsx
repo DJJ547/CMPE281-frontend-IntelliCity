@@ -1,11 +1,4 @@
 import React, { useEffect, useState } from "react";
-import {
-  FiArrowRight,
-  FiChevronDown,
-} from "react-icons/fi";
-import { IoIosSettings } from "react-icons/io";
-import { PiBellSimpleRingingFill } from "react-icons/pi";
-import { FaUser } from "react-icons/fa";
 import { AnimatePresence, motion } from "framer-motion";
 
 import ProfilePic from "../../medias/profilePic.jpeg";
@@ -69,11 +62,7 @@ const Tab = ({ children, tab, handleSetSelected, selected }) => {
       }`}
     >
       <span>{children}</span>
-      <FiChevronDown
-        className={`transition-transform ${
-          selected === tab ? "rotate-180" : ""
-        }`}
-      />
+      <span class="material-symbols-outlined text-sm">keyboard_arrow_down</span>
     </button>
   );
 };
@@ -200,7 +189,7 @@ const Notifications = () => {
 
       <button className="ml-auto mt-4 flex items-center gap-1 text-sm text-indigo-300">
         <span>View more</span>
-        <FiArrowRight />
+        <span className="material-symbols-outlined text-sm">arrow_forward</span>
       </button>
     </div>
   );
@@ -236,15 +225,15 @@ const Profile = () => {
 
 const TABS = [
   {
-    icon: <IoIosSettings className="h-6 w-6" />,
+    icon: <span class="material-symbols-outlined text-3xl">settings</span>,
     Component: Settings,
   },
   {
-    icon: <PiBellSimpleRingingFill className="h-6 w-6" />,
+    icon: <span class="material-symbols-outlined text-3xl">notifications</span>,
     Component: Notifications,
   },
   {
-    icon: <FaUser className="h-5 w-5" />,
+    icon: <span class="material-symbols-outlined text-3xl">person</span>,
     Component: Profile,
   },
 ].map((n, idx) => ({ ...n, id: idx + 1 }));

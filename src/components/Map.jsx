@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   GoogleMap,
   InfoWindow,
@@ -16,6 +16,7 @@ import { faTriangleExclamation } from "@fortawesome/free-solid-svg-icons";
 import { districts } from "../utils/mapDistrictCoordinates";
 
 const clusterGridSize = 50;
+const libraries = ["places"]
 
 const IncidentIcon = {
   path: faTriangleExclamation.icon[4],
@@ -90,11 +91,19 @@ function Map(props) {
   const [selectedMarker, setSelectedMarker] = useState(null);
   // State to store the selected district
   const [selectedDistrict, setSelectedDistrict] = useState(districts[0]);
-  const [mapCenter, setMapCenter] = useState({
-    lat: selectedDistrict.lat,
-    lng: selectedDistrict.lng,
-  });
-  const [mapZoom, setMapZoom] = useState(selectedDistrict.zoom);
+  // const [mapCenter, setMapCenter] = useState({
+  //   lat: selectedDistrict.lat,
+  //   lng: selectedDistrict.lng,
+  // });
+  // const [mapZoom, setMapZoom] = useState(selectedDistrict.zoom);
+
+  const setMapCenter = (coordinates) => {
+    props.updateMapCoordinatesCallback(coordinates.lat, coordinates.lng);
+  }
+
+  const setMapZoom = (zoom) => {
+    props.updateMapZoomCallback(zoom);
+  }
 
   const handleSearch = async (value) => {
     try {
@@ -119,9 +128,10 @@ function Map(props) {
     });
     setMapZoom(districts[event.target.value].zoom);
   };
+
   return (
     <div>
-      <div className="space-x-3">
+      <div className="flex space-x-3">
         <label className="font-bold" htmlFor="district">
           Select District:
         </label>
@@ -146,7 +156,7 @@ function Map(props) {
       <div className="flex-grow relative">
         <LoadScript
           googleMapsApiKey="AIzaSyCBdsxfnuAQqHRDm-G3ykk2RQDFsYjZl-g"
-          libraries={["places"]}
+          libraries={libraries}
         >
           <PlacesAutocomplete
             value={address}
@@ -194,8 +204,8 @@ function Map(props) {
               width: props.container_width,
               height: props.container_height,
             }}
-            center={mapCenter}
-            zoom={mapZoom}
+            center={{lat:props.centerLatState, lng:props.centerLngState}}
+            zoom={props.mapZoomState}
           >
             {/* all markers on dashboard */}
             {Object.keys(props.deviceData)[0] === "all" ? (

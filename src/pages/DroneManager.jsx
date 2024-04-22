@@ -3,6 +3,7 @@ import Map from "../components/Map";
 import ADD from "../medias/plus.png";
 import view from "../medias/view.svg";
 import allDrones from "../mockData/allDrones.json";
+import { districts } from "../utils/mapDistrictCoordinates";
 
 const container_height = "65vh";
 const container_width = "55vw";
@@ -21,6 +22,27 @@ export default function Dashboard() {
   //return map component selected marker coodinates
   const [selectLat, setSelectLat] = useState(null);
   const [selectLng, setSelectLng] = useState(null);
+
+  //==================For View Button============================
+  //these are the map center states
+  const [mapCenterLat, setMapCenterLat] = useState(districts[0].lat);
+  const [mapCenterLng, setMapCenterLng] = useState(districts[0].lng);
+
+  //this is the map center call back function
+  const updateMapCoordinates = (lat, lng) => {
+    console.log("lat", lat);
+    console.log("lng", lng);
+    setMapCenterLat(lat);
+    setMapCenterLng(lng);
+  };
+
+  //this is the map zoom state
+  const [mapZoom, setMapZoom] = useState(6);
+  //this is the map zoom call back function
+  const updateMapZoom = (zoom) => {
+    setMapZoom(zoom);
+  };
+  //==============================================================
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -62,34 +84,66 @@ export default function Dashboard() {
   return (
     <div className="flex flex-col w-full h-full">
       <div className="flex mb-4 justify-between">
-        <button className="flex items-center justify-center w-60 h-25 bg-white shadow-lg transform transition duration-500 ease-in-out active:scale-90" onClick={handleAddDevice}>
-          <img src={ADD} alt="Drone" className="w-16 h-16 mr-2 shadow-sm p-2"/>
+        <button
+          className="flex items-center justify-center w-60 h-25 bg-white shadow-lg transform transition duration-500 ease-in-out active:scale-90"
+          onClick={handleAddDevice}
+        >
+          <img src={ADD} alt="Drone" className="w-16 h-16 mr-2 shadow-sm p-2" />
           ADD
         </button>
-        <button className="flex items-center justify-center w-60 h-25 bg-white shadow-lg" onClick={() => setShowDeleteModal(true)}>
-          <img src={'https://upload.wikimedia.org/wikipedia/commons/5/5e/Flat_minus_icon_-_red.svg'} alt="Drone" className="w-16 h-16 mr-2 shadow-sm p-2"/>
+        <button
+          className="flex items-center justify-center w-60 h-25 bg-white shadow-lg"
+          onClick={() => setShowDeleteModal(true)}
+        >
+          <img
+            src={
+              "https://upload.wikimedia.org/wikipedia/commons/5/5e/Flat_minus_icon_-_red.svg"
+            }
+            alt="Drone"
+            className="w-16 h-16 mr-2 shadow-sm p-2"
+          />
           Delete
         </button>
 
         <button className="flex items-center justify-center w-60 h-25 bg-white shadow-lg">
-          <img src={'https://upload.wikimedia.org/wikipedia/commons/6/62/Eo_circle_orange_repeat.svg'} alt="Drone" className="w-16 h-16 mr-2 shadow-sm p-2"/>
+          <img
+            src={
+              "https://upload.wikimedia.org/wikipedia/commons/6/62/Eo_circle_orange_repeat.svg"
+            }
+            alt="Drone"
+            className="w-16 h-16 mr-2 shadow-sm p-2"
+          />
           Update
         </button>
 
         <button className="flex items-center justify-center w-60 h-25 bg-white shadow-lg">
-          <img src={view} alt="Drone" className="w-16 h-16 mr-2 shadow-sm p-2"/>
+          <img
+            src={view}
+            alt="Drone"
+            className="w-16 h-16 mr-2 shadow-sm p-2"
+          />
           View
         </button>
         {/* Other buttons */}
       </div>
       <div className="flex w-auto h-2/3">
-        <Map getMapCoordinates={getMapCoordinates} deviceData={allDrones} container_height={container_height} container_width={container_width}/>
+        <Map
+          centerLatState={mapCenterLat}
+          centerLngState={mapCenterLng}
+          mapZoomState={mapZoom}
+          updateMapCoordinatesCallback={updateMapCoordinates}
+          updateMapZoomCallback={updateMapZoom}
+          getMapCoordinates={getMapCoordinates}
+          deviceData={allDrones}
+          container_height={container_height}
+          container_width={container_width}
+        />
         <div className="flex ml-5">
           <div className="flex flex-col w-96 h-96 bg-white shadow-lg">
             <div className="flex justify-between p-2">
               <h2 className="text-lg font-bold">Status</h2>
             </div>
-          </div> 
+          </div>
         </div>
       </div>
       {/* Add AddDroneModal */}
@@ -98,7 +152,9 @@ export default function Dashboard() {
           <div className="bg-white p-8 rounded shadow-lg">
             <h2 className="text-xl font-semibold mb-4">Add Drone</h2>
             <div className="mb-4">
-              <label className="block text-sm font-medium text-gray-700">ID</label>
+              <label className="block text-sm font-medium text-gray-700">
+                ID
+              </label>
               <input
                 type="text"
                 name="id"
@@ -108,7 +164,9 @@ export default function Dashboard() {
               />
             </div>
             <div className="mb-4">
-              <label className="block text-sm font-medium text-gray-700">Latitude</label>
+              <label className="block text-sm font-medium text-gray-700">
+                Latitude
+              </label>
               <input
                 type="text"
                 name="latitude"
@@ -118,7 +176,9 @@ export default function Dashboard() {
               />
             </div>
             <div className="mb-4">
-              <label className="block text-sm font-medium text-gray-700">Longitude</label>
+              <label className="block text-sm font-medium text-gray-700">
+                Longitude
+              </label>
               <input
                 type="text"
                 name="longitude"
@@ -128,7 +188,9 @@ export default function Dashboard() {
               />
             </div>
             <div className="mb-4">
-              <label className="block text-sm font-medium text-gray-700">Status</label>
+              <label className="block text-sm font-medium text-gray-700">
+                Status
+              </label>
               <input
                 type="text"
                 name="status"
@@ -139,8 +201,18 @@ export default function Dashboard() {
             </div>
             {/* Other input fields */}
             <div className="flex justify-end">
-              <button className="bg-blue-500 text-white px-4 py-2 rounded mr-2" onClick={handleSubmit}>Add</button>
-              <button className="bg-gray-300 text-gray-700 px-4 py-2 rounded" onClick={() => setShowAddModal(false)}>Cancel</button>
+              <button
+                className="bg-blue-500 text-white px-4 py-2 rounded mr-2"
+                onClick={handleSubmit}
+              >
+                Add
+              </button>
+              <button
+                className="bg-gray-300 text-gray-700 px-4 py-2 rounded"
+                onClick={() => setShowAddModal(false)}
+              >
+                Cancel
+              </button>
             </div>
           </div>
         </div>
@@ -151,7 +223,9 @@ export default function Dashboard() {
           <div className="bg-white p-8 rounded shadow-lg">
             <h2 className="text-xl font-semibold mb-4">Delete Drone</h2>
             <div className="mb-4">
-              <label className="block text-sm font-medium text-gray-700">Drone ID</label>
+              <label className="block text-sm font-medium text-gray-700">
+                Drone ID
+              </label>
               <input
                 type="text"
                 value={deleteDroneId}
@@ -161,8 +235,18 @@ export default function Dashboard() {
             </div>
             <p>Are you sure you want to delete this drone?</p>
             <div className="flex justify-end">
-              <button className="bg-red-500 text-white px-4 py-2 rounded mr-2" onClick={handleDelete}>Delete</button>
-              <button className="bg-gray-300 text-gray-700 px-4 py-2 rounded" onClick={() => setShowDeleteModal(false)}>Cancel</button>
+              <button
+                className="bg-red-500 text-white px-4 py-2 rounded mr-2"
+                onClick={handleDelete}
+              >
+                Delete
+              </button>
+              <button
+                className="bg-gray-300 text-gray-700 px-4 py-2 rounded"
+                onClick={() => setShowDeleteModal(false)}
+              >
+                Cancel
+              </button>
             </div>
           </div>
         </div>

@@ -3,6 +3,7 @@ import Map from "../components/Map";
 import ADD from "../medias/plus.png";
 import view from "../medias/view.svg";
 import ButtonCRUD from "../components/ButtonCRUD";
+import { districts } from "../utils/mapDistrictCoordinates";
 
 const container_height = "65vh";
 const container_width = "55vw";
@@ -14,6 +15,28 @@ export default function Dashboard() {
     setSelectLat(lat);
     setSelectLng(lng);
   };
+
+  //==================For View Button============================
+  //these are the map center states
+  const [mapCenterLat, setMapCenterLat] = useState(districts[0].lat);
+  const [mapCenterLng, setMapCenterLng] = useState(districts[0].lng);
+
+  //this is the map center call back function
+  const updateMapCoordinates = (lat, lng) => {
+    console.log("lat", lat);
+    console.log("lng", lng);
+    setMapCenterLat(lat);
+    setMapCenterLng(lng);
+  };
+
+  //this is the map zoom state
+  const [mapZoom, setMapZoom] = useState(6);
+  //this is the map zoom call back function
+  const updateMapZoom = (zoom) => {
+    setMapZoom(zoom);
+  };
+  //==============================================================
+
   const [updateUI, setUpdateUI] = useState(false);
   const [Devices, setDevices] = useState({
     cameras: {
@@ -136,8 +159,8 @@ export default function Dashboard() {
           imgSrc={ADD}
           altText="Camera"
           data={searched_data}
-          callback3 = {callback3_add_device}
-          callback4 = {callback4_search_results}
+          callback3={callback3_add_device}
+          callback4={callback4_search_results}
         />
         <ButtonCRUD
           text="Delete"
@@ -156,14 +179,15 @@ export default function Dashboard() {
           callback_delete_device={callback2_delete_device}
         />
 
-        <ButtonCRUD
-          text="View"
-          imgSrc={view}
-          altText="Camera"
-        />
+        <ButtonCRUD text="View" imgSrc={view} altText="Camera" />
       </div>
       <div className="flex w-auto h-2/3">
         <Map
+          centerLatState={mapCenterLat}
+          centerLngState={mapCenterLng}
+          mapZoomState={mapZoom}
+          updateMapCoordinatesCallback={updateMapCoordinates}
+          updateMapZoomCallback={updateMapZoom}
           getMapCoordinates={getMapCoordinates}
           deviceData={Devices}
           container_height={container_height}
