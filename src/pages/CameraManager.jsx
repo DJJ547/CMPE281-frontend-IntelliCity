@@ -3,6 +3,7 @@ import Map from "../components/Map";
 import ADD from "../medias/plus.png";
 import view from "../medias/view.svg";
 import ButtonCRUD from "../components/ButtonCRUD";
+import Streaming from "../components/Streaming";
 
 const container_height = "65vh";
 const container_width = "55vw";
@@ -15,6 +16,7 @@ export default function Dashboard() {
     setSelectLat(lat);
     setSelectLng(lng);
   };
+
   const [updateUI, setUpdateUI] = useState(false);
   const [Devices, setDevices] = useState({
     cameras: {
@@ -33,27 +35,27 @@ export default function Dashboard() {
       12: [],
     },
   });
+  //for add
   const [searched_data, setSearchedData] = useState([]);
-  const [screenshot, setscreenshot] = useState('');
+
+  const [screenshot, setscreenshot] = useState("");
+  const [streamvideo, setstreamvideo] = useState("");
   const [selectedDevice, setSelectedDevice] = useState(null);
 
   //----------------------variables-------------------------------------------------------------
-  let device = Devices.cameras[0].filter((item) => item.id === selectedDevice)[0];
-  let status = device ? device.status : 'N/A';
-  let location = device ? `(${device.latitude}, ${device.longitude})` : 'N/A';
-  let dist_id = device ? device.dist_id : 'N/A';
-  let address = device ? device.address : 'N/A';
-  
+  let device = Devices.cameras[0].filter(
+    (item) => item.id === selectedDevice
+  )[0];
+  let status = device ? device.status : "N/A";
+  let location = device ? `(${device.latitude}, ${device.longitude})` : "N/A";
+  let dist_id = device ? device.dist_id : "N/A";
+  let address = device ? device.address : "N/A";
   //----------------------API Request-------------------------------------------------------------
   //callback function to disable the device
   const callback_switch_status = async (id) => {
     try {
-      const response = await fetch("http://localhost:8000/api/DisableDevice/", {
+      const response = await fetch(`http://localhost:8000/api/DisableDevice/?id=${id}`, {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ index: id }),
       });
       const data = await response.json();
       console.log("data", data);
@@ -83,7 +85,7 @@ export default function Dashboard() {
   const callback3_add_device = async (id) => {
     try {
       const response = await fetch(
-        `http://localhost:8000/api/AddDevice/?index=${id}`,
+        `http://localhost:8000/api/AddDevice/?id=${id}`,
         {
           method: "POST",
         }
@@ -139,12 +141,15 @@ export default function Dashboard() {
   }, [updateUI]);
 
   //----------------------functions-------------------------------------------------------------
- const Selected = async (id) => {
-    let screenshot1 = Devices.cameras[0].filter((item) => item.id === id)[0].image_url;
+  const Selected = async (id) => {
+    let item = Devices.cameras[0].filter((item) => item.id === id)[0];
+    let screenshot1 = item.image_url;
+    let videoUrl = item.video_url;
     setSelectedDevice(id);
     setscreenshot(screenshot1);
+    setstreamvideo(videoUrl);
     setUpdateUI(!updateUI);
-  }
+  };
 
   //----------------------return-------------------------------------------------------------
   return (
@@ -155,8 +160,8 @@ export default function Dashboard() {
           imgSrc={ADD}
           altText="Camera"
           data={searched_data}
-          callback3 = {callback3_add_device}
-          callback4 = {callback4_search_results}
+          callback3={callback3_add_device}
+          callback4={callback4_search_results}
         />
         <ButtonCRUD
           text="Delete"
@@ -175,11 +180,7 @@ export default function Dashboard() {
           callback_delete_device={callback2_delete_device}
         />
 
-        <ButtonCRUD
-          text="View"
-          imgSrc={view}
-          altText="Camera"
-        />
+        <ButtonCRUD text="View" imgSrc={view} altText="Camera" />
       </div>
       <div className="flex w-auto h-2/3">
         <Map
@@ -187,28 +188,35 @@ export default function Dashboard() {
           deviceData={Devices}
           container_height={container_height}
           container_width={container_width}
-          Selected= {Selected}
+          Selected={Selected}
         />
         <div className="flex ml-5 flex-col ">
           <div className="flex flex-col w-96 h-96 bg-white shadow-lg mb-6">
             <div className="flex flex-col p-2">
               <h2 className="text-lg font-bold text-center">Status</h2>
-              <h3 className="text-lg"><strong>Device ID: </strong>{selectedDevice}</h3>
-              <h3 className="text-lg"><strong>Device Status: </strong>{status}</h3>
-              <h3 className="text-lg"><strong>Location: </strong>{location}</h3>
-              <h3 className="text-lg"><strong>Dist ID: </strong>{dist_id}</h3>
-              <h3 className="text-lg"><strong>Address: </strong>{address}</h3>
+              <h3 className="text-lg">
+                <strong>Device ID: </strong>
+                {selectedDevice}
+              </h3>
+              <h3 className="text-lg">
+                <strong>Device Status: </strong>
+                {status}
+              </h3>
+              <h3 className="text-lg">
+                <strong>Location: </strong>
+                {location}
+              </h3>
+              <h3 className="text-lg">
+                <strong>Dist ID: </strong>
+                {dist_id}
+              </h3>
+              <h3 className="text-lg">
+                <strong>Address: </strong>
+                {address}
+              </h3>
             </div>
           </div>
-          <div className="flex flex-col w-96 h-96 bg-white shadow-lg">
-            <div className="flex justify-between p-2">
-              <h2 className="text-lg font-bold">Camera Shot</h2>
-              
-            </div>
-            <div className="flex justify-center">
-              <img src={screenshot} alt="screenshot" className="w-96 h-96"/>
-            </div>
-          </div>
+          <Streaming screenshot={screenshot} videoUrl={streamvideo} />
         </div>
       </div>
     </div>
