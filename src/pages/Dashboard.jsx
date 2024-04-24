@@ -48,8 +48,8 @@ export default function Dashboard() {
   //this is the map zoom state
   const [mapZoom, setMapZoom] = useState(6);
   //this is the map zoom call back function
-  const updateMapZoomOnView = () => {
-    setMapZoom(15);
+  const updateMapZoomOnView = (zoom) => {
+    setMapZoom(zoom);
   };
 
   //this is the map selected marker state
@@ -60,7 +60,7 @@ export default function Dashboard() {
   };
 
   useEffect(() => {
-    setAllDevices(allDevicesData)
+    setAllDevices(allDevicesData);
   }, [mapCenterLat, mapCenterLng, mapZoom, selectedMarker]);
   //==============================================================
 
@@ -68,23 +68,22 @@ export default function Dashboard() {
   const [mapCenterLngInput, setMapCenterLngInput] = useState("");
 
   const [allDevices, setAllDevices] = useState({
-    "all": {
-      "0": [],
-      "1": [],
-      "2": [],
-      "3": [],
-      "4": [],
-      "5": [],
-      "6": [],
-      "7": [],
-      "8": [],
-      "9": [],
-      "10": [],
-      "11": [],
-      "12": []
-    }
-  }
-  );
+    all: {
+      0: [],
+      1: [],
+      2: [],
+      3: [],
+      4: [],
+      5: [],
+      6: [],
+      7: [],
+      8: [],
+      9: [],
+      10: [],
+      11: [],
+      12: [],
+    },
+  });
 
   const getMapCoordinates = (lat, lng) => {
     setSelectLat(lat);
@@ -103,17 +102,19 @@ export default function Dashboard() {
     e.preventDefault();
     setMapCenterLat(parseFloat(mapCenterLatInput));
     setMapCenterLng(parseFloat(mapCenterLngInput));
-    console.log(mapCenterLatInput)
-    console.log(mapCenterLngInput)
-    console.log(typeof(allDevices.all[0].latitude))
+    console.log(mapCenterLatInput);
+    console.log(mapCenterLngInput);
+    console.log(typeof allDevices.all[0].latitude);
     let marker = allDevices.all[0].find(
       (device) =>
-      parseFloat(device.latitude) === parseFloat(mapCenterLatInput) &&
-      parseFloat(device.longitude) === parseFloat(mapCenterLngInput)
+        parseFloat(device.latitude) === parseFloat(mapCenterLatInput) &&
+        parseFloat(device.longitude) === parseFloat(mapCenterLngInput)
     );
     console.log(marker);
     setMapZoom(15);
     setSelectedMarker(marker);
+    setSelectLat(mapCenterLatInput);
+    setSelectLng(mapCenterLngInput);
   };
 
   return (
@@ -156,7 +157,7 @@ export default function Dashboard() {
         />
         <WeatherBox latState={selectLat} lngState={selectLng} />
       </div>
-      <div className="flex">
+      {/* <div className="flex">
         <form onSubmit={handleSearchSubmit}>
           <label>
             Latitude:
@@ -178,7 +179,7 @@ export default function Dashboard() {
           </label>
           <button type="submit">Submit</button>
         </form>
-      </div>
+      </div> */}
       <div className="flex w-full h-2/3">
         <Map
           centerLatState={mapCenterLat}
