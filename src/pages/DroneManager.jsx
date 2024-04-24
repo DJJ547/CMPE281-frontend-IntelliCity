@@ -1,8 +1,9 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Map from "../components/Map";
 import ADD from "../medias/plus.png";
 import view from "../medias/view.svg";
-import allDrones from "../mockData/allDrones.json";
+import { districts } from "../utils/mapDistrictCoordinates";
+
 
 const container_height = "65vh";
 const container_width = "55vw";
@@ -12,36 +13,132 @@ export default function DroneManager() {
   const [showDeleteForm, setShowDeleteForm] = useState(false);
   const [showUpdateForm, setShowUpdateForm] = useState(false);
   const [formData, setFormData] = useState({
-    drone_id: "",
+    id: "",
     latitude: "",
     longitude: "",
     altitude: "",
     timestamp: "",
-    district_id: ""
+    dist_id: "",
+    status: "",
   });
   const [deleteFormData, setDeleteFormData] = useState({
-    drone_id: ""
+    id: ""
   });
   const [updateFormData, setUpdateFormData] = useState({
-    update_drone_id: "",
+    update_id: "",
     update_latitude: "",
     update_longitude: "",
     update_altitude: "",
     update_timestamp: "",
-    update_district_id: ""
+    update_dist_id: "",
+    update_status: "",
   });
 
   const [showViewModal, setShowViewModal] = useState(false);
   const [viewDroneData, setViewDroneData] = useState({
-    drone_id: "",
+    id: "",
     latitude: "",
     longitude: "",
     altitude: "",
     timestamp: "",
-    district_id: ""
+    dist_id: "",
+    status: "",
   });
 
   const [statusMessage, setStatusMessage] = useState("");
+
+  const [selectedVideoUrl, setSelectedVideoUrl] = useState(null); // State to store the selected video URL
+
+  const [updateUI, setUpdateUI] = useState(false);
+  const [Devices, setDevices] = useState({
+    drones: {
+      0: [],
+      1: [],
+      2: [],
+      3: [],
+      4: [],
+      5: [],
+      6: [],
+      7: [],
+      8: [],
+      9: [],
+      10: [],
+      11: [],
+      12: [],
+    },
+  });
+  const [searched_data, setSearchedData] = useState([]);
+  const [screenshot, setscreenshot] = useState("");
+  const [selectedDevice, setSelectedDevice] = useState(null);
+
+  //==================For View Button============================
+  //these are the map center states
+  const [mapCenterLat, setMapCenterLat] = useState(districts[0].lat);
+  const [mapCenterLng, setMapCenterLng] = useState(districts[0].lng);
+
+  //this is the map center call back function
+  const updateMapCoordinates = (lat, lng) => {
+    setMapCenterLat(lat);
+    setMapCenterLng(lng);
+  };
+
+  //this is the map zoom state
+  const [mapZoom, setMapZoom] = useState(6);
+  //this is the map zoom call back function
+  const updateMapZoomOnView = () => {
+    setMapZoom(15);
+  };
+
+  //this is the map selected marker state
+  const [selectedMarker, setSelectedMarker] = useState("");
+  //this is the map selected marker call back function
+  const updateSelectedMarker = (marker) => {
+    setSelectedMarker(marker);
+  };
+  //==============================================================
+  // Function to fetch video URL for a given drone ID
+  const fetchVideoUrlForDrone = async (droneId) => {
+    try {
+      const response = await fetch("http://127.0.0.1:8000/getVideoUrls", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ id: droneId }),
+      });
+      console.log(response)
+      if (!response.ok) {
+        throw new Error("Failed to fetch video URL");
+      }
+      const data = await response.json();
+      console.log(data.videourl)
+      setSelectedVideoUrl(data.videourl);
+      console.log(selectedVideoUrl)
+
+    } catch (error) {
+      console.error("Error fetching video URL for drone:", error.message);
+    }
+  };
+  useEffect(() => {
+        const fetchDevices = async () => {
+        try {
+          const response = await fetch(
+            "http://localhost:8000/GetDevice",
+            { method: "GET" }
+          );
+          const data = await response.json();
+  
+          // Only update the state if the data has changed
+          if (JSON.stringify(data) !== JSON.stringify(Devices)) {
+            setDevices(data);
+          }
+        } catch (error) {
+          console.error("Error:", error);
+        }
+      };
+  
+      fetchDevices();
+    }, [updateUI, mapCenterLat, mapCenterLng, mapZoom, selectedMarker, selectedVideoUrl])
 
   //return map component selected marker coodinates
   const [selectLat, setSelectLat] = useState(null);
@@ -59,14 +156,6 @@ export default function DroneManager() {
     const { name, value } = e.target;
     setFormData((prevFormData) => ({
       ...prevFormData,
-      [name]: value
-    }));
-  };
-
-  const handleDeleteInputChange = (e) => {
-    const { name, value } = e.target;
-    setDeleteFormData((prevDeleteFormData) => ({
-      ...prevDeleteFormData,
       [name]: value
     }));
   };
@@ -100,12 +189,13 @@ export default function DroneManager() {
 
   const resetForm = () => {
     setFormData({
-      drone_id: "",
+      id: "",
       latitude: "",
       longitude: "",
       altitude: "",
       timestamp: "",
-      district_id: ""
+      dist_id: "",
+      status: "",
     });
   };
 
@@ -125,7 +215,7 @@ export default function DroneManager() {
 
       setStatusMessage("Drone deleted successfully");
       setDeleteFormData({
-        drone_id: ""
+        id: ""
       });
       setShowDeleteForm(false);
     } catch (error) {
@@ -154,12 +244,13 @@ export default function DroneManager() {
 
       setStatusMessage("Drone updated successfully");
       setUpdateFormData({
-        update_drone_id: "",
+        update_id: "",
         update_latitude: "",
         update_longitude: "",
         update_altitude: "",
         update_timestamp: "",
-        update_district_id: ""
+        update_dist_id: "",
+        update_status: "",
       });
       setShowUpdateForm(false);
     } catch (error) {
@@ -180,16 +271,24 @@ export default function DroneManager() {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ drone_id: droneId }),
+        body: JSON.stringify({ id: droneId }),
       });
-
+      console.log(response)
       if (!response.ok) {
         throw new Error("Failed to fetch drone data");
+        
       }
 
       const data = await response.json();
+      console.log(data)
+
       setViewDroneData(data);
       setShowViewModal(true);
+      fetchVideoUrlForDrone(droneId);
+      setMapCenterLat(data.latitude)
+      setMapCenterLng(data.longitude)
+      setMapZoom(15)
+      setSelectedMarker(data)
     } catch (error) {
       setStatusMessage(`Error fetching drone data: ${error.message}`);
     }
@@ -200,10 +299,6 @@ export default function DroneManager() {
     setShowViewModal(false);
   };
 
-  const closeViewModal = () => {
-    setShowViewModal(false);
-  };
-  
   const getMapCoordinates = (lat, lng) => {
     setSelectLat(lat);
     setSelectLng(lng);
@@ -228,6 +323,7 @@ export default function DroneManager() {
           View
         </button>
       </div>
+      
       {showAddForm && (
         <div className="absolute top-0 left-0 z-10 w-full h-full flex items-center justify-center bg-gray-900 bg-opacity-50">
           <div className="flex flex-col w-96 h-110 bg-white shadow-lg">
@@ -236,8 +332,8 @@ export default function DroneManager() {
             </div>
             <form className="p-4">
               <div className="mb-4">
-                <label htmlFor="drone_id" className="block text-sm font-medium text-gray-700">Drone ID</label>
-                <input type="text" id="drone_id" name="drone_id" value={formData.drone_id} onChange={handleInputChange} className="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"/>
+                <label htmlFor="id" className="block text-sm font-medium text-gray-700">Drone ID</label>
+                <input type="text" id="id" name="id" value={formData.id} onChange={handleInputChange} className="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"/>
               </div>
               <div className="mb-4">
                 <label htmlFor="latitude" className="block text-sm font-medium text-gray-700">Latitude</label>
@@ -256,8 +352,12 @@ export default function DroneManager() {
                 <input type="text" id="timestamp" name="timestamp" value={formData.timestamp} onChange={handleInputChange} className="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"/>
               </div>
               <div className="mb-4">
-                <label htmlFor="district_id" className="block text-sm font-medium text-gray-700">District ID</label>
-                <input type="number" id="district_id" name="district_id" value={formData.district_id} onChange={handleInputChange} className="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"/>
+                <label htmlFor="dist_id" className="block text-sm font-medium text-gray-700">District ID</label>
+                <input type="number" id="dist_id" name="dist_id" value={formData.dist_id} onChange={handleInputChange} className="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"/>
+              </div>
+              <div className="mb-4">
+                <label htmlFor="status" className="block text-sm font-medium text-gray-700">Status</label>
+                <input type="text" id="status" name="status" value={formData.status} onChange={handleInputChange} className="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"/>
               </div>
 
               <button type="button" onClick={handleFormSubmit} className="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
@@ -284,13 +384,13 @@ export default function DroneManager() {
             </div>
             <form className="p-4">
               <div className="mb-4">
-                <label htmlFor="delete_drone_id" className="block text-sm font-medium text-gray-700">Drone ID</label>
+                <label htmlFor="delete_id" className="block text-sm font-medium text-gray-700">Drone ID</label>
                 <input
                   type="number"
-                  id="delete_drone_id"
-                  name="delete_drone_id"
-                  value={deleteFormData.drone_id}
-                  onChange={(e) => setDeleteFormData({ ...deleteFormData, drone_id: e.target.value })}
+                  id="delete_id"
+                  name="delete_id"
+                  value={deleteFormData.id}
+                  onChange={(e) => setDeleteFormData({ ...deleteFormData, id: e.target.value })}
                   className="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
                 />
               </div>
@@ -324,12 +424,12 @@ export default function DroneManager() {
             </div>
             <form className="p-4">
               <div className="mb-4">
-                <label htmlFor="update_drone_id" className="block text-sm font-medium text-gray-700">Drone ID</label>
+                <label htmlFor="update_id" className="block text-sm font-medium text-gray-700">Drone ID</label>
                 <input
                   type="number"
-                  id="update_drone_id"
-                  name="update_drone_id"
-                  value={updateFormData.update_drone_id}
+                  id="update_id"
+                  name="update_id"
+                  value={updateFormData.update_id}
                   onChange={(e) => handleUpdateInputChange(e)}
                   className="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
                 />
@@ -380,12 +480,12 @@ export default function DroneManager() {
               </div>
 
               <div className="mb-4">
-                <label htmlFor="update_district_id" className="block text-sm font-medium text-gray-700">District ID</label>
+                <label htmlFor="update_dist_id" className="block text-sm font-medium text-gray-700">District ID</label>
                 <input
                   type="number"
-                  id="update_district_id"
-                  name="update_district_id"
-                  value={updateFormData.update_district_id}
+                  id="update_dist_id"
+                  name="update_dist_id"
+                  value={updateFormData.update_dist_id}
                   onChange={(e) => handleUpdateInputChange(e)}
                   className="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
                 />
@@ -411,7 +511,19 @@ export default function DroneManager() {
         </div>
       )}
       <div className="flex w-auto h-2/3">
-        <Map getMapCoordinates={getMapCoordinates} deviceData={allDrones} container_height={container_height} container_width={container_width}/>
+      <Map
+          centerLatState={mapCenterLat}
+          centerLngState={mapCenterLng}
+          mapZoomState={mapZoom}
+          selectedMarkerState={selectedMarker}
+          updateSelectedMarkerCallback={updateSelectedMarker}
+          updateMapCoordinatesCallback={updateMapCoordinates}
+          updateMapZoomCallback={updateMapZoomOnView}
+          getMapCoordinates={getMapCoordinates}
+          deviceData={Devices}
+          container_height={container_height}
+          container_width={container_width}
+        />        
         <div className="flex ml-5">
           <div className="flex flex-col w-96 h-96 bg-white shadow-lg status-container">
             <div className="flex justify-between p-2">
@@ -420,14 +532,21 @@ export default function DroneManager() {
             <p>{statusMessage}</p>
             {showViewModal && (
               <div className="p-4">
-                <p><strong>Drone ID:</strong> {viewDroneData.drone_id}</p>
+                <p><strong>Drone ID:</strong> {viewDroneData.id}</p>
                 <p><strong>Latitude:</strong> {viewDroneData.latitude}</p>
                 <p><strong>Longitude:</strong> {viewDroneData.longitude}</p>
                 <p><strong>Altitude:</strong> {viewDroneData.altitude}</p>
-                <p><strong>Timestamp:</strong> {viewDroneData.timestamp}</p>
-                <p><strong>District ID:</strong> {viewDroneData.district_id}</p>
+                <p><strong>District ID:</strong> {viewDroneData.dist_id}</p>
               </div>
             )}
+            {/* Render video player if a video URL is selected */}
+            {selectedVideoUrl && (
+              <div>
+                <h2>Video</h2>
+                <video src={selectedVideoUrl} controls />
+              </div>
+            )}
+
           </div>
         </div>
       </div>
