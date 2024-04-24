@@ -123,11 +123,11 @@ export default function DroneManager() {
         const fetchDevices = async () => {
         try {
           const response = await fetch(
-            "http://localhost:8000/GetDevice",
+            "http://localhost:8000/getAllDevices",
             { method: "GET" }
           );
           const data = await response.json();
-  
+          console.log(data)
           // Only update the state if the data has changed
           if (JSON.stringify(data) !== JSON.stringify(Devices)) {
             setDevices(data);
@@ -490,6 +490,17 @@ export default function DroneManager() {
                   className="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
                 />
               </div>        
+              <div className="mb-4">
+                <label htmlFor="update_status" className="block text-sm font-medium text-gray-700">Status</label>
+                <input
+                  type="number"
+                  id="update_status"
+                  name="update_status"
+                  value={updateFormData.update_status}
+                  onChange={(e) => handleUpdateInputChange(e)}
+                  className="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
+                />
+              </div> 
               <button
                 type="button"
                 onClick={handleUpdate}
