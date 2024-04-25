@@ -15,8 +15,7 @@ import { faTriangleExclamation } from "@fortawesome/free-solid-svg-icons";
 
 import { districts } from "../utils/mapDistrictCoordinates";
 
-const clusterGridSize = 50;
-const libraries = ["places"]
+const clusterGridSize = 20;
 
 const IncidentIcon = {
   path: faTriangleExclamation.icon[4],
@@ -28,7 +27,7 @@ const IncidentIcon = {
   },
   strokeWeight: 1,
   strokeColor: "#000000",
-  scale: 0.045,
+  scale: 0.035,
 };
 
 const deviceClustererOptions = {
@@ -37,10 +36,10 @@ const deviceClustererOptions = {
   styles: [
     {
       textColor: "white", // Text color of the cluster icon
-      textSize: 16, // Text size of the cluster icon
+      textSize: 15, // Text size of the cluster icon
       url: "https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/m3.png", // URL to the cluster icon image
-      height: 45, // Height of the cluster icon image
-      width: 45, // Width of the cluster icon image
+      height: 40, // Height of the cluster icon image
+      width: 40, // Width of the cluster icon image
     },
   ],
 };
@@ -83,31 +82,25 @@ const CongestionIcon = {
   },
   strokeWeight: 1,
   strokeColor: "#000000",
-  scale: 0.045,
+  scale: 0.035,
 };
 
 function Map(props) {
+  const [libraries] = useState(["places"]);
   const [address, setAddress] = useState("");
-  // const [selectedMarker, setSelectedMarker] = useState(null);
-  // State to store the selected district
   const [selectedDistrict, setSelectedDistrict] = useState(districts[0]);
-  // const [mapCenter, setMapCenter] = useState({
-  //   lat: selectedDistrict.lat,
-  //   lng: selectedDistrict.lng,
-  // });
-  // const [mapZoom, setMapZoom] = useState(selectedDistrict.zoom);
 
   const setMapCenter = (coordinates) => {
     props.updateMapCoordinatesCallback(coordinates.lat, coordinates.lng);
-  }
+  };
 
   const setMapZoom = (zoom) => {
     props.updateMapZoomCallback(zoom);
-  }
+  };
 
   const setSelectedMarker = (marker) => {
     props.updateSelectedMarkerCallback(marker);
-  }
+  };
 
   const handleSearch = async (value) => {
     try {
@@ -159,7 +152,7 @@ function Map(props) {
       </div>
       <div className="flex-grow relative">
         <LoadScript
-          googleMapsApiKey="AIzaSyCBdsxfnuAQqHRDm-G3ykk2RQDFsYjZl-g"
+          googleMapsApiKey={process.env.REACT_APP_GOOGLE_API_KEY}
           libraries={libraries}
         >
           <PlacesAutocomplete
@@ -208,7 +201,7 @@ function Map(props) {
               width: props.container_width,
               height: props.container_height,
             }}
-            center={{lat:props.centerLatState, lng:props.centerLngState}}
+            center={{ lat: props.centerLatState, lng: props.centerLngState }}
             zoom={props.mapZoomState}
           >
             {/* all markers on dashboard */}
@@ -227,16 +220,20 @@ function Map(props) {
                           lng: device.longitude,
                         }}
                         label={{
-                          text: device.status === "active" ? "\ue412":"\uf1a8",
+                          text:
+                            device.status === "active" ? "\ue412" : "\uf1a8",
                           fontFamily: "Material Icons, sans-serif",
                           color:
-                          device.status === "active" ? "#ffffff" : "#000000",
+                            device.status === "active" ? "#ffffff" : "#000000",
                           fontSize: "20px",
                         }}
                         title="Camera Marker"
                         onClick={() => {
                           setSelectedMarker(device);
-                          props.getMapCoordinates(device.latitude, device.longitude);
+                          props.getMapCoordinates(
+                            device.latitude,
+                            device.longitude
+                          );
                           setMapCenter({
                             lat: device.latitude,
                             lng: device.longitude,
@@ -252,7 +249,8 @@ function Map(props) {
                           lng: device.longitude,
                         }}
                         label={{
-                          text: device.status === "active" ? "\ue51e" : "\uf239",
+                          text:
+                            device.status === "active" ? "\ue51e" : "\ue51f",
                           fontFamily: "Material Icons, sans-serif",
                           color:
                             device.status === "active" ? "#ffffff" : "#000000",
@@ -261,7 +259,10 @@ function Map(props) {
                         title="Iot Marker"
                         onClick={() => {
                           setSelectedMarker(device);
-                          props.getMapCoordinates(device.latitude, device.longitude);
+                          props.getMapCoordinates(
+                            device.latitude,
+                            device.longitude
+                          );
                           setMapCenter({
                             lat: device.latitude,
                             lng: device.longitude,
@@ -277,7 +278,8 @@ function Map(props) {
                           lng: device.longitude,
                         }}
                         label={{
-                          text: device.status === "active" ? "\ue539": "\ue194",
+                          text:
+                            device.status === "active" ? "\ue539" : "\ue194",
                           fontFamily: "Material Icons, sans-serif",
                           color:
                             device.status === "active" ? "#ffffff" : "#000000",
@@ -287,7 +289,10 @@ function Map(props) {
                         title="Drone Marker"
                         onClick={() => {
                           setSelectedMarker(device);
-                          props.getMapCoordinates(device.latitude, device.longitude);
+                          props.getMapCoordinates(
+                            device.latitude,
+                            device.longitude
+                          );
                           setMapCenter({
                             lat: device.latitude,
                             lng: device.longitude,
@@ -317,7 +322,8 @@ function Map(props) {
                           lng: device.longitude,
                         }}
                         label={{
-                          text: device.status === "active" ? "\ue412":"\uf1a8",
+                          text:
+                            device.status === "active" ? "\ue412" : "\uf1a8",
                           fontFamily: "Material Icons, sans-serif",
                           color:
                             device.status === "active" ? "#ffffff" : "#000000",
@@ -327,7 +333,10 @@ function Map(props) {
                         onClick={() => {
                           props.Selected(device.id);
                           setSelectedMarker(device);
-                          props.getMapCoordinates(device.latitude, device.longitude);
+                          props.getMapCoordinates(
+                            device.latitude,
+                            device.longitude
+                          );
                           setMapCenter({
                             lat: device.latitude,
                             lng: device.longitude,
@@ -355,7 +364,8 @@ function Map(props) {
                           lng: device.longitude,
                         }}
                         label={{
-                          text: device.status === "active" ? "\ue51e" : "\uf239",
+                          text:
+                            device.status === "active" ? "\ue51e" : "\uf239",
                           fontFamily: "Material Icons, sans-serif",
                           color:
                             device.status === "active" ? "#ffffff" : "#000000",
@@ -364,7 +374,10 @@ function Map(props) {
                         title="Iot Marker"
                         onClick={() => {
                           setSelectedMarker(device);
-                          props.getMapCoordinates(device.latitude, device.longitude);
+                          props.getMapCoordinates(
+                            device.latitude,
+                            device.longitude
+                          );
                           setMapCenter({
                             lat: device.latitude,
                             lng: device.longitude,
@@ -392,7 +405,8 @@ function Map(props) {
                           lng: device.longitude,
                         }}
                         label={{
-                          text: device.status === "active" ? "\ue539": "\ue194",
+                          text:
+                            device.status === "active" ? "\ue539" : "\ue194",
                           fontFamily: "Material Icons, sans-serif",
                           color:
                             device.status === "active" ? "#ffffff" : "#000000",
@@ -402,7 +416,10 @@ function Map(props) {
                         title="Drone Marker"
                         onClick={() => {
                           setSelectedMarker(device);
-                          props.getMapCoordinates(device.latitude, device.longitude);
+                          props.getMapCoordinates(
+                            device.latitude,
+                            device.longitude
+                          );
                           setMapCenter({
                             lat: device.latitude,
                             lng: device.longitude,
@@ -437,7 +454,10 @@ function Map(props) {
                     title="Incident Marker"
                     onClick={() => {
                       setSelectedMarker(incident);
-                      props.getMapCoordinates(incident.latitude, incident.longitude);
+                      props.getMapCoordinates(
+                        incident.latitude,
+                        incident.longitude
+                      );
                       setMapCenter({
                         lat: incident.latitude,
                         lng: incident.longitude,
@@ -469,7 +489,10 @@ function Map(props) {
                       title="Congestion Marker"
                       onClick={() => {
                         setSelectedMarker(congestion);
-                        props.getMapCoordinates(congestion.latitude, congestion.longitude);
+                        props.getMapCoordinates(
+                          congestion.latitude,
+                          congestion.longitude
+                        );
                         setMapCenter({
                           lat: congestion.latitude,
                           lng: congestion.longitude,
@@ -508,7 +531,9 @@ function Map(props) {
                   <h1>Status: {props.selectedMarkerState.status}</h1>
                   <h1>Latitude: {props.selectedMarkerState.latitude}</h1>
                   <h1>Longitude: {props.selectedMarkerState.longitude}</h1>
-                  {props.selectedMarkerState.type && <h1>Type: {props.selectedMarkerState.type}</h1>}
+                  {props.selectedMarkerState.type && (
+                    <h1>Type: {props.selectedMarkerState.type}</h1>
+                  )}
                 </div>
               </InfoWindow>
             )}

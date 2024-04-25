@@ -3,6 +3,7 @@ import StatBox from "../components/dashboard/StatBox";
 import WeatherBox from "../components/dashboard/WeatherBox";
 import Map from "../components/Map";
 import CustomChart from "../components/dashboard/CustomChart";
+import Notifications from "../components/Notifications";
 import allDevicesData from "../mockData/allDevices.json";
 import allIncidents from "../mockData/allIncidents.json";
 import allCongestions from "../mockData/allCongestions.json";
@@ -58,9 +59,25 @@ export default function Dashboard() {
   const updateSelectedMarker = (marker) => {
     setSelectedMarker(marker);
   };
-
   useEffect(() => {
-    setAllDevices(allDevicesData);
+    fetch(`${process.env.REACT_APP_DATA_SERVER_URL}dashboard/getAllDevices`)
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error("Network response was not ok");
+        }
+        return response.json();
+      })
+      .then((data) => {
+        // Handle the data
+        console.log(data);
+        setAllDevices(data);
+      })
+      .catch((error) => {
+        // Handle errors
+        console.error("error:", error);
+      });
+
+    // setAllDevices(allDevicesData);
   }, [mapCenterLat, mapCenterLng, mapZoom, selectedMarker]);
   //==============================================================
 
@@ -197,26 +214,7 @@ export default function Dashboard() {
           container_width={container_width}
         />
         <div className="flex flex-col w-full h-full">
-          <h1 className="w-auto text-center text-lg font-bold">
-            Notifications:
-          </h1>
-          <div className="flex h-80 bg-white overflow-y-scroll shadow-xl shadow-blue-gray-900 ml-5 mb-7 p-2">
-            <ul className="w-96 text-surface dark:text-white">
-              <li className="w-full border-b-2 border-neutral-100 py-2 dark:border-white/10">
-                An item
-              </li>
-              <li className="w-full border-b-2 border-neutral-100 py-2 dark:border-white/10">
-                A second item
-              </li>
-              <li className="w-full border-b-2 border-neutral-100 py-2 dark:border-white/10">
-                A third item
-              </li>
-              <li className="w-full border-b-2 border-neutral-100 py-2 dark:border-white/10">
-                A fourth item
-              </li>
-              <li className="w-full py-4">And a fifth one</li>
-            </ul>
-          </div>
+          <Notifications />
           <CustomChart
             incidents={allIncidents[0]}
             congestions={allCongestions[0]}
