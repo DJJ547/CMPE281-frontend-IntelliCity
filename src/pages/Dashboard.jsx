@@ -4,7 +4,7 @@ import WeatherBox from "../components/dashboard/WeatherBox";
 import Map from "../components/Map";
 import CustomChart from "../components/dashboard/CustomChart";
 import Notifications from "../components/Notifications";
-import allDevicesData from "../mockData/allDevices.json";
+// import allDevicesData from "../mockData/allDevices.json";
 import allIncidents from "../mockData/allIncidents.json";
 import allCongestions from "../mockData/allCongestions.json";
 import { districts } from "../utils/mapDistrictCoordinates";
@@ -12,28 +12,62 @@ import { districts } from "../utils/mapDistrictCoordinates";
 const container_height = "63vh";
 const container_width = "50vw";
 
-const donutChartData = {
-  Cameras: [
-    { name: "active", value: 45 },
-    { name: "defective", value: 2 },
-    { name: "active", value: 3 },
-  ],
-  Iots: [
-    { name: "active", value: 75 },
-    { name: "defective", value: 10 },
-    { name: "active", value: 15 },
-  ],
-  Drones: [
-    { name: "active", value: 9 },
-    { name: "defective", value: 1 },
-    { name: "active", value: 10 },
-  ],
-};
-
 export default function Dashboard() {
   //return map component selected marker coodinates
   const [selectLat, setSelectLat] = useState(null);
   const [selectLng, setSelectLng] = useState(null);
+
+  const [statData, setStatData] = useState({
+    Cameras: [
+      { name: "active", value: 0 },
+      { name: "inactive", value: 0 },
+    ],
+    Iots: [
+      { name: "active", value: 0 },
+      { name: "inactive", value: 0 },
+    ],
+    Drones: [
+      { name: "active", value: 0 },
+      { name: "inactive", value: 0 },
+    ],
+    Incidents: 0,
+    Congestions: 0,
+  });
+
+  const processStatData = (allDevices) => {
+    let processed_data = {
+      Cameras: [
+        { name: "active", value: 0 },
+        { name: "inactive", value: 0 },
+      ],
+      Iots: [
+        { name: "active", value: 0 },
+        { name: "inactive", value: 0 },
+      ],
+      Drones: [
+        { name: "active", value: 0 },
+        { name: "inactive", value: 0 },
+      ],
+      Incidents: 0,
+      Congestions: 0,
+    };
+    allDevices.all[0].forEach((device) => {
+      if (device.status === "active" && device.type === "camera") {
+        processed_data.Cameras[0].value += 1;
+      } else if (device.status === "inactive" && device.type === "camera") {
+        processed_data.Cameras[1].value += 1;
+      } else if (device.status === "active" && device.type === "iot") {
+        processed_data.Iots[0].value += 1;
+      } else if (device.status === "inactive" && device.type === "iot") {
+        processed_data.Iots[1].value += 1;
+      } else if (device.status === "active" && device.type === "drone") {
+        processed_data.Drones[0].value += 1;
+      } else if (device.status === "inactive" && device.type === "drone") {
+        processed_data.Drones[1].value += 1;
+      }
+    });
+    return processed_data;
+  };
 
   //==================For View Button============================
   //these are the map center states
@@ -63,21 +97,17 @@ export default function Dashboard() {
     fetch(`${process.env.REACT_APP_DATA_SERVER_URL}dashboard/getAllDevices`)
       .then((response) => {
         if (!response.ok) {
-          throw new Error("Network response was not ok");
+          throw new Error("bad request");
         }
         return response.json();
       })
       .then((data) => {
-        // Handle the data
-        console.log(data);
         setAllDevices(data);
+        setStatData(processStatData(data))
       })
       .catch((error) => {
-        // Handle errors
         console.error("error:", error);
       });
-
-    // setAllDevices(allDevicesData);
   }, [mapCenterLat, mapCenterLng, mapZoom, selectedMarker]);
   //==============================================================
 
@@ -141,21 +171,21 @@ export default function Dashboard() {
           imgKey="photo_camera"
           name="Cameras"
           backgroundColor="bg-red-600"
-          donutChartData={donutChartData}
+          donutChartData={statData}
           size="w-60 h-32"
         />
         <StatBox
           imgKey="sensors"
           name="Iots"
           backgroundColor="bg-red-600"
-          donutChartData={donutChartData}
+          donutChartData={statData}
           size="w-60 h-32"
         />
         <StatBox
           imgKey="flight"
           name="Drones"
           backgroundColor="bg-red-600"
-          donutChartData={donutChartData}
+          donutChartData={statData}
           size="w-60 h-32"
         />
         <StatBox
@@ -167,7 +197,7 @@ export default function Dashboard() {
         />
         <StatBox
           imgKey="warning"
-          name="Congestion"
+          name="Congestions"
           backgroundColor="bg-blue-600"
           statNum="21"
           size="w-48 h-32"

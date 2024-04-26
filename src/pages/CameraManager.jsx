@@ -8,7 +8,7 @@ import { districts } from "../utils/mapDistrictCoordinates";
 const container_height = "65vh";
 const container_width = "55vw";
 
-export default function Dashboard() {
+export default function CameraManager() {
   //----------------------states-------------------------------------------------------------
   const [selectLat, setSelectLat] = useState(null);
   const [selectLng, setSelectLng] = useState(null);

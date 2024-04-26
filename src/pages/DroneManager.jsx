@@ -8,7 +8,7 @@ import { districts } from "../utils/mapDistrictCoordinates";
 const container_height = "65vh";
 const container_width = "55vw";
 
-export default function Dashboard() {
+export default function DroneManager() {
   const [showAddModal, setShowAddModal] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [droneDetails, setDroneDetails] = useState({
