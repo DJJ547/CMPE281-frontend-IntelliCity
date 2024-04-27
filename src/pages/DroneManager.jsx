@@ -71,6 +71,10 @@ export default function DroneManager() {
   const [screenshot, setscreenshot] = useState("");
   const [selectedDevice, setSelectedDevice] = useState(null);
 
+ //return map component selected marker coodinates
+  const [selectLat, setSelectLat] = useState(null);
+  const [selectLng, setSelectLng] = useState(null);
+
   //==================For View Button============================
   //these are the map center states
   const [mapCenterLat, setMapCenterLat] = useState(districts[0].lat);
@@ -95,6 +99,7 @@ export default function DroneManager() {
   const updateSelectedMarker = (marker) => {
     setSelectedMarker(marker);
   };
+  //==============================================================
   //==============================================================
   // Function to fetch video URL for a given drone ID
   const fetchVideoUrlForDrone = async (droneId) => {
@@ -140,9 +145,6 @@ export default function DroneManager() {
       fetchDevices();
     }, [updateUI, mapCenterLat, mapCenterLng, mapZoom, selectedMarker, selectedVideoUrl])
 
-  //return map component selected marker coodinates
-  const [selectLat, setSelectLat] = useState(null);
-  const [selectLng, setSelectLng] = useState(null);
 
   const handleUpdateInputChange = (e) => {
     const { name, value } = e.target;
