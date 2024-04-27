@@ -28,6 +28,7 @@ const IncidentIcon = {
   strokeWeight: 1,
   strokeColor: "#000000",
   scale: 0.035,
+  zIndex: 10,
 };
 
 const deviceClustererOptions = {
@@ -42,6 +43,7 @@ const deviceClustererOptions = {
       width: 40, // Width of the cluster icon image
     },
   ],
+  zIndex: 5,
 };
 
 const incidentClustererOptions = {
@@ -56,6 +58,7 @@ const incidentClustererOptions = {
       width: 45, // Width of the cluster icon image
     },
   ],
+  zIndex: 5,
 };
 
 const congestionClustererOptions = {
@@ -70,6 +73,7 @@ const congestionClustererOptions = {
       width: 45, // Width of the cluster icon image
     },
   ],
+  zIndex: 5,
 };
 
 const CongestionIcon = {
@@ -83,6 +87,7 @@ const CongestionIcon = {
   strokeWeight: 1,
   strokeColor: "#000000",
   scale: 0.035,
+  zIndex: 10,
 };
 
 function Map(props) {
