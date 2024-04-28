@@ -47,6 +47,8 @@ export default function Dashboard() {
     (item) => item.id === selectedDevice
   )[0];
   let status = device ? device.status : "N/A";
+  let latitude = device ? device.latitude : null;
+  let longitude = device ? device.longitude : null;
   let location = device ? `(${device.latitude}, ${device.longitude})` : "N/A";
   let dist_id = device ? device.dist_id : "N/A";
   let address = device ? device.address : "N/A";
@@ -230,7 +232,7 @@ export default function Dashboard() {
               </h3>
             </div>
           </div>
-          <Streaming screenshot={screenshot} videoUrl={streamvideo} />
+          <Streaming screenshot={screenshot} videoUrl={streamvideo} latitude={latitude} longitude={longitude} />
         </div>
       </div>
     </div>
