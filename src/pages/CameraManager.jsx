@@ -69,7 +69,7 @@ export default function Dashboard() {
   const callback2_delete_device = async (id) => {
     try {
       const response = await fetch(
-        `http://localhost:8000/api/DeleteDevice?index=${id}`,
+        `http://localhost:8000/api/DeleteDevice?id=${id}`,
         {
           method: "DELETE",
         }
