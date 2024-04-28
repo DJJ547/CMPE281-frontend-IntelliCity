@@ -28,7 +28,7 @@ export default function Streaming(props) {
             </div>
           )}
           {selectedTab === "liveStream" && (
-            <div className="flex flex-col w-96 h-96 bg-white shadow-lg">
+            <div className="flex flex-col bg-white shadow-lg">
               <div className="flex justify-center">
                 <VideoPlayer url={props.videoUrl} />
               </div>

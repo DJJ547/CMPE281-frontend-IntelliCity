@@ -1,26 +1,24 @@
-import React, { useEffect, useRef } from 'react';
-import Hls from 'hls.js';
+import React, { useState } from 'react';
 
-function VideoPlayer({url}) {
-  const videoRef = useRef(null);
+function VideoPlayer({ url }) {
+  const [showPopup, setShowPopup] = useState(false);
+  const streamurl = `http://localhost:8000/api/StreamVideo/?url=${url}`;
 
-  useEffect(() => {
-    if (Hls.isSupported()) {
-      const hls = new Hls();
-      hls.loadSource(url);
-      hls.attachMedia(videoRef.current);
-      hls.on(Hls.Events.MANIFEST_PARSED, function() {
-        videoRef.current.play();
-      });
-    } else if (videoRef.current.canPlayType('application/vnd.apple.mpegurl')) {
-      videoRef.current.src = url;
-      videoRef.current.addEventListener('loadedmetadata', function() {
-        videoRef.current.play();
-      });
-    }
-  }, []);
-  if (!url) return <img src="https://png.pngtree.com/png-vector/20220809/ourmid/pngtree-live-streaming-icon-red-png-image_6104752.png" alt="placeholder" />;
-  return <video ref={videoRef} controls muted />;
+  if (!url) {
+    return <img src="https://png.pngtree.com/png-vector/20220809/ourmid/pngtree-live-streaming-icon-red-png-image_6104752.png" alt="placeholder" />;
+  }
+
+  return (
+    <div>
+      <img src={streamurl} onClick={() => setShowPopup(true)} />
+      {showPopup && (
+        <div style={{ position: 'fixed', top: 0, left: 0, width: '100%', height: '100%', backgroundColor: 'rgba(0, 0, 0, 0.5)' }}>
+          <button onClick={() => setShowPopup(false)} className="hover:bg-gray-500 text-white font-bold py-2 px-4 rounded">Close</button>
+          <img src={streamurl} style={{ width: '1280px', height: '720px' }} />
+        </div>
+      )}
+    </div>
+  );
 }
 
 export default VideoPlayer;

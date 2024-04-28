@@ -138,6 +138,20 @@ export default function Dashboard() {
     };
 
     fetchDevices();
+    return () => {
+      const cleanup = async () => {
+        try {
+          const response = await fetch("http://localhost:8000/api/StopStream/", {
+            method: "GET",
+          });
+          const data = await response.json();
+        }
+        catch (error) {
+          console.error("Error:", error);
+      };
+    }
+    cleanup();
+    };
   }, [updateUI]);
 
   //----------------------functions-------------------------------------------------------------
