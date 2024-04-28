@@ -4,6 +4,7 @@ import ADD from "../medias/plus.png";
 import view from "../medias/view.svg";
 import ButtonCRUD from "../components/ButtonCRUD";
 import Streaming from "../components/Streaming";
+import { districts } from "../utils/mapDistrictCoordinates";
 
 const container_height = "65vh";
 const container_width = "55vw";
@@ -41,7 +42,30 @@ export default function Dashboard() {
   const [screenshot, setscreenshot] = useState("");
   const [streamvideo, setstreamvideo] = useState("");
   const [selectedDevice, setSelectedDevice] = useState(null);
+//==================For View Button============================
+  //these are the map center states
+  const [mapCenterLat, setMapCenterLat] = useState(districts[0].lat);
+  const [mapCenterLng, setMapCenterLng] = useState(districts[0].lng);
 
+  //this is the map center call back function
+  const updateMapCoordinates = (lat, lng) => {
+    setMapCenterLat(lat);
+    setMapCenterLng(lng);
+  };
+
+  //this is the map zoom state
+  const [mapZoom, setMapZoom] = useState(6);
+  //this is the map zoom call back function
+  const updateMapZoomOnView = (zoom) => {
+    setMapZoom(zoom);
+  };
+
+  //this is the map selected marker state
+  const [selectedMarker, setSelectedMarker] = useState("");
+  //this is the map selected marker call back function
+  const updateSelectedMarker = (marker) => {
+    setSelectedMarker(marker);
+  };
   //----------------------variables-------------------------------------------------------------
   let device = Devices.cameras[0].filter(
     (item) => item.id === selectedDevice
@@ -199,12 +223,18 @@ export default function Dashboard() {
         <ButtonCRUD text="View" imgSrc={view} altText="Camera" />
       </div>
       <div className="flex w-auto h-2/3">
-        <Map
+      <Map
+          centerLatState={mapCenterLat}
+          centerLngState={mapCenterLng}
+          mapZoomState={mapZoom}
+          selectedMarkerState={selectedMarker}
+          updateSelectedMarkerCallback={updateSelectedMarker}
+          updateMapCoordinatesCallback={updateMapCoordinates}
+          updateMapZoomCallback={updateMapZoomOnView}
           getMapCoordinates={getMapCoordinates}
           deviceData={Devices}
           container_height={container_height}
           container_width={container_width}
-          Selected={Selected}
         />
         <div className="flex ml-5 flex-col ">
           <div className="flex flex-col w-96 h-96 bg-white shadow-lg mb-6">
