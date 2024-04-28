@@ -3,12 +3,12 @@ import Map from "../components/Map";
 import ADD from "../medias/plus.png";
 import view from "../medias/view.svg";
 import ButtonCRUD from "../components/ButtonCRUD";
-import { districts } from "../utils/mapDistrictCoordinates";
+import Streaming from "../components/Streaming";
 
 const container_height = "65vh";
 const container_width = "55vw";
 
-export default function CameraManager() {
+export default function Dashboard() {
   //----------------------states-------------------------------------------------------------
   const [selectLat, setSelectLat] = useState(null);
   const [selectLng, setSelectLng] = useState(null);
@@ -16,32 +16,6 @@ export default function CameraManager() {
     setSelectLat(lat);
     setSelectLng(lng);
   };
-
-  //==================For View Button============================
-  //these are the map center states
-  const [mapCenterLat, setMapCenterLat] = useState(districts[0].lat);
-  const [mapCenterLng, setMapCenterLng] = useState(districts[0].lng);
-
-  //this is the map center call back function
-  const updateMapCoordinates = (lat, lng) => {
-    setMapCenterLat(lat);
-    setMapCenterLng(lng);
-  };
-
-  //this is the map zoom state
-  const [mapZoom, setMapZoom] = useState(6);
-  //this is the map zoom call back function
-  const updateMapZoomOnView = () => {
-    setMapZoom(15);
-  };
-
-  //this is the map selected marker state
-  const [selectedMarker, setSelectedMarker] = useState("");
-  //this is the map selected marker call back function
-  const updateSelectedMarker = (marker) => {
-    setSelectedMarker(marker);
-  };
-  //==============================================================
 
   const [updateUI, setUpdateUI] = useState(false);
   const [Devices, setDevices] = useState({
@@ -61,8 +35,11 @@ export default function CameraManager() {
       12: [],
     },
   });
+  //for add
   const [searched_data, setSearchedData] = useState([]);
+
   const [screenshot, setscreenshot] = useState("");
+  const [streamvideo, setstreamvideo] = useState("");
   const [selectedDevice, setSelectedDevice] = useState(null);
 
   //----------------------variables-------------------------------------------------------------
@@ -70,20 +47,17 @@ export default function CameraManager() {
     (item) => item.id === selectedDevice
   )[0];
   let status = device ? device.status : "N/A";
+  let latitude = device ? device.latitude : null;
+  let longitude = device ? device.longitude : null;
   let location = device ? `(${device.latitude}, ${device.longitude})` : "N/A";
   let dist_id = device ? device.dist_id : "N/A";
   let address = device ? device.address : "N/A";
-
   //----------------------API Request-------------------------------------------------------------
   //callback function to disable the device
   const callback_switch_status = async (id) => {
     try {
-      const response = await fetch("http://localhost:8000/api/DisableDevice/", {
+      const response = await fetch(`http://localhost:8000/api/DisableDevice/?id=${id}`, {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ index: id }),
       });
       const data = await response.json();
       console.log("data", data);
@@ -97,7 +71,7 @@ export default function CameraManager() {
   const callback2_delete_device = async (id) => {
     try {
       const response = await fetch(
-        `http://localhost:8000/api/DeleteDevice?index=${id}`,
+        `http://localhost:8000/api/DeleteDevice?id=${id}`,
         {
           method: "DELETE",
         }
@@ -113,7 +87,7 @@ export default function CameraManager() {
   const callback3_add_device = async (id) => {
     try {
       const response = await fetch(
-        `http://localhost:8000/api/AddDevice/?index=${id}`,
+        `http://localhost:8000/api/AddDevice/?id=${id}`,
         {
           method: "POST",
         }
@@ -166,14 +140,30 @@ export default function CameraManager() {
     };
 
     fetchDevices();
-  }, [updateUI, mapCenterLat, mapCenterLng, mapZoom, selectedMarker]);
+    return () => {
+      const cleanup = async () => {
+        try {
+          const response = await fetch("http://localhost:8000/api/StopStream/", {
+            method: "GET",
+          });
+          const data = await response.json();
+        }
+        catch (error) {
+          console.error("Error:", error);
+      };
+    }
+    cleanup();
+    };
+  }, [updateUI]);
 
   //----------------------functions-------------------------------------------------------------
   const Selected = async (id) => {
-    let screenshot1 = Devices.cameras[0].filter((item) => item.id === id)[0]
-      .image_url;
+    let item = Devices.cameras[0].filter((item) => item.id === id)[0];
+    let screenshot1 = item.image_url;
+    let videoUrl = item.video_url;
     setSelectedDevice(id);
     setscreenshot(screenshot1);
+    setstreamvideo(videoUrl);
     setUpdateUI(!updateUI);
   };
 
@@ -210,13 +200,6 @@ export default function CameraManager() {
       </div>
       <div className="flex w-auto h-2/3">
         <Map
-          centerLatState={mapCenterLat}
-          centerLngState={mapCenterLng}
-          mapZoomState={mapZoom}
-          selectedMarkerState={selectedMarker}
-          updateSelectedMarkerCallback={updateSelectedMarker}
-          updateMapCoordinatesCallback={updateMapCoordinates}
-          updateMapZoomCallback={updateMapZoomOnView}
           getMapCoordinates={getMapCoordinates}
           deviceData={Devices}
           container_height={container_height}
@@ -249,14 +232,7 @@ export default function CameraManager() {
               </h3>
             </div>
           </div>
-          <div className="flex flex-col w-96 h-96 bg-white shadow-lg">
-            <div className="flex justify-between p-2">
-              <h2 className="text-lg font-bold">Camera Shot</h2>
-            </div>
-            <div className="flex justify-center">
-              <img src={screenshot} alt="screenshot" className="w-96 h-96" />
-            </div>
-          </div>
+          <Streaming screenshot={screenshot} videoUrl={streamvideo} latitude={latitude} longitude={longitude} />
         </div>
       </div>
     </div>
