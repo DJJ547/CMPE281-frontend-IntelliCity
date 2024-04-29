@@ -1,0 +1,130 @@
+{
+  "0": [
+    {"id": "200000000",
+    "timestamp": "2024-04-11T12:09:32",
+      "description": "1183-Trfc Collision-Unkn Inj",
+      "location": "I5 N / E St Onr",
+      "area": "CH",
+      "dist_id": 1,
+      "longitude": -123.167,
+      "latitude": 39.2378
+  },
+    {
+      "id": "22304415",
+      "timestamp": "2024-04-11T12:09:32",
+      "description": "1183-Trfc Collision-Unkn Inj",
+      "location": "I5 N / E St Onr",
+      "area": "CH",
+      "dist_id": 3,
+      "longitude": -122.145529,
+      "latitude": 39.159611
+    },
+    {
+      "id": "22304416",
+      "timestamp": "2024-04-11T23:11:59",
+      "description": "1125-Traffic Hazard",
+      "location": "Sr13 N / Sr13 N Sr24 E Con",
+      "area": "Oakland",
+      "dist_id": 4,
+      "longitude": -122.227311,
+      "latitude": 37.845311
+    },
+    {
+      "id": "22304418",
+      "timestamp": "2024-04-11T21:17:04",
+      "description": "1125-Traffic Hazard",
+      "location": "I805 N / H ST",
+      "area": "San Diego",
+      "dist_id": 11,
+      "longitude": -117.05527,
+      "latitude": 32.640538
+    },
+    {
+      "id": "22304420",
+      "timestamp": "2024-04-11T09:15:32",
+      "description": "1125-Traffic Hazard",
+      "location": "Sb38422 Sr38 Eo Onyx Summit 3 Mi",
+      "area": "Arrowhead",
+      "dist_id": 8,
+      "longitude": -116.754401,
+      "latitude": 34.218731
+    },
+    {
+      "id": "22304431",
+      "timestamp": "2024-04-11T09:34:44",
+      "description": "1179-Trfc Collision-1141 Enrt",
+      "location": "I5 N / Nees Ave Ofr",
+      "area": "Los Banos",
+      "dist_id": 6,
+      "longitude": -120.77145,
+      "latitude": 36.847005
+    }
+  ],
+  "1": [],
+  "2": [],
+  "3": [
+    {
+      "id": "22304415",
+      "timestamp": "2024-04-11T12:09:32",
+      "description": "1183-Trfc Collision-Unkn Inj",
+      "location": "I5 N / E St Onr",
+      "area": "CH",
+      "dist_id": 3,
+      "longitude": -122.145529,
+      "latitude": 39.159611
+    }
+  ],
+  "4": [
+    {
+      "id": "22304416",
+      "timestamp": "2024-04-11T23:11:59",
+      "description": "1125-Traffic Hazard",
+      "location": "Sr13 N / Sr13 N Sr24 E Con",
+      "area": "Oakland",
+      "dist_id": 4,
+      "longitude": -122.227311,
+      "latitude": 37.845311
+    }
+  ],
+  "5": [],
+  "6": [
+    {
+      "id": "22304431",
+      "timestamp": "2024-04-11T09:34:44",
+      "description": "1179-Trfc Collision-1141 Enrt",
+      "location": "I5 N / Nees Ave Ofr",
+      "area": "Los Banos",
+      "dist_id": 6,
+      "longitude": -120.77145,
+      "latitude": 36.847005
+    }
+  ],
+  "7": [],
+  "8": [
+    {
+      "id": "22304420",
+      "timestamp": "2024-04-11T09:15:32",
+      "description": "1125-Traffic Hazard",
+      "location": "Sb38422 Sr38 Eo Onyx Summit 3 Mi",
+      "area": "Arrowhead",
+      "dist_id": 8,
+      "longitude": -116.754401,
+      "latitude": 34.218731
+    }
+  ],
+  "9": [],
+  "10": [],
+  "11": [
+    {
+      "id": "22304418",
+      "timestamp": "2024-04-11T21:17:04",
+      "description": "1125-Traffic Hazard",
+      "location": "I805 N / H ST",
+      "area": "San Diego",
+      "dist_id": 11,
+      "longitude": -117.05527,
+      "latitude": 32.640538
+    }
+  ],
+  "12": []
+}

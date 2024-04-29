@@ -1,0 +1,318 @@
+{
+  "all": {
+    "0": [
+      {
+        "id": "cam1",
+        "dist_id": 1,
+        "longitude": -123.808,
+        "latitude": 39.42002,
+        "status": "active",
+        "type": "camera"
+      },
+      {
+        "id": "cam2",
+        "dist_id": 2,
+        "longitude": -122.34276,
+        "latitude": 41.34496,
+        "status": "active",
+        "type": "camera"
+      },
+      {
+        "id": "cam3",
+        "dist_id": 3,
+        "longitude": -121.510528,
+        "latitude": 38.481128,
+        "status": "active",
+        "type": "camera"
+      },
+      {
+        "id": "cam4",
+        "dist_id": 4,
+        "longitude": -122.27291,
+        "latitude": 37.82539,
+        "status": "active",
+        "type": "camera"
+      },
+      {
+        "id": "cam5",
+        "dist_id": 5,
+        "longitude": -121.653231,
+        "latitude": 36.687188,
+        "status": "active",
+        "type": "camera"
+      },
+      {
+        "id": "cam6",
+        "dist_id": 6,
+        "longitude": -118.92301,
+        "latitude": 34.912901,
+        "status": "active",
+        "type": "camera"
+      },
+      {
+        "id": "cam7",
+        "dist_id": 7,
+        "longitude": -118.2215,
+        "latitude": 34.0837,
+        "status": "active",
+        "type": "camera"
+      },
+      {
+        "id": "cam8",
+        "dist_id": 8,
+        "longitude": -117.704026,
+        "latitude": 34.081538,
+        "status": "active",
+        "type": "camera"
+      },
+      {
+        "id": "cam9",
+        "dist_id": 9,
+        "longitude": -118.91848,
+        "latitude": 37.64111,
+        "status": "active",
+        "type": "camera"
+      },
+      {
+        "id": "cam10",
+        "dist_id": 10,
+        "longitude": -121.28509,
+        "latitude": 37.84451,
+        "status": "active",
+        "type": "camera"
+      },
+      {
+        "id": "cam11",
+        "dist_id": 11,
+        "longitude": -117.160577,
+        "latitude": 32.772126,
+        "status": "active",
+        "type": "camera"
+      },
+      {
+        "id": "cam12",
+        "dist_id": 12,
+        "longitude": -117.97886,
+        "latitude": 33.85629,
+        "status": "active",
+        "type": "camera"
+      },
+      {
+        "id": "iot1",
+        "dist_id": 1,
+        "longitude": -122.808,
+        "latitude": 42.42002,
+        "status": "active",
+        "type": "iot"
+      },
+      {
+        "id": "iot2",
+        "dist_id": 2,
+        "longitude": -121.34276,
+        "latitude": 40.34496,
+        "status": "active",
+        "type": "iot"
+      },
+      {
+        "id": "iot3",
+        "dist_id": 3,
+        "longitude": -120.510528,
+        "latitude": 37.481128,
+        "status": "active",
+        "type": "iot"
+      },
+      {
+        "id": "iot4",
+        "dist_id": 4,
+        "longitude": -121.27291,
+        "latitude": 36.82539,
+        "status": "active",
+        "type": "iot"
+      },
+      {
+        "id": "drone1",
+        "dist_id": 1,
+        "longitude": -121.27291,
+        "latitude": 36.99539,
+        "status": "active",
+        "type": "drone"
+      }
+    ],
+    "1": [
+      {
+        "id": "cam1",
+        "dist_id": 1,
+        "longitude": -123.808,
+        "latitude": 39.42002,
+        "status": "active",
+        "type": "camera"
+      },
+      {
+        "id": "iot1",
+        "dist_id": 1,
+        "longitude": -122.808,
+        "latitude": 42.42002,
+        "status": "active",
+        "type": "iot"
+      },
+      {
+        "id": "iot2",
+        "dist_id": 2,
+        "longitude": -121.34276,
+        "latitude": 40.34496,
+        "status": "active",
+        "type": "iot"
+      },
+      {
+        "id": "iot3",
+        "dist_id": 3,
+        "longitude": -120.510528,
+        "latitude": 37.481128,
+        "status": "active",
+        "type": "iot"
+      },
+      {
+        "id": "iot4",
+        "dist_id": 4,
+        "longitude": -121.27291,
+        "latitude": 36.82539,
+        "status": "active",
+        "type": "iot"
+      },
+      {
+        "id": "iot5",
+        "dist_id": 5,
+        "longitude": -120.653231,
+        "latitude": 35.687188,
+        "status": "active",
+        "type": "iot"
+      },
+      {
+        "id": "iot6",
+        "dist_id": 6,
+        "longitude": -117.92301,
+        "latitude": 33.912901,
+        "status": "active",
+        "type": "iot"
+      },
+      {
+        "id": "iot7",
+        "dist_id": 7,
+        "longitude": -117.2215,
+        "latitude": 33.0837,
+        "status": "active",
+        "type": "iot"
+      }
+    ],
+    "2": [
+      {
+        "id": "cam2",
+        "dist_id": 2,
+        "longitude": -122.34276,
+        "latitude": 41.34496,
+        "status": "active",
+        "type": "camera"
+      }
+    ],
+    "3": [
+      {
+        "id": "cam3",
+        "dist_id": 3,
+        "longitude": -121.510528,
+        "latitude": 38.481128,
+        "status": "active",
+        "type": "camera"
+      }
+    ],
+    "4": [
+      {
+        "id": "cam4",
+        "dist_id": 4,
+        "longitude": -122.27291,
+        "latitude": 37.82539,
+        "status": "active",
+        "type": "camera"
+      }
+    ],
+    "5": [
+      {
+        "id": "cam5",
+        "dist_id": 5,
+        "longitude": -121.653231,
+        "latitude": 36.687188,
+        "status": "active",
+        "type": "camera"
+      }
+    ],
+    "6": [
+      {
+        "id": "cam6",
+        "dist_id": 6,
+        "longitude": -118.92301,
+        "latitude": 34.912901,
+        "status": "active",
+        "type": "camera"
+      }
+    ],
+    "7": [
+      {
+        "id": "cam7",
+        "dist_id": 7,
+        "longitude": -118.2215,
+        "latitude": 34.0837,
+        "status": "active",
+        "type": "camera"
+      }
+    ],
+    "8": [
+      {
+        "id": "cam8",
+        "dist_id": 8,
+        "longitude": -117.704026,
+        "latitude": 34.081538,
+        "status": "active",
+        "type": "camera"
+      }
+    ],
+    "9": [
+      {
+        "id": "cam9",
+        "dist_id": 9,
+        "longitude": -118.91848,
+        "latitude": 37.64111,
+        "status": "active",
+        "type": "camera"
+      }
+    ],
+    "10": [
+      {
+        "id": "cam10",
+        "dist_id": 10,
+        "longitude": -121.28509,
+        "latitude": 37.84451,
+        "status": "active",
+        "type": "camera"
+      }
+    ],
+    "11": [
+      {
+        "id": "cam11",
+        "dist_id": 11,
+        "longitude": -117.160577,
+        "latitude": 32.772126,
+        "status": "active",
+        "type": "camera"
+      }
+    ],
+    "12": [
+      {
+        "id": "cam12",
+        "dist_id": 12,
+        "longitude": -117.97886,
+        "latitude": 33.85629,
+        "status": "active",
+        "type": "camera"
+      }
+    ]
+  }
+}
