@@ -76,6 +76,7 @@ export default function Dashboard() {
   let location = device ? `(${device.latitude}, ${device.longitude})` : "N/A";
   let dist_id = device ? device.dist_id : "N/A";
   let address = device ? device.address : "N/A";
+  let agent = localStorage.getItem("is_agent");
   //----------------------API Request-------------------------------------------------------------
   //callback function to disable the device
   const callback_switch_status = async (id) => {
@@ -239,30 +240,34 @@ export default function Dashboard() {
   return (
     <div className="flex flex-col w-full h-full">
       <div className="flex mb-4 justify-between">
-        <ButtonCRUD
-          text="Add"
-          imgSrc={ADD}
-          altText="Camera"
-          data={searched_data}
-          callback3={callback3_add_device}
-          callback4={callback4_search_results}
-        />
-        <ButtonCRUD
-          text="Delete"
-          imgSrc="https://upload.wikimedia.org/wikipedia/commons/5/5e/Flat_minus_icon_-_red.svg"
-          altText="Camera"
-          data={Devices.cameras[0]}
-          callback_switch_status={callback_switch_status}
-          callback_delete_device={callback2_delete_device}
-        />
-        <ButtonCRUD
-          text="Update"
-          imgSrc="https://upload.wikimedia.org/wikipedia/commons/6/62/Eo_circle_orange_repeat.svg"
-          altText="Camera"
-          data={Devices.cameras[0]}
-          callback_switch_status={callback_switch_status}
-          callback_delete_device={callback2_delete_device}
-        />
+      {agent !== '0' && (
+        <>
+          <ButtonCRUD
+            text="Add"
+            imgSrc={ADD}
+            altText="Camera"
+            data={searched_data}
+            callback3={callback3_add_device}
+            callback4={callback4_search_results}
+          />
+          <ButtonCRUD
+            text="Delete"
+            imgSrc="https://upload.wikimedia.org/wikipedia/commons/5/5e/Flat_minus_icon_-_red.svg"
+            altText="Camera"
+            data={Devices.cameras[0]}
+            callback_switch_status={callback_switch_status}
+            callback_delete_device={callback2_delete_device}
+          />
+          <ButtonCRUD
+            text="Update"
+            imgSrc="https://upload.wikimedia.org/wikipedia/commons/6/62/Eo_circle_orange_repeat.svg"
+            altText="Camera"
+            data={Devices.cameras[0]}
+            callback_switch_status={callback_switch_status}
+            callback_delete_device={callback2_delete_device}
+          />
+        </>
+      )}
 
         <ButtonCRUD
           text="View"
