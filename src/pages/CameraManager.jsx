@@ -198,7 +198,19 @@ export default function Dashboard() {
     };
   }, [updateUI]);
 
-  const handleSearchSubmit = async (mapCenterLatInput, mapCenterLngInput) => {
+  const handleSearchSubmit = async (mapCenterLatInput, mapCenterLngInput, id) => {
+    if (id !== "") {
+      id = parseInt(id);
+      let marker = Devices.cameras[0].filter((device) => device.id === id)[0];
+      setMapCenterLat(parseFloat(marker.latitude));
+      setMapCenterLng(parseFloat(marker.longitude));
+      setMapZoom(15);
+      setSelectedMarker(marker);
+      setSelectLat(marker.latitude);
+      setSelectLng(marker.longitude);
+      return;
+    }
+
     setMapCenterLat(parseFloat(mapCenterLatInput));
     setMapCenterLng(parseFloat(mapCenterLngInput));
     let marker = Devices.cameras[0].find(
@@ -256,6 +268,7 @@ export default function Dashboard() {
           text="View"
           imgSrc={view}
           altText="Camera"
+          data={Devices.cameras[0]}
           callback_view_device={handleSearchSubmit}
         />
       </div>

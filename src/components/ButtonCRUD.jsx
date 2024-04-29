@@ -23,14 +23,17 @@ export default function ButtonCRUD(props) {
     //if the button is view, do nothing
     if (props.text === "View") {
       ViewView();
+      return;
     }
     //if the button is add, show the add window
     if (props.text === "Add") {
       ViewAddWindow();
+      return;
     }
     //if the button is delete or update, show the manament window
     else {
       ViewPopUp();
+      return;
     }
   }
   return (
@@ -66,6 +69,7 @@ export default function ButtonCRUD(props) {
       )}
       {showView && (
         <ViewDevice
+          data = {props.data}
           onClick={() => setShowView(false)}
           callback_view_device={props.callback_view_device}
         />
