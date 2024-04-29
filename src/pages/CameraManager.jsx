@@ -235,6 +235,7 @@ export default function Dashboard() {
           deviceData={Devices}
           container_height={container_height}
           container_width={container_width}
+          Selected={Selected}
         />
         <div className="flex ml-5 flex-col ">
           <div className="flex flex-col w-96 h-96 bg-white shadow-lg mb-6">
