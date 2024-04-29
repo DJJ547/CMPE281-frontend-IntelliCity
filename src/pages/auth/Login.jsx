@@ -12,9 +12,8 @@ export default function Login() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log(formData);
 
-    fetch(`${process.env.REACT_APP_API_URL}auth/login/`, {
+    fetch(`${process.env.REACT_APP_DATA_SERVER_URL}auth/login/`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -28,7 +27,6 @@ export default function Login() {
         return response.json();
       })
       .then((data) => {
-        console.log("Token:", data.token);
         localStorage.setItem("token", data.token);
         localStorage.setItem("email", data.email);
         localStorage.setItem("firstname", data.firstname);
@@ -45,7 +43,7 @@ export default function Login() {
     <div className="flex flex-col items-center justify-center h-screen">
       <div className="flex space-x-5">
         <img src={LoginIcon} alt="icon" />
-        <h1 class="mb-2 mt-0 text-5xl font-medium leading-tight text-primary">
+        <h1 className="mb-2 mt-0 text-5xl font-medium leading-tight text-primary">
           IntelliCity
         </h1>
       </div>

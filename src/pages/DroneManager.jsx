@@ -3,6 +3,8 @@ import Map from "../components/Map";
 import ADD from "../medias/plus.png";
 import view from "../medias/view.svg";
 import { districts } from "../utils/mapDistrictCoordinates";
+import StreamingDrone from "../components/StreamingDrone";
+
 
 
 const container_height = "65vh";
@@ -67,8 +69,10 @@ export default function DroneManager() {
       12: [],
     },
   });
-  const [searched_data, setSearchedData] = useState([]);
-  const [screenshot, setscreenshot] = useState("");
+  //const [searched_data, setSearchedData] = useState([]);
+  //const [screenshot, setscreenshot] = useState("");
+  //const [streamvideo, setstreamvideo] = useState("");
+
   const [selectedDevice, setSelectedDevice] = useState(null);
 
  //return map component selected marker coodinates
@@ -104,7 +108,8 @@ export default function DroneManager() {
   // Function to fetch video URL for a given drone ID
   const fetchVideoUrlForDrone = async (droneId) => {
     try {
-      const response = await fetch("http://127.0.0.1:8000/getVideoUrls", {
+        const response = await fetch("http://127.0.0.1:8000/getVideoUrls", {
+        //const response = await fetch("http://127.0.0.1:8000/StreamVideo", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -556,9 +561,11 @@ export default function DroneManager() {
             {selectedVideoUrl && (
               <div>
                 <h2>Video</h2>
-                <video src={selectedVideoUrl} controls />
+                {/*<video src={selectedVideoUrl} controls /> */}
+                <StreamingDrone  droneId={viewDroneData.id} />
               </div>
             )}
+            {/*<Streaming  videoUrl={selectedVideoUrl} latitude={viewDroneData.latitude} longitude={viewDroneData.longitude} /> */}
 
           </div>
         </div>
