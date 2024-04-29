@@ -3,7 +3,8 @@ import StatBox from "../components/dashboard/StatBox";
 import WeatherBox from "../components/dashboard/WeatherBox";
 import Map from "../components/Map";
 import CustomChart from "../components/dashboard/CustomChart";
-import allDevicesData from "../mockData/allDevices.json";
+import Notifications from "../components/Notifications";
+// import allDevicesData from "../mockData/allDevices.json";
 import allIncidents from "../mockData/allIncidents.json";
 import allCongestions from "../mockData/allCongestions.json";
 import { districts } from "../utils/mapDistrictCoordinates";
@@ -11,28 +12,62 @@ import { districts } from "../utils/mapDistrictCoordinates";
 const container_height = "63vh";
 const container_width = "50vw";
 
-const donutChartData = {
-  Cameras: [
-    { name: "active", value: 45 },
-    { name: "defective", value: 2 },
-    { name: "active", value: 3 },
-  ],
-  Iots: [
-    { name: "active", value: 75 },
-    { name: "defective", value: 10 },
-    { name: "active", value: 15 },
-  ],
-  Drones: [
-    { name: "active", value: 9 },
-    { name: "defective", value: 1 },
-    { name: "active", value: 10 },
-  ],
-};
-
 export default function Dashboard() {
   //return map component selected marker coodinates
   const [selectLat, setSelectLat] = useState(null);
   const [selectLng, setSelectLng] = useState(null);
+
+  const [statData, setStatData] = useState({
+    Cameras: [
+      { name: "active", value: 0 },
+      { name: "inactive", value: 0 },
+    ],
+    Iots: [
+      { name: "active", value: 0 },
+      { name: "inactive", value: 0 },
+    ],
+    Drones: [
+      { name: "active", value: 0 },
+      { name: "inactive", value: 0 },
+    ],
+    Incidents: 0,
+    Congestions: 0,
+  });
+
+  const processStatData = (allDevices) => {
+    let processed_data = {
+      Cameras: [
+        { name: "active", value: 0 },
+        { name: "inactive", value: 0 },
+      ],
+      Iots: [
+        { name: "active", value: 0 },
+        { name: "inactive", value: 0 },
+      ],
+      Drones: [
+        { name: "active", value: 0 },
+        { name: "inactive", value: 0 },
+      ],
+      Incidents: 0,
+      Congestions: 0,
+    };
+    allDevices.all[0].forEach((device) => {
+      if (device.status === "active" && device.type === "camera") {
+        processed_data.Cameras[0].value += 1;
+      } else if (device.status === "inactive" && device.type === "camera") {
+        processed_data.Cameras[1].value += 1;
+      } else if (device.status === "active" && device.type === "iot") {
+        processed_data.Iots[0].value += 1;
+      } else if (device.status === "inactive" && device.type === "iot") {
+        processed_data.Iots[1].value += 1;
+      } else if (device.status === "active" && device.type === "drone") {
+        processed_data.Drones[0].value += 1;
+      } else if (device.status === "inactive" && device.type === "drone") {
+        processed_data.Drones[1].value += 1;
+      }
+    });
+    return processed_data;
+  };
 
   //==================For View Button============================
   //these are the map center states
@@ -48,8 +83,8 @@ export default function Dashboard() {
   //this is the map zoom state
   const [mapZoom, setMapZoom] = useState(6);
   //this is the map zoom call back function
-  const updateMapZoomOnView = () => {
-    setMapZoom(15);
+  const updateMapZoomOnView = (zoom) => {
+    setMapZoom(zoom);
   };
 
   //this is the map selected marker state
@@ -58,9 +93,21 @@ export default function Dashboard() {
   const updateSelectedMarker = (marker) => {
     setSelectedMarker(marker);
   };
-
   useEffect(() => {
-    setAllDevices(allDevicesData)
+    fetch(`${process.env.REACT_APP_DATA_SERVER_URL}dashboard/getAllDevices`)
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error("bad request");
+        }
+        return response.json();
+      })
+      .then((data) => {
+        setAllDevices(data);
+        setStatData(processStatData(data))
+      })
+      .catch((error) => {
+        console.error("error:", error);
+      });
   }, [mapCenterLat, mapCenterLng, mapZoom, selectedMarker]);
   //==============================================================
 
@@ -68,23 +115,22 @@ export default function Dashboard() {
   const [mapCenterLngInput, setMapCenterLngInput] = useState("");
 
   const [allDevices, setAllDevices] = useState({
-    "all": {
-      "0": [],
-      "1": [],
-      "2": [],
-      "3": [],
-      "4": [],
-      "5": [],
-      "6": [],
-      "7": [],
-      "8": [],
-      "9": [],
-      "10": [],
-      "11": [],
-      "12": []
-    }
-  }
-  );
+    all: {
+      0: [],
+      1: [],
+      2: [],
+      3: [],
+      4: [],
+      5: [],
+      6: [],
+      7: [],
+      8: [],
+      9: [],
+      10: [],
+      11: [],
+      12: [],
+    },
+  });
 
   const getMapCoordinates = (lat, lng) => {
     setSelectLat(lat);
@@ -103,17 +149,19 @@ export default function Dashboard() {
     e.preventDefault();
     setMapCenterLat(parseFloat(mapCenterLatInput));
     setMapCenterLng(parseFloat(mapCenterLngInput));
-    console.log(mapCenterLatInput)
-    console.log(mapCenterLngInput)
-    console.log(typeof(allDevices.all[0].latitude))
+    console.log(mapCenterLatInput);
+    console.log(mapCenterLngInput);
+    console.log(typeof allDevices.all[0].latitude);
     let marker = allDevices.all[0].find(
       (device) =>
-      parseFloat(device.latitude) === parseFloat(mapCenterLatInput) &&
-      parseFloat(device.longitude) === parseFloat(mapCenterLngInput)
+        parseFloat(device.latitude) === parseFloat(mapCenterLatInput) &&
+        parseFloat(device.longitude) === parseFloat(mapCenterLngInput)
     );
     console.log(marker);
     setMapZoom(15);
     setSelectedMarker(marker);
+    setSelectLat(mapCenterLatInput);
+    setSelectLng(mapCenterLngInput);
   };
 
   return (
@@ -123,21 +171,21 @@ export default function Dashboard() {
           imgKey="photo_camera"
           name="Cameras"
           backgroundColor="bg-red-600"
-          donutChartData={donutChartData}
+          donutChartData={statData}
           size="w-60 h-32"
         />
         <StatBox
           imgKey="sensors"
           name="Iots"
           backgroundColor="bg-red-600"
-          donutChartData={donutChartData}
+          donutChartData={statData}
           size="w-60 h-32"
         />
         <StatBox
           imgKey="flight"
           name="Drones"
           backgroundColor="bg-red-600"
-          donutChartData={donutChartData}
+          donutChartData={statData}
           size="w-60 h-32"
         />
         <StatBox
@@ -149,14 +197,14 @@ export default function Dashboard() {
         />
         <StatBox
           imgKey="warning"
-          name="Congestion"
+          name="Congestions"
           backgroundColor="bg-blue-600"
           statNum="21"
           size="w-48 h-32"
         />
         <WeatherBox latState={selectLat} lngState={selectLng} />
       </div>
-      <div className="flex">
+      {/* <div className="flex">
         <form onSubmit={handleSearchSubmit}>
           <label>
             Latitude:
@@ -178,7 +226,7 @@ export default function Dashboard() {
           </label>
           <button type="submit">Submit</button>
         </form>
-      </div>
+      </div> */}
       <div className="flex w-full h-2/3">
         <Map
           centerLatState={mapCenterLat}
@@ -196,26 +244,7 @@ export default function Dashboard() {
           container_width={container_width}
         />
         <div className="flex flex-col w-full h-full">
-          <h1 className="w-auto text-center text-lg font-bold">
-            Notifications:
-          </h1>
-          <div className="flex h-80 bg-white overflow-y-scroll shadow-xl shadow-blue-gray-900 ml-5 mb-7 p-2">
-            <ul className="w-96 text-surface dark:text-white">
-              <li className="w-full border-b-2 border-neutral-100 py-2 dark:border-white/10">
-                An item
-              </li>
-              <li className="w-full border-b-2 border-neutral-100 py-2 dark:border-white/10">
-                A second item
-              </li>
-              <li className="w-full border-b-2 border-neutral-100 py-2 dark:border-white/10">
-                A third item
-              </li>
-              <li className="w-full border-b-2 border-neutral-100 py-2 dark:border-white/10">
-                A fourth item
-              </li>
-              <li className="w-full py-4">And a fifth one</li>
-            </ul>
-          </div>
+          <Notifications />
           <CustomChart
             incidents={allIncidents[0]}
             congestions={allCongestions[0]}

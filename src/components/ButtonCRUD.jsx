@@ -3,6 +3,7 @@ import PopupWindow from "../components/PopupWindow";
 import AddDevice from "../components/AddDevice";
 
 export default function ButtonCRUD(props) {
+  //show the add window
   const [showAddWindow, setShowAddWindow] = useState(false);
   function ViewAddWindow() {
     setShowAddWindow(true);
@@ -13,12 +14,16 @@ export default function ButtonCRUD(props) {
     setShowPopup(true);
   }
   function handleOnClick() {
+    //if the button is view, do nothing
     if (props.text === "View") {
         return;
     }
+    //if the button is add, show the add window
     if (props.text === "Add") {
       ViewAddWindow();
-    } else {
+    }
+    //if the button is delete or update, show the manament window
+    else {
       ViewPopUp();
     }
   }

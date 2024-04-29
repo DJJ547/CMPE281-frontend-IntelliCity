@@ -2,8 +2,7 @@ import React, { useState, useEffect } from "react";
 
 export default function WeatherBox(props) {
   const [weatherData, setWeatherData] = useState(null);
-  const API_KEY = "872cf2a902a7e1d928e849636f00470f";
-  const API_URL = `https://api.openweathermap.org/data/2.5/weather?lat=${props.latState}&lon=${props.lngState}&appid=${API_KEY}`;
+  const API_URL = `https://api.openweathermap.org/data/2.5/weather?lat=${props.latState}&lon=${props.lngState}&appid=${process.env.REACT_APP_OPEN_WHEATHER_MAP_API_KEY}`;
 
   useEffect(() => {
     if (props.latState === null && props.lngState === null) {
