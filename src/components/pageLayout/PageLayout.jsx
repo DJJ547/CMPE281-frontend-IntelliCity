@@ -7,7 +7,7 @@ export default function PageLayout({ children }) {
       <div className="relative w-full top-0">
         <Topbar />
       </div>
-      <div className="flex left-0">
+      <div className="flex w-full h-auto">
         <Sidebar />
         <main className="m-[1rem]">{children}</main>
       </div>
