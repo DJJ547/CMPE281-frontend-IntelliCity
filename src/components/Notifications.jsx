@@ -39,13 +39,12 @@ export default function Notifications(props) {
             .reverse()
             .map((notification) => (
               <li
-                key={notification.notification_id}
+                key={notification.id}
                 className="flex w-full border-b-2 border-neutral-300 py-2 dark:border-white/10"
                 style={{ whiteSpace: 'nowrap' }} 
               >
                 <p className="text-orange-700 font-bold">{notification.timestamp.replace(/[TZ]/g, ' ')}, </p>
-                <p className="font-bold">{notification.source_type} </p>
-                <p>#{notification.source_id} {notification.description} at: </p>
+                <p className="font-bold">{notification.type} </p>
                 <span className="font-bold underline underline-offset-2">({notification.latitude}, {notification.longitude})</span>
               </li>
             ))}

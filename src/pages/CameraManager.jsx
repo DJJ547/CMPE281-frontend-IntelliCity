@@ -38,7 +38,7 @@ export default function Dashboard() {
   });
   //for add
   const [searched_data, setSearchedData] = useState([]);
-
+  const [incidents, setIncidents] = useState([]);
   const [screenshot, setscreenshot] = useState("");
   const [streamvideo, setstreamvideo] = useState("");
   const [selectedDevice, setSelectedDevice] = useState(null);
@@ -162,8 +162,21 @@ export default function Dashboard() {
         console.error("Error:", error);
       }
     };
+    const fetchIncidences = async () => {
+      try {
+        const response = await fetch(
+          "http://localhost:8000/api/GetAllIncidences/",
+          { method: "GET" }
+        );
+        const data = await response.json();
+        setIncidents(data);
+      } catch (error) {
+        console.error("Error:", error);
+      }
+    };
 
     fetchDevices();
+    fetchIncidences();
     return () => {
       const cleanup = async () => {
         try {
@@ -232,6 +245,7 @@ export default function Dashboard() {
           updateMapCoordinatesCallback={updateMapCoordinates}
           updateMapZoomCallback={updateMapZoomOnView}
           getMapCoordinates={getMapCoordinates}
+          incidentData={incidents}
           deviceData={Devices}
           container_height={container_height}
           container_width={container_width}
@@ -263,7 +277,7 @@ export default function Dashboard() {
               </h3>
             </div>
           </div>
-          <Streaming screenshot={screenshot} videoUrl={streamvideo} latitude={latitude} longitude={longitude} />
+          <Streaming screenshot={screenshot} videoUrl={streamvideo} latitude={latitude} longitude={longitude} district={dist_id} />
         </div>
       </div>
     </div>
