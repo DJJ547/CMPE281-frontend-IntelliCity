@@ -1,31 +1,13 @@
 import React, { useState } from 'react';
 
-function VideoPlayer({ droneId }) {
-    const [showPopup, setShowPopup] = useState(false);
-    
-    const streamurl = `http://localhost:8000/StreamVideo/?id=${droneId}`;
+function VideoPlayer({ url, latitude, longitude}) {
+  const [showPopup, setShowPopup] = useState(false);
+  const streamurl = `http://localhost:8000/api/StreamVideo/?url=${url}&latitude=${latitude}&longitude=${longitude}`;
 
-  if (!droneId) {
+  if (!url || !latitude || !longitude) {
     return <img src="https://png.pngtree.com/png-vector/20220809/ourmid/pngtree-live-streaming-icon-red-png-image_6104752.png" alt="placeholder" />;
   }
-  /*const queryParams = new URLSearchParams({
-    url: url,
-    latitude: latitude,
-    longitude: longitude
-  });*/
-  
-  /*Drone Stream test
-    console.log(props.droneId)
-    const streamurl = fetch("http://127.0.0.1:8000/StreamVideo", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    
-    body: JSON.stringify({ id: props.droneId }),
-  });*/
-  
-  
+
   return (
     <div>
       <img src={streamurl} onClick={() => setShowPopup(true)} />
