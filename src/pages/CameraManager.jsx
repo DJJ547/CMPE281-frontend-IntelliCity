@@ -42,7 +42,7 @@ export default function Dashboard() {
   const [screenshot, setscreenshot] = useState("");
   const [streamvideo, setstreamvideo] = useState("");
   const [selectedDevice, setSelectedDevice] = useState(null);
-//==================For View Button============================
+  //==================For View Button============================
   //these are the map center states
   const [mapCenterLat, setMapCenterLat] = useState(districts[0].lat);
   const [mapCenterLng, setMapCenterLng] = useState(districts[0].lng);
@@ -80,9 +80,12 @@ export default function Dashboard() {
   //callback function to disable the device
   const callback_switch_status = async (id) => {
     try {
-      const response = await fetch(`http://localhost:8000/api/DisableDevice/?id=${id}`, {
-        method: "POST",
-      });
+      const response = await fetch(
+        `http://localhost:8000/api/DisableDevice/?id=${id}`,
+        {
+          method: "POST",
+        }
+      );
       const data = await response.json();
       console.log("data", data);
       setUpdateUI(!updateUI);
@@ -180,19 +183,35 @@ export default function Dashboard() {
     return () => {
       const cleanup = async () => {
         try {
-          const response = await fetch("http://localhost:8000/api/StopStream/", {
-            method: "GET",
-          });
+          const response = await fetch(
+            "http://localhost:8000/api/StopStream/",
+            {
+              method: "GET",
+            }
+          );
           const data = await response.json();
-        }
-        catch (error) {
+        } catch (error) {
           console.error("Error:", error);
+        }
       };
-    }
-    cleanup();
+      cleanup();
     };
   }, [updateUI]);
 
+  const handleSearchSubmit = async (mapCenterLatInput, mapCenterLngInput) => {
+    setMapCenterLat(parseFloat(mapCenterLatInput));
+    setMapCenterLng(parseFloat(mapCenterLngInput));
+    let marker = Devices.cameras[0].find(
+      (device) =>
+        parseFloat(device.latitude) === parseFloat(mapCenterLatInput) &&
+        parseFloat(device.longitude) === parseFloat(mapCenterLngInput)
+    );
+
+    setMapZoom(15);
+    setSelectedMarker(marker);
+    setSelectLat(mapCenterLatInput);
+    setSelectLng(mapCenterLngInput);
+  };
   //----------------------functions-------------------------------------------------------------
   const Selected = async (id) => {
     let item = Devices.cameras[0].filter((item) => item.id === id)[0];
@@ -233,10 +252,15 @@ export default function Dashboard() {
           callback_delete_device={callback2_delete_device}
         />
 
-        <ButtonCRUD text="View" imgSrc={view} altText="Camera" />
+        <ButtonCRUD
+          text="View"
+          imgSrc={view}
+          altText="Camera"
+          callback_view_device={handleSearchSubmit}
+        />
       </div>
       <div className="flex w-auto h-2/3">
-      <Map
+        <Map
           centerLatState={mapCenterLat}
           centerLngState={mapCenterLng}
           mapZoomState={mapZoom}
@@ -277,7 +301,13 @@ export default function Dashboard() {
               </h3>
             </div>
           </div>
-          <Streaming screenshot={screenshot} videoUrl={streamvideo} latitude={latitude} longitude={longitude} district={dist_id} />
+          <Streaming
+            screenshot={screenshot}
+            videoUrl={streamvideo}
+            latitude={latitude}
+            longitude={longitude}
+            district={dist_id}
+          />
         </div>
       </div>
     </div>
