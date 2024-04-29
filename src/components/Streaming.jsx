@@ -3,16 +3,9 @@ import VideoPlayer from "./VideoPlayer";
 
 
 export default function Streaming(props) {
-    //const [selectedTab, setSelectedTab] = useState("liveStream");
+    const [selectedTab, setSelectedTab] = useState("liveStream");
   return (
-    <div className="flex flex-col bg-white shadow-lg">
-      <div className="flex justify-center">
-        <VideoPlayer droneId={props.droneId} />
-      </div>
-    </div>
-  );
-}
-    /*<div>
+    <div>
         <div className="flex justify-between p-2">
             <button
               onClick={() => setSelectedTab("capture")}
@@ -43,4 +36,4 @@ export default function Streaming(props) {
           )}
     </div>
   );
-}*/
+}
