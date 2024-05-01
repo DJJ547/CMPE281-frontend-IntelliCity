@@ -5,8 +5,6 @@ import view from "../medias/view.svg";
 import { districts } from "../utils/mapDistrictCoordinates";
 import StreamingDrone from "../components/StreamingDrone";
 
-
-
 const container_height = "65vh";
 const container_width = "55vw";
 
@@ -14,7 +12,6 @@ export default function DroneManager() {
   const [showAddForm, setShowAddForm] = useState(false);
   const [showDeleteForm, setShowDeleteForm] = useState(false);
   const [showUpdateForm, setShowUpdateForm] = useState(false);
-  //adding view form for view button
   const [showViewForm, setShowViewForm] = useState(false);
 
   const [formData, setFormData] = useState({
@@ -25,6 +22,7 @@ export default function DroneManager() {
     timestamp: "",
     dist_id: "",
     status: "",
+    video:"",
   });
   const [deleteFormData, setDeleteFormData] = useState({
     id: ""
@@ -53,11 +51,8 @@ export default function DroneManager() {
   });
 
   const [statusMessage, setStatusMessage] = useState("");
-
   const [selectedVideoUrl, setSelectedVideoUrl] = useState(null); // State to store the selected video URL
-
   const [incidents, setIncidents] = useState([]);
-  
   const [updateUI, setUpdateUI] = useState(false);
   const [Devices, setDevices] = useState({
     drones: {
@@ -76,12 +71,7 @@ export default function DroneManager() {
       12: [],
     },
   });
-  //const [searched_data, setSearchedData] = useState([]);
-  //const [screenshot, setscreenshot] = useState("");
-  //const [streamvideo, setstreamvideo] = useState("");
-
-  const [selectedDevice, setSelectedDevice] = useState(null);
-
+ 
  //return map component selected marker coodinates
   const [selectLat, setSelectLat] = useState(null);
   const [selectLng, setSelectLng] = useState(null);
@@ -111,7 +101,7 @@ export default function DroneManager() {
     setSelectedMarker(marker);
   };
   //==============================================================
-  //==============================================================
+
   // Function to fetch video URL for a given drone ID
   const fetchVideoUrlForDrone = async (id) => {
     console.log("fetchvideourl input",id)
@@ -131,6 +121,7 @@ export default function DroneManager() {
       console.log(data.videourl)
       setSelectedVideoUrl(data.videourl);
       console.log(selectedVideoUrl)
+    
 
     } catch (error) {
       console.error("Error fetching video URL for drone:", error.message);
@@ -240,6 +231,7 @@ export default function DroneManager() {
       timestamp: "",
       dist_id: "",
       status: "",
+      video:"",
     });
   };
 
@@ -306,12 +298,6 @@ export default function DroneManager() {
     console.log("handleViewDevice function called");
     console.log("viewFormData:", viewFormData);
     try {
-      /*const droneId = prompt("Enter the Drone ID:");
-
-      if (!droneId) {
-        return;
-      }*/
-
       const response = await fetch("http://127.0.0.1:8000/GetDevice", {
         method: "POST",
         headers: {
@@ -328,8 +314,6 @@ export default function DroneManager() {
         id:""
       })
       const data = await response.json();
-      console.log(data)
-
       setViewDroneData(data);
       setShowViewForm(false);
       setShowViewModal(true);
@@ -587,14 +571,11 @@ export default function DroneManager() {
                   name="view_id"
                   value={viewFormData.view_id}
 
-                  onChange={(e) => { console.log ("input value:", e.target.value); 
-                  setViewFormData({ ...viewFormData, id: e.target.value })
-                  console.log ("input value:", e.target.value);}}
+                  onChange={(e) => setViewFormData({ ...viewFormData, id: e.target.value })}
 
                   className="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
                 />
               </div>
-
               <button
                 type="button"
                 onClick={handleViewDevice}
@@ -646,17 +627,13 @@ export default function DroneManager() {
                 <p><strong>District ID:</strong> {viewDroneData.dist_id}</p>
               </div>
             )}
-      
             {/* Render video player if a video URL is selected */}
             {selectedVideoUrl && (
               <div>
                 <h2>Video</h2>
-                {/*<video src={selectedVideoUrl} controls /> */}
                 <StreamingDrone  droneId={viewDroneData.id} />
               </div>
             )}
-            {/*<Streaming  videoUrl={selectedVideoUrl} latitude={viewDroneData.latitude} longitude={viewDroneData.longitude} /> */}
-
           </div>
         </div>
       </div>
