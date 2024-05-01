@@ -110,6 +110,14 @@ function IOTMap(props) {
                       setMapCenter({ lat: device.latitude, lng: device.longitude });
                     }}
                     clusterer={clusterer}
+                    label={{
+                      text:
+                        device.enabled ? "\ue51e" : "\ue51f",
+                      fontFamily: "Material Icons, sans-serif",
+                      color:
+                        device.enabled ? "#ffffff" : "#000000",
+                      fontSize: "20px",
+                    }}
                   />
                 ))
               }
