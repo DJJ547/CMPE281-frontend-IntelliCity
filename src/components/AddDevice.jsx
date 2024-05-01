@@ -15,7 +15,7 @@ export default function AddDevice(props) {
         <div className="p-8">
           <h1 className="text-2xl font-bold text-center mb-4">Devices</h1>
           <SearchBar callback4={props.callback4} />
-          <Table2 data={props.data} callback3={props.callback3}/>
+          <SearchResultTable data={props.data} callback3={props.callback3}/>
         </div>
       </div>
     </div>
@@ -42,7 +42,7 @@ function SearchBar(props) {
     </div>
   );
 }
-function Table2(props) {
+function SearchResultTable(props) {
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 10;
   const indexOfLastItem = currentPage * itemsPerPage;
@@ -72,7 +72,7 @@ function Table2(props) {
               className={index % 2 === 0 ? "bg-gray-100" : "bg-white"}
             >
               <td className="border px-4 py-2 text-center">{item.id}</td>
-              <td className="border px-4 py-2 text-center">{item.dist_id}</td>
+              <td className="border px-4 py-2 text-center">{item.district}</td>
               <td className="border px-4 py-2 text-center">{item.latitude}</td>
               <td className="border px-4 py-2 text-center">{item.longitude}</td>
               <td className="border px-4 py-2 text-center">{item.address}</td>
