@@ -58,6 +58,15 @@ function IOTMap(props) {
     }
   };
 
+  const handleDistrictChange = (event) => {
+    setSelectedDistrict(districts[event.target.value]);
+    setMapCenter({
+      lat: districts[event.target.value].lat,
+      lng: districts[event.target.value].lng,
+    });
+    setMapZoom(districts[event.target.value].zoom);
+  };
+
   return (
     <div>
      {/* <div className="flex mb-2">
@@ -85,6 +94,28 @@ function IOTMap(props) {
           )}
         </PlacesAutocomplete>
       </div>*/}
+      <div className="flex space-x-3">
+        <label className="font-bold" htmlFor="district">
+          Select District:
+        </label>
+        <select
+          className="bg-gray-300"
+          id="district"
+          value={selectedDistrict.id}
+          onChange={handleDistrictChange}
+        >
+          <option key={0} value={0}>
+            All Districts
+          </option>
+          {districts.map((district, i) =>
+            district.id === 0 ? null : (
+              <option key={i} value={i}>
+                District {district.id}
+              </option>
+            )
+          )}
+        </select>
+      </div>
       <div className="flex-grow relative">
         <LoadScript
           googleMapsApiKey="AIzaSyCBdsxfnuAQqHRDm-G3ykk2RQDFsYjZl-g"
