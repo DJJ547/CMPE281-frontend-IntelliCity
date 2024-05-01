@@ -8,6 +8,8 @@ import StreamingDrone from "../components/StreamingDrone";
 const container_height = "65vh";
 const container_width = "55vw";
 
+let agent = localStorage.getItem("is_agent");
+
 export default function DroneManager() {
   const [showAddForm, setShowAddForm] = useState(false);
   const [showDeleteForm, setShowDeleteForm] = useState(false);
@@ -339,6 +341,8 @@ export default function DroneManager() {
   return (
     <div className="flex flex-col w-full h-full">
       <div className="flex mb-4 justify-between">
+      {agent !== '0' && (
+        <>
         <button className="flex items-center justify-center w-60 h-25 bg-white shadow-lg transform transition duration-500 ease-in-out active:scale-90" onClick={handleAddDevice}>
           <img src={ADD} alt="Drone" className="w-16 h-16 mr-2 shadow-sm p-2"/>
           ADD
@@ -351,6 +355,8 @@ export default function DroneManager() {
           <img src={'https://upload.wikimedia.org/wikipedia/commons/6/62/Eo_circle_orange_repeat.svg'} alt="Drone" className="w-16 h-16 mr-2 shadow-sm p-2"/>
           Update
         </button>
+        </>
+      )}
         <button className="flex items-center justify-center w-60 h-25 bg-white shadow-lg" onClick={() => setShowViewForm(true)}>
           <img src={view} alt="Drone" className="w-16 h-16 mr-2 shadow-sm p-2"/>
           View
