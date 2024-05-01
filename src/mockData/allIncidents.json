@@ -1,7 +1,11 @@
 {
   "0": [
     {"id": "200000000",
+<<<<<<< drone
+    "timestamp": "2024-04-11T12:09:32",
+=======
       "timestamp": "2024-04-11T12:09:32",
+>>>>>>> main
       "description": "1183-Trfc Collision-Unkn Inj",
       "location": "I5 N / E St Onr",
       "area": "CH",

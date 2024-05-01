@@ -3,15 +3,21 @@ import Map from "../components/Map";
 import ADD from "../medias/plus.png";
 import view from "../medias/view.svg";
 import { districts } from "../utils/mapDistrictCoordinates";
+import StreamingDrone from "../components/StreamingDrone";
+
 
 
 const container_height = "65vh";
 const container_width = "55vw";
 
+let agent = localStorage.getItem("is_agent");
+
 export default function DroneManager() {
   const [showAddForm, setShowAddForm] = useState(false);
   const [showDeleteForm, setShowDeleteForm] = useState(false);
   const [showUpdateForm, setShowUpdateForm] = useState(false);
+  const [showViewForm, setShowViewForm] = useState(false);
+
   const [formData, setFormData] = useState({
     id: "",
     latitude: "",
@@ -34,6 +40,10 @@ export default function DroneManager() {
     update_status: "",
   });
 
+  const [viewFormData, setViewFormData] = useState({
+    id: ""
+  });
+
   const [showViewModal, setShowViewModal] = useState(false);
   const [viewDroneData, setViewDroneData] = useState({
     id: "",
@@ -48,6 +58,7 @@ export default function DroneManager() {
   const [statusMessage, setStatusMessage] = useState("");
 
   const [selectedVideoUrl, setSelectedVideoUrl] = useState(null); // State to store the selected video URL
+  const [incidents, setIncidents] = useState([]);
 
   const [updateUI, setUpdateUI] = useState(false);
   const [Devices, setDevices] = useState({
@@ -67,8 +78,10 @@ export default function DroneManager() {
       12: [],
     },
   });
-  const [searched_data, setSearchedData] = useState([]);
-  const [screenshot, setscreenshot] = useState("");
+  //const [searched_data, setSearchedData] = useState([]);
+  //const [screenshot, setscreenshot] = useState("");
+  //const [streamvideo, setstreamvideo] = useState("");
+
   const [selectedDevice, setSelectedDevice] = useState(null);
 
  //return map component selected marker coodinates
@@ -102,14 +115,15 @@ export default function DroneManager() {
   //==============================================================
   //==============================================================
   // Function to fetch video URL for a given drone ID
-  const fetchVideoUrlForDrone = async (droneId) => {
+  const fetchVideoUrlForDrone = async (id) => {
     try {
-      const response = await fetch("http://127.0.0.1:8000/getVideoUrls", {
+        const response = await fetch("http://127.0.0.1:8000/getVideoUrls", {
+        //const response = await fetch("http://127.0.0.1:8000/StreamVideo", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ id: droneId }),
+        body: JSON.stringify({ id: id }),
       });
       console.log(response)
       if (!response.ok) {
@@ -141,8 +155,37 @@ export default function DroneManager() {
           console.error("Error:", error);
         }
       };
-  
+      const fetchIncidences = async () => {
+        try {
+          const response = await fetch(
+            "http://localhost:8000/api/GetAllIncidences/",
+            { method: "GET" }
+          );
+          const data = await response.json();
+          setIncidents(data);
+        } catch (error) {
+          console.error("Error:", error);
+        }
+      };
       fetchDevices();
+      fetchIncidences();
+      return () => {
+        const cleanup = async () => {
+          try {
+            const response = await fetch(
+              "http://localhost:8000/api/StopStream/",
+              {
+                method: "GET",
+              }
+            );
+            const data = await response.json();
+            console.log(data)
+          } catch (error) {
+            console.error("Error:", error);
+          }
+        };
+        cleanup();
+      };
     }, [updateUI, mapCenterLat, mapCenterLng, mapZoom, selectedMarker, selectedVideoUrl])
 
 
@@ -261,32 +304,29 @@ export default function DroneManager() {
   };
 
   const handleViewDevice = async () => {
+    console.log("handleViewDevice function called");
+    console.log("viewFormData:", viewFormData);
     try {
-      const droneId = prompt("Enter the Drone ID:");
-
-      if (!droneId) {
-        return;
-      }
-
       const response = await fetch("http://127.0.0.1:8000/GetDevice", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ id: droneId }),
+        body: JSON.stringify({ id : viewFormData.id }),
       });
       console.log(response)
       if (!response.ok) {
         throw new Error("Failed to fetch drone data");
         
       }
-
+      setViewFormData({
+        id:""
+      })
       const data = await response.json();
-      console.log(data)
-
       setViewDroneData(data);
+      setShowViewForm(false);
       setShowViewModal(true);
-      fetchVideoUrlForDrone(droneId);
+      fetchVideoUrlForDrone(viewFormData.id);
       setMapCenterLat(data.latitude)
       setMapCenterLng(data.longitude)
       setMapZoom(15)
@@ -308,6 +348,8 @@ export default function DroneManager() {
   return (
     <div className="flex flex-col w-full h-full">
       <div className="flex mb-4 justify-between">
+      {agent !== '0' && (
+        <>
         <button className="flex items-center justify-center w-60 h-25 bg-white shadow-lg transform transition duration-500 ease-in-out active:scale-90" onClick={handleAddDevice}>
           <img src={ADD} alt="Drone" className="w-16 h-16 mr-2 shadow-sm p-2"/>
           ADD
@@ -320,7 +362,9 @@ export default function DroneManager() {
           <img src={'https://upload.wikimedia.org/wikipedia/commons/6/62/Eo_circle_orange_repeat.svg'} alt="Drone" className="w-16 h-16 mr-2 shadow-sm p-2"/>
           Update
         </button>
-        <button className="flex items-center justify-center w-60 h-25 bg-white shadow-lg"onClick={() => handleViewDevice()}>
+        </>
+      )}
+        <button className="flex items-center justify-center w-60 h-25 bg-white shadow-lg" onClick={() => setShowViewForm(true)}>
           <img src={view} alt="Drone" className="w-16 h-16 mr-2 shadow-sm p-2"/>
           View
         </button>
@@ -523,6 +567,47 @@ export default function DroneManager() {
           </div>
         </div>
       )}
+      {showViewForm && (
+        <div className="absolute top-0 left-0 z-10 w-full h-full flex items-center justify-center bg-gray-900 bg-opacity-50">
+          <div className="flex flex-col w-96 h-50 bg-white shadow-lg">
+            <div className="flex justify-between p-2">
+              <h2 className="text-lg font-bold">View Drone</h2>
+            </div>
+            <form className="p-4">
+              <div className="mb-4">
+                <label htmlFor="view_id" className="block text-sm font-medium text-gray-700">Drone ID</label>
+                <input
+                  type="number"
+                  id="view_id"
+                  name="view_id"
+                  value={viewFormData.view_id}
+
+                  onChange={(e) => setViewFormData({ ...viewFormData, id: e.target.value })}
+
+                  className="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
+                />
+              </div>
+              <button
+                type="button"
+                onClick={handleViewDevice}
+                className="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500"
+              >
+                View Drone
+              </button>
+              <button
+                onClick={() => {
+                  setShowViewForm(false);
+                  setStatusMessage("");
+                }}
+                className="inline-flex justify-center py-2 px-4 ml-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-gray-600 hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500"
+              >
+                Close
+              </button>
+            </form>
+          </div>
+        </div>
+      )}
+
       <div className="flex w-auto h-2/3">
       <Map
           centerLatState={mapCenterLat}
@@ -556,9 +641,11 @@ export default function DroneManager() {
             {selectedVideoUrl && (
               <div>
                 <h2>Video</h2>
-                <video src={selectedVideoUrl} controls />
+                {/*<video src={selectedVideoUrl} controls /> */}
+                <StreamingDrone  droneId={viewDroneData.id} />
               </div>
             )}
+            {/*<Streaming  videoUrl={selectedVideoUrl} latitude={viewDroneData.latitude} longitude={viewDroneData.longitude} /> */}
 
           </div>
         </div>
