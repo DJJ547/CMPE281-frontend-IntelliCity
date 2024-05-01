@@ -5,6 +5,8 @@ import view from "../medias/view.svg";
 import { districts } from "../utils/mapDistrictCoordinates";
 import StreamingDrone from "../components/StreamingDrone";
 
+
+
 const container_height = "65vh";
 const container_width = "55vw";
 
@@ -24,7 +26,6 @@ export default function DroneManager() {
     timestamp: "",
     dist_id: "",
     status: "",
-    video:"",
   });
   const [deleteFormData, setDeleteFormData] = useState({
     id: ""
@@ -38,9 +39,11 @@ export default function DroneManager() {
     update_dist_id: "",
     update_status: "",
   });
+
   const [viewFormData, setViewFormData] = useState({
     id: ""
   });
+
   const [showViewModal, setShowViewModal] = useState(false);
   const [viewDroneData, setViewDroneData] = useState({
     id: "",
@@ -53,8 +56,10 @@ export default function DroneManager() {
   });
 
   const [statusMessage, setStatusMessage] = useState("");
+
   const [selectedVideoUrl, setSelectedVideoUrl] = useState(null); // State to store the selected video URL
   const [incidents, setIncidents] = useState([]);
+
   const [updateUI, setUpdateUI] = useState(false);
   const [Devices, setDevices] = useState({
     drones: {
@@ -73,7 +78,12 @@ export default function DroneManager() {
       12: [],
     },
   });
- 
+  //const [searched_data, setSearchedData] = useState([]);
+  //const [screenshot, setscreenshot] = useState("");
+  //const [streamvideo, setstreamvideo] = useState("");
+
+  const [selectedDevice, setSelectedDevice] = useState(null);
+
  //return map component selected marker coodinates
   const [selectLat, setSelectLat] = useState(null);
   const [selectLng, setSelectLng] = useState(null);
@@ -103,12 +113,12 @@ export default function DroneManager() {
     setSelectedMarker(marker);
   };
   //==============================================================
-
+  //==============================================================
   // Function to fetch video URL for a given drone ID
   const fetchVideoUrlForDrone = async (id) => {
-    console.log("fetchvideourl input",id)
     try {
         const response = await fetch("http://127.0.0.1:8000/getVideoUrls", {
+        //const response = await fetch("http://127.0.0.1:8000/StreamVideo", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -123,7 +133,6 @@ export default function DroneManager() {
       console.log(data.videourl)
       setSelectedVideoUrl(data.videourl);
       console.log(selectedVideoUrl)
-    
 
     } catch (error) {
       console.error("Error fetching video URL for drone:", error.message);
@@ -158,7 +167,6 @@ export default function DroneManager() {
           console.error("Error:", error);
         }
       };
-  
       fetchDevices();
       fetchIncidences();
       return () => {
@@ -233,7 +241,6 @@ export default function DroneManager() {
       timestamp: "",
       dist_id: "",
       status: "",
-      video:"",
     });
   };
 
@@ -415,7 +422,6 @@ export default function DroneManager() {
           </div>
         </div>
       )}
-
       {showDeleteForm && (
         <div className="absolute top-0 left-0 z-10 w-full h-full flex items-center justify-center bg-gray-900 bg-opacity-50">
           <div className="flex flex-col w-96 h-50 bg-white shadow-lg">
@@ -561,8 +567,7 @@ export default function DroneManager() {
           </div>
         </div>
       )}
-
-     {showViewForm && (
+      {showViewForm && (
         <div className="absolute top-0 left-0 z-10 w-full h-full flex items-center justify-center bg-gray-900 bg-opacity-50">
           <div className="flex flex-col w-96 h-50 bg-white shadow-lg">
             <div className="flex justify-between p-2">
@@ -613,7 +618,6 @@ export default function DroneManager() {
           updateMapCoordinatesCallback={updateMapCoordinates}
           updateMapZoomCallback={updateMapZoomOnView}
           getMapCoordinates={getMapCoordinates}
-          incidentData={incidents}
           deviceData={Devices}
           container_height={container_height}
           container_width={container_width}
@@ -637,9 +641,12 @@ export default function DroneManager() {
             {selectedVideoUrl && (
               <div>
                 <h2>Video</h2>
+                {/*<video src={selectedVideoUrl} controls /> */}
                 <StreamingDrone  droneId={viewDroneData.id} />
               </div>
             )}
+            {/*<Streaming  videoUrl={selectedVideoUrl} latitude={viewDroneData.latitude} longitude={viewDroneData.longitude} /> */}
+
           </div>
         </div>
       </div>
