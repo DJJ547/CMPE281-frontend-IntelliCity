@@ -51,6 +51,8 @@ export default function DroneManager() {
 
   const [selectedVideoUrl, setSelectedVideoUrl] = useState(null); // State to store the selected video URL
 
+  const [incidents, setIncidents] = useState([]);
+  
   const [updateUI, setUpdateUI] = useState(false);
   const [Devices, setDevices] = useState({
     drones: {
@@ -146,8 +148,38 @@ export default function DroneManager() {
           console.error("Error:", error);
         }
       };
+      const fetchIncidences = async () => {
+        try {
+          const response = await fetch(
+            "http://localhost:8000/api/GetAllIncidences/",
+            { method: "GET" }
+          );
+          const data = await response.json();
+          setIncidents(data);
+        } catch (error) {
+          console.error("Error:", error);
+        }
+      };
   
       fetchDevices();
+      fetchIncidences();
+      return () => {
+        const cleanup = async () => {
+          try {
+            const response = await fetch(
+              "http://localhost:8000/api/StopStream/",
+              {
+                method: "GET",
+              }
+            );
+            const data = await response.json();
+            console.log(data)
+          } catch (error) {
+            console.error("Error:", error);
+          }
+        };
+        cleanup();
+      };
     }, [updateUI, mapCenterLat, mapCenterLng, mapZoom, selectedMarker, selectedVideoUrl])
 
 
@@ -538,6 +570,7 @@ export default function DroneManager() {
           updateMapCoordinatesCallback={updateMapCoordinates}
           updateMapZoomCallback={updateMapZoomOnView}
           getMapCoordinates={getMapCoordinates}
+          incidentData={incidents}
           deviceData={Devices}
           container_height={container_height}
           container_width={container_width}
