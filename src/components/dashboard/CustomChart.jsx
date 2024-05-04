@@ -14,29 +14,38 @@ import {
 
 export default function Chart(props) {
   const [selectChartType, setSelectChartType] = useState(1);
-  // const [selectDataType, setSelectDataType] = useState(3);
   const handleChartTypeChange = (e) => {
     setSelectChartType(e.target.value);
   };
-  // const handleDataTypeChange = (e) => {
-  //   setSelectDataType(e.target.value);
-  // };
 
   // Function to categorize incidents by hour
   const reformatData = () => {
+    const now = new Date(); // Get current date and time
+    const startOfDay = new Date(
+      now.getFullYear(),
+      now.getMonth(),
+      now.getDate(),
+      0,
+      0,
+      0
+    ); // Set time to 00:00:00 for the current day
+
     // Initialize counts for all hours with 0 incidents
-    const combinedData = Array.from({ length: 24 }, (_, hour) => ({
-      hour: `${hour}:00 - ${parseInt(hour) + 1}:00`,
-      congestions: 0,
-      incidents: 0,
-    }));
-    props.incidents.forEach((incident) => {
-      const hour = new Date(incident.timestamp).getHours();
-      combinedData[hour].incidents += 1;
+    const combinedData = Array.from({ length: 24 }, (_, hour) => {
+      const hourStart = new Date(startOfDay.getTime() + hour * 3600000); // Calculate the start time of each hour
+      const hourEnd = new Date(startOfDay.getTime() + (hour + 1) * 3600000); // Calculate the end time of each hour
+      return {
+        hour: `${hourStart.getHours()}:00 - ${hourEnd.getHours()}:00`,
+        congestions: 0,
+        incidents: 0,
+      };
     });
-    props.congestions.forEach((congestion) => {
-      const hour = new Date(congestion.timestamp).getHours();
-      combinedData[hour].congestions += 1;
+    props.incidents.forEach((incident) => {
+      const incident_date = new Date(incident.timestamp);
+      if (incident_date.getDate === now.getDate) {
+        const hour = incident_date.getHours();
+        combinedData[(hour + 7) % 24].incidents += 1;
+      }
     });
     return combinedData;
   };
@@ -75,7 +84,6 @@ export default function Chart(props) {
             />
             <Tooltip />
             <Legend />
-            <Bar dataKey="congestions" fill="#0000CD" />
             <Bar dataKey="incidents" fill="#B8860B" />
           </BarChart>
         ) : parseInt(selectChartType) === 2 ? (
@@ -99,12 +107,6 @@ export default function Chart(props) {
             />
             <Tooltip />
             <Legend />
-            <Line
-              type="monotone"
-              dataKey="congestions"
-              stroke="#0000CD"
-              fill="#0000CD"
-            />
             <Line
               type="monotone"
               dataKey="incidents"

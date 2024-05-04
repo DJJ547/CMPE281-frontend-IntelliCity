@@ -26,7 +26,7 @@ export default function Sidebar() {
             capitalizeFirstLetter(localStorage.getItem("lastname"))}
         </h1>
         {parseInt(localStorage.getItem("is_agent")) === 1 ? (
-          <h1 className="text-lg text-gray-700">City Traffic Agent</h1>
+          <h1 className="text-lg text-gray-700 font-semibold">City Traffic Agent</h1>
         ) : (
           <h1 className="text-lg text-gray-700">Public Client</h1>
         )}

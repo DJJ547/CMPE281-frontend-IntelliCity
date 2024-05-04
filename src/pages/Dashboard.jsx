@@ -3,16 +3,72 @@ import StatBox from "../components/dashboard/StatBox";
 import WeatherBox from "../components/dashboard/WeatherBox";
 import Map from "../components/Map";
 import CustomChart from "../components/dashboard/CustomChart";
-import Notifications from "../components/Notifications";
+// import Notifications from "../components/Notifications";
 // import allDevicesData from "../mockData/allDevices.json";
-import allIncidents from "../mockData/allIncidents.json";
-import allCongestions from "../mockData/allCongestions.json";
+// import allIncidents from "../mockData/allIncidents.json";
+// import allCongestions from "../mockData/allCongestions.json";
 import { districts } from "../utils/mapDistrictCoordinates";
 
 const container_height = "63vh";
 const container_width = "50vw";
 
 export default function Dashboard() {
+  const [mapCenterLatInput, setMapCenterLatInput] = useState("");
+  const [mapCenterLngInput, setMapCenterLngInput] = useState("");
+
+  const [allDevices, setAllDevices] = useState({
+    all: {
+      0: [],
+      1: [],
+      2: [],
+      3: [],
+      4: [],
+      5: [],
+      6: [],
+      7: [],
+      8: [],
+      9: [],
+      10: [],
+      11: [],
+      12: [],
+    },
+  });
+
+  const [allIncidents, setAllIncidents] = useState({
+    0: [],
+    1: [],
+    2: [],
+    3: [],
+    4: [],
+    5: [],
+    6: [],
+    7: [],
+    8: [],
+    9: [],
+    10: [],
+    11: [],
+    12: [],
+  });
+
+  const [numOfIncidents, setNumOfIncidents] = useState(0);
+  const [numOfCongestions, setNumOfCongestions] = useState(0);
+
+  const [allCongestions, setAllCongestions] = useState({
+    0: [],
+    1: [],
+    2: [],
+    3: [],
+    4: [],
+    5: [],
+    6: [],
+    7: [],
+    8: [],
+    9: [],
+    10: [],
+    11: [],
+    12: [],
+  });
+
   //return map component selected marker coodinates
   const [selectLat, setSelectLat] = useState(null);
   const [selectLng, setSelectLng] = useState(null);
@@ -93,8 +149,10 @@ export default function Dashboard() {
   const updateSelectedMarker = (marker) => {
     setSelectedMarker(marker);
   };
+
+  //request to get all data include devices and incidents
   useEffect(() => {
-    fetch(`${process.env.REACT_APP_DATA_SERVER_URL}dashboard/getAllDevices`)
+    fetch(`${process.env.REACT_APP_DATA_SERVER_URL}dashboard/getAllData`)
       .then((response) => {
         if (!response.ok) {
           throw new Error("bad request");
@@ -102,67 +160,136 @@ export default function Dashboard() {
         return response.json();
       })
       .then((data) => {
-        setAllDevices(data);
-        setStatData(processStatData(data))
+        setAllDevices(data.devices);
+        setAllIncidents(data.incidents.incidents);
+        setNumOfIncidents(data.incidents.incidents[0].length);
+        setStatData(processStatData(data.devices));
       })
       .catch((error) => {
         console.error("error:", error);
       });
   }, [mapCenterLat, mapCenterLng, mapZoom, selectedMarker]);
-  //==============================================================
 
-  const [mapCenterLatInput, setMapCenterLatInput] = useState("");
-  const [mapCenterLngInput, setMapCenterLngInput] = useState("");
+  //request to backend for updating mysql incidents table every minute
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const now = new Date();
+        const currentTime = `${now.getFullYear()}-${(now.getMonth() + 1)
+          .toString()
+          .padStart(2, "0")}-${now.getDate().toString().padStart(2, "0")}T${now
+          .getHours()
+          .toString()
+          .padStart(2, "0")}:${now
+          .getMinutes()
+          .toString()
+          .padStart(2, "0")}:${now.getSeconds().toString().padStart(2, "0")}`;
+        const response = await fetch(
+          `${process.env.REACT_APP_DATA_SERVER_URL}dashboard/updateIncidents/`,
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ currentTime }),
+          }
+        );
+        if (!response.ok) {
+          throw new Error("Network response was not ok");
+        }
+        const data = await response.json();
+        // Handle response data as needed
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
+    };
 
-  const [allDevices, setAllDevices] = useState({
-    all: {
-      0: [],
-      1: [],
-      2: [],
-      3: [],
-      4: [],
-      5: [],
-      6: [],
-      7: [],
-      8: [],
-      9: [],
-      10: [],
-      11: [],
-      12: [],
-    },
-  });
+    // Fetch data initially
+    fetchData();
+
+    // Set up interval to fetch data every 1 minute
+    const intervalId = setInterval(fetchData, 60000);
+
+    // Clean up interval
+    return () => clearInterval(intervalId);
+  }, []);
+
+  //request for congestions
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const now = new Date();
+        const currentTime = `${now.getFullYear()}-${(now.getMonth() + 1)
+          .toString()
+          .padStart(2, "0")}-${now.getDate().toString().padStart(2, "0")}T${now
+          .getHours()
+          .toString()
+          .padStart(2, "0")}:${now
+          .getMinutes()
+          .toString()
+          .padStart(2, "0")}:${now.getSeconds().toString().padStart(2, "0")}`;
+        const response = await fetch(
+          `${process.env.REACT_APP_DATA_SERVER_URL}dashboard/updateCongestions/`,
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ currentTime }),
+          }
+        );
+        if (!response.ok) {
+          throw new Error("Network response was not ok");
+        }
+        const data = await response.json();
+        setAllCongestions(data.congestions);
+        setNumOfCongestions(data.congestions[0].length);
+        // Handle response data as needed
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
+    };
+
+    // Fetch data initially
+    fetchData();
+
+    // Set up interval to fetch data every 5 minutes
+    const intervalId = setInterval(fetchData, 300000);
+
+    // Clean up interval
+    return () => clearInterval(intervalId);
+  }, [mapCenterLat, mapCenterLng, mapZoom]);
 
   const getMapCoordinates = (lat, lng) => {
     setSelectLat(lat);
     setSelectLng(lng);
   };
 
-  const handleMapCenterLatChange = (e) => {
-    setMapCenterLatInput(e.target.value);
-  };
+  // const handleMapCenterLatChange = (e) => {
+  //   setMapCenterLatInput(e.target.value);
+  // };
 
-  const handleMapCenterLngChange = (e) => {
-    setMapCenterLngInput(e.target.value);
-  };
+  // const handleMapCenterLngChange = (e) => {
+  //   setMapCenterLngInput(e.target.value);
+  // };
 
-  const handleSearchSubmit = async (e) => {
-    e.preventDefault();
-    setMapCenterLat(parseFloat(mapCenterLatInput));
-    setMapCenterLng(parseFloat(mapCenterLngInput));
-    console.log(mapCenterLatInput);
-    console.log(mapCenterLngInput);
-    console.log(typeof allDevices.all[0].latitude);
-    let marker = allDevices.all[0].find(
-      (device) =>
-        parseFloat(device.latitude) === parseFloat(mapCenterLatInput) &&
-        parseFloat(device.longitude) === parseFloat(mapCenterLngInput)
-    );
-    console.log(marker);
-    setMapZoom(15);
-    setSelectedMarker(marker);
-    setSelectLat(mapCenterLatInput);
-    setSelectLng(mapCenterLngInput);
-  };
+  // const handleSearchSubmit = async (e) => {
+  //   e.preventDefault();
+  //   setMapCenterLat(parseFloat(mapCenterLatInput));
+  //   setMapCenterLng(parseFloat(mapCenterLngInput));
+  //   console.log(mapCenterLatInput);
+  //   console.log(mapCenterLngInput);
+  //   console.log(typeof allDevices.all[0].latitude);
+  //   let marker = allDevices.all[0].find(
+  //     (device) =>
+  //       parseFloat(device.latitude) === parseFloat(mapCenterLatInput) &&
+  //       parseFloat(device.longitude) === parseFloat(mapCenterLngInput)
+  //   );
+  //   setMapZoom(15);
+  //   setSelectedMarker(marker);
+  //   setSelectLat(mapCenterLatInput);
+  //   setSelectLng(mapCenterLngInput);
+  // };
 
   return (
     <div className="flex flex-col w-full h-full">
@@ -172,37 +299,38 @@ export default function Dashboard() {
           name="Cameras"
           backgroundColor="bg-red-600"
           donutChartData={statData}
-          size="w-60 h-32"
+          size="w-64 h-36"
         />
         <StatBox
           imgKey="sensors"
           name="Iots"
           backgroundColor="bg-red-600"
           donutChartData={statData}
-          size="w-60 h-32"
+          size="w-64 h-36"
         />
         <StatBox
           imgKey="flight"
           name="Drones"
           backgroundColor="bg-red-600"
           donutChartData={statData}
-          size="w-60 h-32"
+          size="w-64 h-36"
         />
         <StatBox
           imgKey="warning"
           name="Incidents"
+          displayNumber={numOfIncidents}
           backgroundColor="bg-yellow-600"
           statNum="34"
-          size="w-48 h-32"
+          size="w-64 h-36"
         />
         <StatBox
           imgKey="warning"
           name="Congestions"
+          displayNumber={numOfCongestions}
           backgroundColor="bg-blue-600"
           statNum="21"
-          size="w-48 h-32"
+          size="w-64 h-36"
         />
-        <WeatherBox latState={selectLat} lngState={selectLng} />
       </div>
       {/* <div className="flex">
         <form onSubmit={handleSearchSubmit}>
@@ -244,7 +372,8 @@ export default function Dashboard() {
           container_width={container_width}
         />
         <div className="flex flex-col w-full h-full">
-          <Notifications />
+          {/* <Notifications /> */}
+          <WeatherBox latState={selectLat} lngState={selectLng} />
           <CustomChart
             incidents={allIncidents[0]}
             congestions={allCongestions[0]}

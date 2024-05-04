@@ -46,17 +46,17 @@ export default function WeatherBox(props) {
 
   if (!weatherData) {
     return (
-      <div className="flex w-96 h-32 bg-white items-center justify-center rounded-lg shadow-xl shadow-blue-gray-900"><h1 className="font-bold text-center">Click on a Marker to See Weather Info</h1></div>
+      <div className="flex w-[630px] h-[400px] bg-white items-center justify-center rounded-lg shadow-xl text-xl shadow-blue-gray-900 mx-5 my-2"><h1 className="font-bold text-center">Click on a Marker to See Weather Info</h1></div>
     );
   }
 
   return (
-    <div className="flex flex-col w-96 h-32 p-2 bg-white rounded-lg shadow-xl shadow-blue-gray-900">
-      <h2 className="text-lg font-bold mb-2">
+    <div className="flex flex-col w-[630px] h-[400px] p-2 bg-white rounded-lg shadow-xl shadow-blue-gray-900 mx-5 my-2">
+      <h2 className="text-2xl font-bold mb-2">
         Current Weather in{" "}
         <span className="text-blue-600">{weatherData.name}</span>
       </h2>
-      <div className="flex justify-between">
+      <div className="flex justify-between text-xl font-bold">
         <p className="text-gray-700">
           <span className="material-symbols-outlined text-md">
             {weatherData.weather_img_str}
@@ -77,11 +77,11 @@ export default function WeatherBox(props) {
           Temperature: {(weatherData.main.temp - 273.15).toFixed(2)}°C
         </p>
       </div>
-      <div className="flex justify-between">
+      <div className="flex justify-between text-xl font-bold">
         <p className="text-gray-600">Humidity: {weatherData.main.humidity}%</p>
         <p className="text-gray-600">Visibility: {weatherData.visibility}m</p>
       </div>
-      <div className="flex justify-between">
+      <div className="flex flex-col justify-between text-xl font-bold">
         <p className="text-gray-600">
           Wind Speed: {weatherData.wind.speed}m/s,{" "}
         </p>

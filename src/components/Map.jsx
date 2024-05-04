@@ -10,6 +10,7 @@ import PlacesAutocomplete, {
   geocodeByAddress,
   getLatLng,
 } from "react-places-autocomplete";
+import Switch from "react-switch";
 
 import { faTriangleExclamation } from "@fortawesome/free-solid-svg-icons";
 
@@ -28,7 +29,6 @@ const IncidentIcon = {
   strokeWeight: 1,
   strokeColor: "#000000",
   scale: 0.035,
-  zIndex: 10,
 };
 
 const deviceClustererOptions = {
@@ -43,7 +43,6 @@ const deviceClustererOptions = {
       width: 40, // Width of the cluster icon image
     },
   ],
-  zIndex: 5,
 };
 
 const incidentClustererOptions = {
@@ -94,6 +93,7 @@ function Map(props) {
   const [libraries] = useState(["places"]);
   const [address, setAddress] = useState("");
   const [selectedDistrict, setSelectedDistrict] = useState(districts[0]);
+  const [switchClusters, setSwitchClusters] = useState(false);
 
   const setMapCenter = (coordinates) => {
     props.updateMapCoordinatesCallback(coordinates.lat, coordinates.lng);
@@ -119,6 +119,10 @@ function Map(props) {
       alert("Invalid input. Please enter a valid address.");
       // You can use other methods to display a popup window or handle the error.
     }
+  };
+
+  const handleSwitchClusters = (state) => {
+    setSwitchClusters(!state);
   };
 
   // Function to handle change in selected district
@@ -154,6 +158,13 @@ function Map(props) {
             )
           )}
         </select>
+        <label className="font-bold" htmlFor="district">
+          Clusters Off/On
+        </label>
+        <Switch
+          checked={switchClusters} // Specify the current state of the switch
+          onChange={() => handleSwitchClusters(switchClusters)} // Handle switch state change
+        />
       </div>
       <div className="flex-grow relative">
         <LoadScript
@@ -211,304 +222,580 @@ function Map(props) {
           >
             {/* all markers on dashboard */}
             {Object.keys(props.deviceData)[0] === "all" ? (
-              <MarkerClusterer
-                gridSize={clusterGridSize}
-                options={deviceClustererOptions}
-              >
-                {(clusterer) =>
-                  props.deviceData.all[selectedDistrict.id].map((device, i) =>
-                    device.type === "camera" ? (
-                      <Marker
-                        key={i}
-                        position={{
-                          lat: device.latitude,
-                          lng: device.longitude,
-                        }}
-                        label={{
-                          text:
-                            device.status === "active" ? "\ue412" : "\uf1a8",
-                          fontFamily: "Material Icons, sans-serif",
-                          color:
-                            device.status === "active" ? "#ffffff" : "#000000",
-                          fontSize: "20px",
-                        }}
-                        title="Camera Marker"
-                        onClick={() => {
-                          setSelectedMarker(device);
-                          props.getMapCoordinates(
-                            device.latitude,
-                            device.longitude
-                          );
-                          setMapCenter({
+              switchClusters ? (
+                <MarkerClusterer
+                  gridSize={clusterGridSize}
+                  options={{
+                    ...deviceClustererOptions,
+                    zIndex: 5,
+                  }}
+                >
+                  {(clusterer) =>
+                    props.deviceData.all[selectedDistrict.id].map((device, i) =>
+                      device.type === "camera" ? (
+                        <Marker
+                          key={i}
+                          position={{
                             lat: device.latitude,
                             lng: device.longitude,
-                          });
-                        }}
-                        clusterer={clusterer}
-                      />
-                    ) : device.type === "iot" ? (
-                      <Marker
-                        key={i}
-                        position={{
-                          lat: device.latitude,
-                          lng: device.longitude,
-                        }}
-                        label={{
-                          text:
-                            device.status === "active" ? "\ue51e" : "\ue51f",
-                          fontFamily: "Material Icons, sans-serif",
-                          color:
-                            device.status === "active" ? "#ffffff" : "#000000",
-                          fontSize: "20px",
-                        }}
-                        title="Iot Marker"
-                        onClick={() => {
-                          setSelectedMarker(device);
-                          props.getMapCoordinates(
-                            device.latitude,
-                            device.longitude
-                          );
-                          setMapCenter({
+                          }}
+                          label={{
+                            text:
+                              device.status === "active" ? "\ue412" : "\uf1a8",
+                            fontFamily: "Material Icons, sans-serif",
+                            color:
+                              device.status === "active"
+                                ? "#ffffff"
+                                : "#000000",
+                            fontSize: "20px",
+                          }}
+                          title="Camera Marker"
+                          onClick={() => {
+                            setSelectedMarker(device);
+                            props.getMapCoordinates(
+                              device.latitude,
+                              device.longitude
+                            );
+                            setMapCenter({
+                              lat: device.latitude,
+                              lng: device.longitude,
+                            });
+                          }}
+                          clusterer={clusterer}
+                        />
+                      ) : device.type === "iot" ? (
+                        <Marker
+                          key={i}
+                          position={{
                             lat: device.latitude,
                             lng: device.longitude,
-                          });
-                        }}
-                        clusterer={clusterer}
-                      />
-                    ) : device.type === "drone" ? (
-                      <Marker
-                        key={i}
-                        position={{
-                          lat: device.latitude,
-                          lng: device.longitude,
-                        }}
-                        label={{
-                          text:
-                            device.status === "active" ? "\ue539" : "\ue194",
-                          fontFamily: "Material Icons, sans-serif",
-                          color:
-                            device.status === "active" ? "#ffffff" : "#000000",
+                          }}
+                          label={{
+                            text:
+                              device.status === "active" ? "\ue51e" : "\ue51f",
+                            fontFamily: "Material Icons, sans-serif",
+                            color:
+                              device.status === "active"
+                                ? "#ffffff"
+                                : "#000000",
+                            fontSize: "20px",
+                          }}
+                          title="Iot Marker"
+                          onClick={() => {
+                            setSelectedMarker(device);
+                            props.getMapCoordinates(
+                              device.latitude,
+                              device.longitude
+                            );
+                            setMapCenter({
+                              lat: device.latitude,
+                              lng: device.longitude,
+                            });
+                          }}
+                          clusterer={clusterer}
+                        />
+                      ) : device.type === "drone" ? (
+                        <Marker
+                          key={i}
+                          position={{
+                            lat: device.latitude,
+                            lng: device.longitude,
+                          }}
+                          label={{
+                            text:
+                              device.status === "active" ? "\ue539" : "\ue194",
+                            fontFamily: "Material Icons, sans-serif",
+                            color:
+                              device.status === "active"
+                                ? "#ffffff"
+                                : "#000000",
 
-                          fontSize: "20px",
-                        }}
-                        title="Drone Marker"
-                        onClick={() => {
-                          setSelectedMarker(device);
-                          props.getMapCoordinates(
-                            device.latitude,
-                            device.longitude
-                          );
-                          setMapCenter({
-                            lat: device.latitude,
-                            lng: device.longitude,
-                          });
-                        }}
-                        clusterer={clusterer}
-                      />
-                    ) : (
-                      <></>
+                            fontSize: "20px",
+                          }}
+                          title="Drone Marker"
+                          onClick={() => {
+                            setSelectedMarker(device);
+                            props.getMapCoordinates(
+                              device.latitude,
+                              device.longitude
+                            );
+                            setMapCenter({
+                              lat: device.latitude,
+                              lng: device.longitude,
+                            });
+                          }}
+                          clusterer={clusterer}
+                        />
+                      ) : (
+                        <></>
+                      )
                     )
+                  }
+                </MarkerClusterer>
+              ) : (
+                props.deviceData.all[selectedDistrict.id].map((device, i) =>
+                  device.type === "camera" ? (
+                    <Marker
+                      key={i}
+                      position={{
+                        lat: device.latitude,
+                        lng: device.longitude,
+                      }}
+                      label={{
+                        text: device.status === "active" ? "\ue412" : "\uf1a8",
+                        fontFamily: "Material Icons, sans-serif",
+                        color:
+                          device.status === "active" ? "#ffffff" : "#000000",
+                        fontSize: "20px",
+                      }}
+                      title="Camera Marker"
+                      onClick={() => {
+                        setSelectedMarker(device);
+                        props.getMapCoordinates(
+                          device.latitude,
+                          device.longitude
+                        );
+                        setMapCenter({
+                          lat: device.latitude,
+                          lng: device.longitude,
+                        });
+                      }}
+                    />
+                  ) : device.type === "iot" ? (
+                    <Marker
+                      key={i}
+                      position={{
+                        lat: device.latitude,
+                        lng: device.longitude,
+                      }}
+                      label={{
+                        text: device.status === "active" ? "\ue51e" : "\ue51f",
+                        fontFamily: "Material Icons, sans-serif",
+                        color:
+                          device.status === "active" ? "#ffffff" : "#000000",
+                        fontSize: "20px",
+                      }}
+                      title="Iot Marker"
+                      onClick={() => {
+                        setSelectedMarker(device);
+                        props.getMapCoordinates(
+                          device.latitude,
+                          device.longitude
+                        );
+                        setMapCenter({
+                          lat: device.latitude,
+                          lng: device.longitude,
+                        });
+                      }}
+                    />
+                  ) : device.type === "drone" ? (
+                    <Marker
+                      key={i}
+                      position={{
+                        lat: device.latitude,
+                        lng: device.longitude,
+                      }}
+                      label={{
+                        text: device.status === "active" ? "\ue539" : "\ue194",
+                        fontFamily: "Material Icons, sans-serif",
+                        color:
+                          device.status === "active" ? "#ffffff" : "#000000",
+
+                        fontSize: "20px",
+                      }}
+                      title="Drone Marker"
+                      onClick={() => {
+                        setSelectedMarker(device);
+                        props.getMapCoordinates(
+                          device.latitude,
+                          device.longitude
+                        );
+                        setMapCenter({
+                          lat: device.latitude,
+                          lng: device.longitude,
+                        });
+                      }}
+                    />
+                  ) : (
+                    <></>
                   )
-                }
-              </MarkerClusterer>
+                )
+              )
             ) : // camera markers on camera manager
             Object.keys(props.deviceData)[0] === "cameras" ? (
-              <MarkerClusterer
-                gridSize={clusterGridSize}
-                options={deviceClustererOptions}
-              >
-                {(clusterer) =>
-                  props.deviceData.cameras[selectedDistrict.id].map(
-                    (device, i) => (
-                      <Marker
-                        key={i}
-                        position={{
-                          lat: device.latitude,
-                          lng: device.longitude,
-                        }}
-                        label={{
-                          text:
-                            device.status === "active" ? "\ue412" : "\uf1a8",
-                          fontFamily: "Material Icons, sans-serif",
-                          color:
-                            device.status === "active" ? "#ffffff" : "#000000",
-                          fontSize: "20px",
-                        }}
-                        title="Camera Marker"
-                        onClick={() => {
-                          props.Selected(device.id);
-                          setSelectedMarker(device);
-                          props.getMapCoordinates(
-                            device.latitude,
-                            device.longitude
-                          );
-                          setMapCenter({
+              switchClusters ? (
+                <MarkerClusterer
+                  gridSize={clusterGridSize}
+                  options={{
+                    ...deviceClustererOptions,
+                    zIndex: 5,
+                  }}
+                >
+                  {(clusterer) =>
+                    props.deviceData.cameras[selectedDistrict.id].map(
+                      (device, i) => (
+                        <Marker
+                          key={i}
+                          position={{
                             lat: device.latitude,
                             lng: device.longitude,
-                          });
-                        }}
-                        clusterer={clusterer}
-                      />
+                          }}
+                          label={{
+                            text:
+                              device.status === "active" ? "\ue412" : "\uf1a8",
+                            fontFamily: "Material Icons, sans-serif",
+                            color:
+                              device.status === "active"
+                                ? "#ffffff"
+                                : "#000000",
+                            fontSize: "20px",
+                          }}
+                          title="Camera Marker"
+                          onClick={() => {
+                            props.Selected(device.id);
+                            setSelectedMarker(device);
+                            props.getMapCoordinates(
+                              device.latitude,
+                              device.longitude
+                            );
+                            setMapCenter({
+                              lat: device.latitude,
+                              lng: device.longitude,
+                            });
+                          }}
+                          clusterer={clusterer}
+                        />
+                      )
                     )
+                  }
+                </MarkerClusterer>
+              ) : (
+                props.deviceData.cameras[selectedDistrict.id].map(
+                  (device, i) => (
+                    <Marker
+                      key={i}
+                      position={{
+                        lat: device.latitude,
+                        lng: device.longitude,
+                      }}
+                      label={{
+                        text: device.status === "active" ? "\ue412" : "\uf1a8",
+                        fontFamily: "Material Icons, sans-serif",
+                        color:
+                          device.status === "active" ? "#ffffff" : "#000000",
+                        fontSize: "20px",
+                      }}
+                      title="Camera Marker"
+                      onClick={() => {
+                        props.Selected(device.id);
+                        setSelectedMarker(device);
+                        props.getMapCoordinates(
+                          device.latitude,
+                          device.longitude
+                        );
+                        setMapCenter({
+                          lat: device.latitude,
+                          lng: device.longitude,
+                        });
+                      }}
+                    />
                   )
-                }
-              </MarkerClusterer>
+                )
+              )
             ) : // iot markers on iot manager
             Object.keys(props.deviceData)[0] === "iots" ? (
-              <MarkerClusterer
-                gridSize={clusterGridSize}
-                options={deviceClustererOptions}
-              >
-                {(clusterer) =>
-                  props.deviceData.iots[selectedDistrict.id].map(
-                    (device, i) => (
-                      <Marker
-                        key={i}
-                        position={{
-                          lat: device.latitude,
-                          lng: device.longitude,
-                        }}
-                        label={{
-                          text:
-                            device.status === "active" ? "\ue51e" : "\uf239",
-                          fontFamily: "Material Icons, sans-serif",
-                          color:
-                            device.status === "active" ? "#ffffff" : "#000000",
-                          fontSize: "20px",
-                        }}
-                        title="Iot Marker"
-                        onClick={() => {
-                          setSelectedMarker(device);
-                          props.getMapCoordinates(
-                            device.latitude,
-                            device.longitude
-                          );
-                          setMapCenter({
+              switchClusters ? (
+                <MarkerClusterer
+                  gridSize={clusterGridSize}
+                  options={{
+                    ...deviceClustererOptions,
+                    zIndex: 5,
+                  }}
+                >
+                  {(clusterer) =>
+                    props.deviceData.iots[selectedDistrict.id].map(
+                      (device, i) => (
+                        <Marker
+                          key={i}
+                          position={{
                             lat: device.latitude,
                             lng: device.longitude,
-                          });
-                        }}
-                        clusterer={clusterer}
-                      />
+                          }}
+                          label={{
+                            text:
+                              device.status === "active" ? "\ue51e" : "\uf239",
+                            fontFamily: "Material Icons, sans-serif",
+                            color:
+                              device.status === "active"
+                                ? "#ffffff"
+                                : "#000000",
+                            fontSize: "20px",
+                          }}
+                          title="Iot Marker"
+                          onClick={() => {
+                            setSelectedMarker(device);
+                            props.getMapCoordinates(
+                              device.latitude,
+                              device.longitude
+                            );
+                            setMapCenter({
+                              lat: device.latitude,
+                              lng: device.longitude,
+                            });
+                          }}
+                          clusterer={clusterer}
+                        />
+                      )
                     )
-                  )
-                }
-              </MarkerClusterer>
+                  }
+                </MarkerClusterer>
+              ) : (
+                props.deviceData.iots[selectedDistrict.id].map((device, i) => (
+                  <Marker
+                    key={i}
+                    position={{
+                      lat: device.latitude,
+                      lng: device.longitude,
+                    }}
+                    label={{
+                      text: device.status === "active" ? "\ue51e" : "\uf239",
+                      fontFamily: "Material Icons, sans-serif",
+                      color: device.status === "active" ? "#ffffff" : "#000000",
+                      fontSize: "20px",
+                    }}
+                    title="Iot Marker"
+                    onClick={() => {
+                      setSelectedMarker(device);
+                      props.getMapCoordinates(
+                        device.latitude,
+                        device.longitude
+                      );
+                      setMapCenter({
+                        lat: device.latitude,
+                        lng: device.longitude,
+                      });
+                    }}
+                  />
+                ))
+              )
             ) : // drone markers on drone manager
             Object.keys(props.deviceData)[0] === "drones" ? (
+              switchClusters ? (
+                <MarkerClusterer
+                  gridSize={clusterGridSize}
+                  options={{
+                    ...deviceClustererOptions,
+                    zIndex: 5,
+                  }}
+                >
+                  {(clusterer) =>
+                    props.deviceData.drones[selectedDistrict.id].map(
+                      (device, i) => (
+                        <Marker
+                          key={i}
+                          position={{
+                            lat: device.latitude,
+                            lng: device.longitude,
+                          }}
+                          label={{
+                            text:
+                              device.status === "active" ? "\ue539" : "\ue194",
+                            fontFamily: "Material Icons, sans-serif",
+                            color:
+                              device.status === "active"
+                                ? "#ffffff"
+                                : "#000000",
+
+                            fontSize: "20px",
+                          }}
+                          title="Drone Marker"
+                          onClick={() => {
+                            setSelectedMarker(device);
+                            props.getMapCoordinates(
+                              device.latitude,
+                              device.longitude
+                            );
+                            setMapCenter({
+                              lat: device.latitude,
+                              lng: device.longitude,
+                            });
+                          }}
+                          clusterer={clusterer}
+                        />
+                      )
+                    )
+                  }
+                </MarkerClusterer>
+              ) : (
+                props.deviceData.drones[selectedDistrict.id].map(
+                  (device, i) => (
+                    <Marker
+                      key={i}
+                      position={{
+                        lat: device.latitude,
+                        lng: device.longitude,
+                      }}
+                      label={{
+                        text: device.status === "active" ? "\ue539" : "\ue194",
+                        fontFamily: "Material Icons, sans-serif",
+                        color:
+                          device.status === "active" ? "#ffffff" : "#000000",
+
+                        fontSize: "20px",
+                      }}
+                      title="Drone Marker"
+                      onClick={() => {
+                        setSelectedMarker(device);
+                        props.getMapCoordinates(
+                          device.latitude,
+                          device.longitude
+                        );
+                        setMapCenter({
+                          lat: device.latitude,
+                          lng: device.longitude,
+                        });
+                      }}
+                    />
+                  )
+                )
+              )
+            ) : (
+              <></>
+            )}
+
+            {/* incident markers */}
+            {switchClusters ? (
               <MarkerClusterer
                 gridSize={clusterGridSize}
-                options={deviceClustererOptions}
+                options={{
+                  ...incidentClustererOptions,
+                  zIndex: 5,
+                }}
               >
                 {(clusterer) =>
-                  props.deviceData.drones[selectedDistrict.id].map(
-                    (device, i) => (
+                  props.incidentData &&
+                  props.incidentData[selectedDistrict.id] &&
+                  props.incidentData[selectedDistrict.id].map((incident, i) => (
+                    <Marker
+                      key={i}
+                      position={{
+                        lat: incident.latitude,
+                        lng: incident.longitude,
+                      }}
+                      icon={IncidentIcon}
+                      title="Incident Marker"
+                      onClick={() => {
+                        setSelectedMarker(incident);
+                        props.getMapCoordinates(
+                          incident.latitude,
+                          incident.longitude
+                        );
+                        setMapCenter({
+                          lat: incident.latitude,
+                          lng: incident.longitude,
+                        });
+                      }}
+                      clusterer={clusterer}
+                      zIndex={10}
+                    />
+                  ))
+                }
+              </MarkerClusterer>
+            ) : (
+              props.incidentData &&
+              props.incidentData[selectedDistrict.id] &&
+              props.incidentData[selectedDistrict.id].map((incident, i) => (
+                <Marker
+                  key={i}
+                  position={{
+                    lat: incident.latitude,
+                    lng: incident.longitude,
+                  }}
+                  icon={IncidentIcon}
+                  title="Incident Marker"
+                  onClick={() => {
+                    setSelectedMarker(incident);
+                    props.getMapCoordinates(
+                      incident.latitude,
+                      incident.longitude
+                    );
+                    setMapCenter({
+                      lat: incident.latitude,
+                      lng: incident.longitude,
+                    });
+                  }}
+                  zIndex={10}
+                />
+              ))
+            )}
+
+            {/* congestion markers */}
+            {switchClusters ? (
+              <MarkerClusterer
+                gridSize={clusterGridSize}
+                options={{
+                  ...congestionClustererOptions,
+                  zIndex: 5,
+                }}
+              >
+                {(clusterer) =>
+                  props.congestionData &&
+                  props.congestionData[selectedDistrict.id] &&
+                  props.congestionData[selectedDistrict.id].map(
+                    (congestion, i) => (
                       <Marker
                         key={i}
                         position={{
-                          lat: device.latitude,
-                          lng: device.longitude,
+                          lat: congestion.latitude,
+                          lng: congestion.longitude,
                         }}
-                        label={{
-                          text:
-                            device.status === "active" ? "\ue539" : "\ue194",
-                          fontFamily: "Material Icons, sans-serif",
-                          color:
-                            device.status === "active" ? "#ffffff" : "#000000",
-
-                          fontSize: "20px",
-                        }}
-                        title="Drone Marker"
+                        icon={CongestionIcon}
+                        title="Congestion Marker"
                         onClick={() => {
-                          setSelectedMarker(device);
+                          setSelectedMarker(congestion);
                           props.getMapCoordinates(
-                            device.latitude,
-                            device.longitude
+                            congestion.latitude,
+                            congestion.longitude
                           );
                           setMapCenter({
-                            lat: device.latitude,
-                            lng: device.longitude,
+                            lat: congestion.latitude,
+                            lng: congestion.longitude,
                           });
                         }}
                         clusterer={clusterer}
+                        zIndex={10}
                       />
                     )
                   )
                 }
               </MarkerClusterer>
             ) : (
-              <></>
+              props.congestionData &&
+              props.congestionData[selectedDistrict.id] &&
+              props.congestionData[selectedDistrict.id].map((congestion, i) => (
+                <Marker
+                  key={i}
+                  position={{
+                    lat: congestion.latitude,
+                    lng: congestion.longitude,
+                  }}
+                  icon={CongestionIcon}
+                  title="Congestion Marker"
+                  onClick={() => {
+                    setSelectedMarker(congestion);
+                    props.getMapCoordinates(
+                      congestion.latitude,
+                      congestion.longitude
+                    );
+                    setMapCenter({
+                      lat: congestion.latitude,
+                      lng: congestion.longitude,
+                    });
+                  }}
+                  zIndex={10}
+                />
+              ))
             )}
-
-            {/* incident markers */}
-            <MarkerClusterer
-              gridSize={clusterGridSize}
-              options={incidentClustererOptions}
-            >
-              {(clusterer) =>
-                props.incidentData &&
-                props.incidentData[selectedDistrict.id] &&
-                props.incidentData[selectedDistrict.id].map((incident, i) => (
-                  <Marker
-                    key={i}
-                    position={{
-                      lat: incident.latitude,
-                      lng: incident.longitude,
-                    }}
-                    icon={IncidentIcon}
-                    title="Incident Marker"
-                    onClick={() => {
-                      setSelectedMarker(incident);
-                      props.getMapCoordinates(
-                        incident.latitude,
-                        incident.longitude
-                      );
-                      setMapCenter({
-                        lat: incident.latitude,
-                        lng: incident.longitude,
-                      });
-                    }}
-                    clusterer={clusterer} // Pass the clusterer prop to the Marker component
-                  />
-                ))
-              }
-            </MarkerClusterer>
-
-            {/* congestion markers */}
-            <MarkerClusterer
-              gridSize={clusterGridSize}
-              options={congestionClustererOptions}
-            >
-              {(clusterer) =>
-                props.congestionData &&
-                props.congestionData[selectedDistrict.id] &&
-                props.congestionData[selectedDistrict.id].map(
-                  (congestion, i) => (
-                    <Marker
-                      key={i}
-                      position={{
-                        lat: congestion.latitude,
-                        lng: congestion.longitude,
-                      }}
-                      icon={CongestionIcon}
-                      title="Congestion Marker"
-                      onClick={() => {
-                        setSelectedMarker(congestion);
-                        props.getMapCoordinates(
-                          congestion.latitude,
-                          congestion.longitude
-                        );
-                        setMapCenter({
-                          lat: congestion.latitude,
-                          lng: congestion.longitude,
-                        });
-                      }}
-                      clusterer={clusterer} // Pass the clusterer prop to the Marker component
-                    />
-                  )
-                )
-              }
-            </MarkerClusterer>
 
             {/* marker pop up window */}
             {props.selectedMarkerState && (
@@ -531,13 +818,40 @@ function Map(props) {
                 }}
               >
                 <div className="w-50 text-md">
-                  <h1>ID: {props.selectedMarkerState.id}</h1>
-                  <h1>District ID: {props.selectedMarkerState.dist_id}</h1>
-                  <h1>Status: {props.selectedMarkerState.status}</h1>
-                  <h1>Latitude: {props.selectedMarkerState.latitude}</h1>
-                  <h1>Longitude: {props.selectedMarkerState.longitude}</h1>
+                  {props.selectedMarkerState.timestamp && (
+                    <h1>Time: {props.selectedMarkerState.timestamp.replace('T', ' ').replace('Z', '')}</h1>
+                  )}
+                  {props.selectedMarkerState.id && (
+                    <h1>ID: {props.selectedMarkerState.id}</h1>
+                  )}
+                  {props.selectedMarkerState.dist_id && (
+                    <h1>District ID: {props.selectedMarkerState.dist_id}</h1>
+                  )}
+                  {props.selectedMarkerState.status && (
+                    <h1>Status: {props.selectedMarkerState.status}</h1>
+                  )}
+                  {props.selectedMarkerState.latitude && (
+                    <h1>Latitude: {props.selectedMarkerState.latitude}</h1>
+                  )}
+                  {props.selectedMarkerState.longitude && (
+                    <h1>Longitude: {props.selectedMarkerState.longitude}</h1>
+                  )}
                   {props.selectedMarkerState.type && (
                     <h1>Type: {props.selectedMarkerState.type}</h1>
+                  )}
+                  {props.selectedMarkerState.description && (
+                    <h1>
+                      Description: {props.selectedMarkerState.description}
+                    </h1>
+                  )}
+                  {props.selectedMarkerState.location && (
+                    <h1>Location: {props.selectedMarkerState.location}</h1>
+                  )}
+                  {props.selectedMarkerState.area && (
+                    <h1>Area: {props.selectedMarkerState.area}</h1>
+                  )}
+                  {props.selectedMarkerState.speed && (
+                    <h1>Speed: {props.selectedMarkerState.speed}</h1>
                   )}
                 </div>
               </InfoWindow>
