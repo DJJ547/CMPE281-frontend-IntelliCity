@@ -94,12 +94,13 @@ export default function Dashboard() {
   let location = device ? `(${device.latitude}, ${device.longitude})` : "N/A";
   let dist_id = device ? device.dist_id : "N/A";
   let address = device ? device.address : "N/A";
+  let agent = localStorage.getItem("is_agent");
 
   //----------------------API Request-------------------------------------------------------------
   //callback function to disable the device
   const callback_switch_status = async (id) => {
     try {
-      const response = await fetch("http://localhost:8000/api/DisableDevice/", {
+      const response = await fetch(`${process.env.REACT_APP_DATA_SERVER_URL}/api/DisableDevice/`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -118,7 +119,7 @@ export default function Dashboard() {
   const callback2_delete_device = async (id) => {
     try {
       const response = await fetch(
-        `http://localhost:8000/api/DeleteDevice?id=${id}`,
+        `${process.env.REACT_APP_DATA_SERVER_URL}/api/DeleteDevice?id=${id}`,
         {
           method: "DELETE",
         }
@@ -135,7 +136,7 @@ export default function Dashboard() {
     try {
 
       const response = await fetch(
-        `http://localhost:8000/api/AddDevice/`,
+        `${process.env.REACT_APP_DATA_SERVER_URL}/api/AddDevice/`,
         {
           method: "POST",
           headers: {
@@ -161,7 +162,7 @@ export default function Dashboard() {
     }
     try {
       const response = await fetch(
-        `http://localhost:8000/api/SearchedDevice?search=${search_term}`,
+        `${process.env.REACT_APP_DATA_SERVER_URL}/api/SearchedDevice?search=${search_term}`,
         {
           method: "GET",
         }
@@ -179,7 +180,7 @@ export default function Dashboard() {
     const fetchDevices = async () => {
       try {
         const response = await fetch(
-          "http://localhost:8000/api/GetAllDevices/",
+          `${process.env.REACT_APP_DATA_SERVER_URL}/api/GetAllDevices/`,
           { method: "GET" }
         );
         const data = await response.json();
@@ -207,32 +208,42 @@ export default function Dashboard() {
   return (
     <div className="flex flex-col w-full h-full">
       <div className="flex mb-4 justify-between">
-        <ButtonCRUD
-          text="Add"
-          imgSrc={ADD}
-          altText="IoT Device Add"
-          data={searched_data}
-          callback3={callback3_add_device}
-          callback4={callback4_search_results}
-        />
-        <ButtonCRUD
-          text="Delete"
-          imgSrc="https://upload.wikimedia.org/wikipedia/commons/5/5e/Flat_minus_icon_-_red.svg"
-          altText="IoT Device Delete"
-          data={Devices}
-          callback_switch_status={callback_switch_status}
-          callback_delete_device={callback2_delete_device}
-        />
-        <ButtonCRUD
-          text="Update"
-          imgSrc="https://upload.wikimedia.org/wikipedia/commons/6/62/Eo_circle_orange_repeat.svg"
-          altText="IoT Device Update"
-          data={Devices}
-          callback_switch_status={callback_switch_status}
-          callback_delete_device={callback2_delete_device}
-        />
+        {agent !== '0' && (
+          <>
+            <ButtonCRUD
+              text="Add"
+              imgSrc={ADD}
+              altText="IoT Device Add"
+              data={searched_data}
+              callback3={callback3_add_device}
+              callback4={callback4_search_results}
+            />
+            <ButtonCRUD
+              text="Delete"
+              imgSrc="https://upload.wikimedia.org/wikipedia/commons/5/5e/Flat_minus_icon_-_red.svg"
+              altText="IoT Device Delete"
+              data={Devices}
+              callback_switch_status={callback_switch_status}
+              callback_delete_device={callback2_delete_device}
+            />
+            <ButtonCRUD
+              text="Update"
+              imgSrc="https://upload.wikimedia.org/wikipedia/commons/6/62/Eo_circle_orange_repeat.svg"
+              altText="IoT Device Update"
+              data={Devices}
+              callback_switch_status={callback_switch_status}
+              callback_delete_device={callback2_delete_device}
+            />
+          </>
+        )}
 
-        <ButtonCRUD text="View" imgSrc={view} altText="IoT Device View" />
+        <ButtonCRUD
+          text="View"
+          imgSrc={view}
+          altText="IoT Device View"
+          data={Devices}
+          callback={callback_switch_status}
+        />
       </div>
       <div className="flex w-auto h-2/3">
         <IOTMap
