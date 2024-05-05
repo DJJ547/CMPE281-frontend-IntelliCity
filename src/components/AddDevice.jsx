@@ -15,7 +15,7 @@ export default function AddDevice(props) {
         <div className="p-8">
           <h1 className="text-2xl font-bold text-center mb-4">Devices</h1>
           <SearchBar callback4={props.callback4} />
-          <Table2 data={props.data} callback3={props.callback3}/>
+          <Table2 data={props.data} callback3={props.callback3} />
         </div>
       </div>
     </div>
@@ -86,43 +86,41 @@ function Table2(props) {
             </tr>
           ))}
         </tbody>
-        <div>
-          <div className="flex items-center justify-center mt-4">
-            <button
-              onClick={() =>
-                currentPage > 1 && handlePageChange(currentPage - 1)
-              }
-              className="h-8 px-4 text-blue-500 border-blue-500 border text-sm rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 transition-colors duration-200 ease-in-out mx-1"
-              disabled={currentPage === 1}
-            >
-              Previous
-            </button>
-            <input
-              type="number"
-              min="1"
-              max={totalPages}
-              value={currentPage}
-              onChange={(e) => handlePageChange(Number(e.target.value))}
-              onKeyUp={(e) =>
-                e.key === "Enter" && handlePageChange(Number(e.target.value))
-              }
-              className="h-8 w-8 text-center mx-1 border-blue-500 border text-sm rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 transition-colors duration-200 ease-in-out"
-            />
-            <button
-              onClick={() =>
-                currentPage < totalPages && handlePageChange(currentPage + 1)
-              }
-              className="h-8 px-4 text-blue-500 border-blue-500 border text-sm rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 transition-colors duration-200 ease-in-out mx-1"
-              disabled={currentPage === totalPages}
-            >
-              Next
-            </button>
-          </div>
-          <div className="flex items-center justify-center mt-4">
-            Pages {currentPage} of {totalPages}
-          </div>
-        </div>
       </table>
+      <div>
+        <div className="flex items-center justify-center mt-4">
+          <button
+            onClick={() => currentPage > 1 && handlePageChange(currentPage - 1)}
+            className="h-8 px-4 text-blue-500 border-blue-500 border text-sm rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 transition-colors duration-200 ease-in-out mx-1"
+            disabled={currentPage === 1}
+          >
+            Previous
+          </button>
+          <input
+            type="number"
+            min="1"
+            max={totalPages}
+            value={currentPage}
+            onChange={(e) => handlePageChange(Number(e.target.value))}
+            onKeyUp={(e) =>
+              e.key === "Enter" && handlePageChange(Number(e.target.value))
+            }
+            className="h-8 w-8 text-center mx-1 border-blue-500 border text-sm rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 transition-colors duration-200 ease-in-out"
+          />
+          <button
+            onClick={() =>
+              currentPage < totalPages && handlePageChange(currentPage + 1)
+            }
+            className="h-8 px-4 text-blue-500 border-blue-500 border text-sm rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 transition-colors duration-200 ease-in-out mx-1"
+            disabled={currentPage === totalPages}
+          >
+            Next
+          </button>
+        </div>
+        <div className="flex items-center justify-center mt-4">
+          Pages {currentPage} of {totalPages}
+        </div>
+      </div>
     </div>
   );
 }

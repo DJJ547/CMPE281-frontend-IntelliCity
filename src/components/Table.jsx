@@ -77,7 +77,8 @@ export default function Table(props) {
             </tr>
           ))}
         </tbody>
-        <div>
+      </table>
+      <div>
           <div className="flex items-center justify-center mt-4">
             <button
               onClick={() =>
@@ -113,7 +114,6 @@ export default function Table(props) {
             Pages {currentPage} of {totalPages}
           </div>
         </div>
-      </table>
     </div>
   );
 }
