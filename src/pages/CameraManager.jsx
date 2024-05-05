@@ -80,7 +80,7 @@ export default function Dashboard() {
   //callback function to disable the device
   const callback_switch_status = async (id) => {
     try {
-      const response = await fetch(`http://localhost:8000/api/DisableDevice/?id=${id}`, {
+      const response = await fetch(`${process.env.REACT_APP_CAMERA_SERVER_URL}/api/DisableDevice/?id=${id}`, {
         method: "POST",
       });
       const data = await response.json();
@@ -95,7 +95,7 @@ export default function Dashboard() {
   const callback2_delete_device = async (id) => {
     try {
       const response = await fetch(
-        `http://localhost:8000/api/DeleteDevice?id=${id}`,
+        `${process.env.REACT_APP_CAMERA_SERVER_URL}/api/DeleteDevice?id=${id}`,
         {
           method: "DELETE",
         }
@@ -111,7 +111,7 @@ export default function Dashboard() {
   const callback3_add_device = async (id) => {
     try {
       const response = await fetch(
-        `http://localhost:8000/api/AddDevice/?id=${id}`,
+        `${process.env.REACT_APP_CAMERA_SERVER_URL}/api/AddDevice/?id=${id}`,
         {
           method: "POST",
         }
@@ -131,7 +131,7 @@ export default function Dashboard() {
     }
     try {
       const response = await fetch(
-        `http://localhost:8000/api/SearchedDevice?search=${search_term}`,
+        `${process.env.REACT_APP_CAMERA_SERVER_URL}/api/SearchedDevice?search=${search_term}`,
         {
           method: "GET",
         }
@@ -149,7 +149,7 @@ export default function Dashboard() {
     const fetchDevices = async () => {
       try {
         const response = await fetch(
-          "http://localhost:8000/api/GetAllDevices/",
+          "${process.env.REACT_APP_CAMERA_SERVER_URL}/api/GetAllDevices/",
           { method: "GET" }
         );
         const data = await response.json();
@@ -167,7 +167,7 @@ export default function Dashboard() {
     return () => {
       const cleanup = async () => {
         try {
-          const response = await fetch("http://localhost:8000/api/StopStream/", {
+          const response = await fetch("${process.env.REACT_APP_CAMERA_SERVER_URL}/api/StopStream/", {
             method: "GET",
           });
           const data = await response.json();
