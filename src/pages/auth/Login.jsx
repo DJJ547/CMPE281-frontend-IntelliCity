@@ -1,11 +1,14 @@
 import React, { useState } from "react";
 import LoginIcon from "../../medias/auth/authIcon.png";
+import Toast from "../../components/Toast";
 
 export default function Login() {
   const [formData, setFormData] = useState({
     email: "",
     password: "",
   });
+
+  const [toast, setToast] = useState({ message: '', type: '' });
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
@@ -13,7 +16,7 @@ export default function Login() {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    fetch(`${process.env.REACT_APP_DATA_SERVER_URL}auth/login/`, {
+    fetch(`${process.env.REACT_APP_LOGIN_SERVER_URL}auth/login/`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -35,6 +38,7 @@ export default function Login() {
         window.location.href = "/";
       })
       .catch((error) => {
+        setToast({ message: error.message, type: 'error' });
         console.error("Login error:", error);
       });
   };
@@ -72,6 +76,8 @@ export default function Login() {
           >
             Login
           </button>
+          <Toast message={toast.message} type={toast.type} />
+
           <p className="text-gray-900 mt-4">
             Don't have an account?
             <a
