@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import PopupWindow from "../components/PopupWindow";
 import AddDevice from "../components/AddDevice";
+import ViewDevice from "../components/ViewDevice";
 
 export default function ButtonCRUD(props) {
   //show the add window
@@ -13,18 +14,26 @@ export default function ButtonCRUD(props) {
   function ViewPopUp() {
     setShowPopup(true);
   }
+  const [showView, setShowView] = useState(false);
+  function ViewView() {
+    setShowView(true);
+  }
+
   function handleOnClick() {
     //if the button is view, do nothing
     if (props.text === "View") {
-        return;
+      ViewView();
+      return;
     }
     //if the button is add, show the add window
     if (props.text === "Add") {
       ViewAddWindow();
+      return;
     }
     //if the button is delete or update, show the manament window
     else {
       ViewPopUp();
+      return;
     }
   }
   return (
@@ -56,6 +65,13 @@ export default function ButtonCRUD(props) {
           data={props.data}
           callback3={props.callback3}
           callback4={props.callback4}
+        />
+      )}
+      {showView && (
+        <ViewDevice
+          data = {props.data}
+          onClick={() => setShowView(false)}
+          callback_view_device={props.callback_view_device}
         />
       )}
     </div>

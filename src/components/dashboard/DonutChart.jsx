@@ -10,13 +10,13 @@ export default function DonutChart(props) {
       <PieChart width={100} height={100}>
         <Pie
           data={props.donutChartData[props.name]}
-          innerRadius={35}
-          outerRadius={45}
+          innerRadius={40}
+          outerRadius={50}
           fill="#8884d8"
           paddingAngle={5}
           dataKey="value"
         >
-          <Label value={props.donutChartData[props.name][0].value + "/" + (props.donutChartData[props.name][0].value + props.donutChartData[props.name][1].value)} position="centerBottom" fontSize="20px" />
+          <Label className="font-bold text-2xl" value={props.donutChartData[props.name][0].value + "/" + (props.donutChartData[props.name][0].value + props.donutChartData[props.name][1].value)} position="centerBottom" fontSize="20px" />
           <Label value="active/total" position="centerTop" fontSize="14px" />
           {props.donutChartData[props.name].map((entry, index) => (
             <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />

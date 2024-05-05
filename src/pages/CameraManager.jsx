@@ -38,11 +38,11 @@ export default function Dashboard() {
   });
   //for add
   const [searched_data, setSearchedData] = useState([]);
-
+  const [incidents, setIncidents] = useState([]);
   const [screenshot, setscreenshot] = useState("");
   const [streamvideo, setstreamvideo] = useState("");
   const [selectedDevice, setSelectedDevice] = useState(null);
-//==================For View Button============================
+  //==================For View Button============================
   //these are the map center states
   const [mapCenterLat, setMapCenterLat] = useState(districts[0].lat);
   const [mapCenterLng, setMapCenterLng] = useState(districts[0].lng);
@@ -67,6 +67,7 @@ export default function Dashboard() {
     setSelectedMarker(marker);
   };
   //----------------------variables-------------------------------------------------------------
+  const api_url = process.env.REACT_APP_CAMERA;
   let device = Devices.cameras[0].filter(
     (item) => item.id === selectedDevice
   )[0];
@@ -76,13 +77,17 @@ export default function Dashboard() {
   let location = device ? `(${device.latitude}, ${device.longitude})` : "N/A";
   let dist_id = device ? device.dist_id : "N/A";
   let address = device ? device.address : "N/A";
+  let agent = localStorage.getItem("is_agent");
   //----------------------API Request-------------------------------------------------------------
   //callback function to disable the device
   const callback_switch_status = async (id) => {
     try {
-      const response = await fetch(`${process.env.REACT_APP_CAMERA_SERVER_URL}/api/DisableDevice/?id=${id}`, {
-        method: "POST",
-      });
+      const response = await fetch(
+        `${api_url}/api/DisableDevice/?id=${id}`,
+        {
+          method: "POST",
+        }
+      );
       const data = await response.json();
       console.log("data", data);
       setUpdateUI(!updateUI);
@@ -95,7 +100,7 @@ export default function Dashboard() {
   const callback2_delete_device = async (id) => {
     try {
       const response = await fetch(
-        `${process.env.REACT_APP_CAMERA_SERVER_URL}/api/DeleteDevice?id=${id}`,
+        `${api_url}/api/DeleteDevice/?id=${id}`,
         {
           method: "DELETE",
         }
@@ -111,7 +116,7 @@ export default function Dashboard() {
   const callback3_add_device = async (id) => {
     try {
       const response = await fetch(
-        `${process.env.REACT_APP_CAMERA_SERVER_URL}/api/AddDevice/?id=${id}`,
+        `${api_url}/api/AddDevice/?id=${id}`,
         {
           method: "POST",
         }
@@ -131,7 +136,7 @@ export default function Dashboard() {
     }
     try {
       const response = await fetch(
-        `${process.env.REACT_APP_CAMERA_SERVER_URL}/api/SearchedDevice?search=${search_term}`,
+        `${api_url}/api/SearchedDevice?search=${search_term}`,
         {
           method: "GET",
         }
@@ -149,7 +154,7 @@ export default function Dashboard() {
     const fetchDevices = async () => {
       try {
         const response = await fetch(
-          "${process.env.REACT_APP_CAMERA_SERVER_URL}/api/GetAllDevices/",
+          `${api_url}/api/GetAllDevices/`,
           { method: "GET" }
         );
         const data = await response.json();
@@ -162,24 +167,65 @@ export default function Dashboard() {
         console.error("Error:", error);
       }
     };
+    const fetchIncidences = async () => {
+      try {
+        const response = await fetch(
+          `${api_url}/api/GetAllIncidences/`,
+          { method: "GET" }
+        );
+        const data = await response.json();
+        setIncidents(data);
+      } catch (error) {
+        console.error("Error:", error);
+      }
+    };
 
     fetchDevices();
+    fetchIncidences();
     return () => {
       const cleanup = async () => {
         try {
-          const response = await fetch("${process.env.REACT_APP_CAMERA_SERVER_URL}/api/StopStream/", {
-            method: "GET",
-          });
+          const response = await fetch(
+            `${api_url}/api/StopStream/`,
+            {
+              method: "GET",
+            }
+          );
           const data = await response.json();
-        }
-        catch (error) {
+        } catch (error) {
           console.error("Error:", error);
+        }
       };
-    }
-    cleanup();
+      cleanup();
     };
   }, [updateUI]);
 
+  const handleSearchSubmit = async (mapCenterLatInput, mapCenterLngInput, id) => {
+    if (id !== "") {
+      id = parseInt(id);
+      let marker = Devices.cameras[0].filter((device) => device.id === id)[0];
+      setMapCenterLat(parseFloat(marker.latitude));
+      setMapCenterLng(parseFloat(marker.longitude));
+      setMapZoom(15);
+      setSelectedMarker(marker);
+      setSelectLat(marker.latitude);
+      setSelectLng(marker.longitude);
+      return;
+    }
+
+    setMapCenterLat(parseFloat(mapCenterLatInput));
+    setMapCenterLng(parseFloat(mapCenterLngInput));
+    let marker = Devices.cameras[0].find(
+      (device) =>
+        parseFloat(device.latitude) === parseFloat(mapCenterLatInput) &&
+        parseFloat(device.longitude) === parseFloat(mapCenterLngInput)
+    );
+
+    setMapZoom(15);
+    setSelectedMarker(marker);
+    setSelectLat(mapCenterLatInput);
+    setSelectLng(mapCenterLngInput);
+  };
   //----------------------functions-------------------------------------------------------------
   const Selected = async (id) => {
     let item = Devices.cameras[0].filter((item) => item.id === id)[0];
@@ -195,35 +241,45 @@ export default function Dashboard() {
   return (
     <div className="flex flex-col w-full h-full">
       <div className="flex mb-4 justify-between">
-        <ButtonCRUD
-          text="Add"
-          imgSrc={ADD}
-          altText="Camera"
-          data={searched_data}
-          callback3={callback3_add_device}
-          callback4={callback4_search_results}
-        />
-        <ButtonCRUD
-          text="Delete"
-          imgSrc="https://upload.wikimedia.org/wikipedia/commons/5/5e/Flat_minus_icon_-_red.svg"
-          altText="Camera"
-          data={Devices.cameras[0]}
-          callback_switch_status={callback_switch_status}
-          callback_delete_device={callback2_delete_device}
-        />
-        <ButtonCRUD
-          text="Update"
-          imgSrc="https://upload.wikimedia.org/wikipedia/commons/6/62/Eo_circle_orange_repeat.svg"
-          altText="Camera"
-          data={Devices.cameras[0]}
-          callback_switch_status={callback_switch_status}
-          callback_delete_device={callback2_delete_device}
-        />
+      {agent !== '0' && (
+        <>
+          <ButtonCRUD
+            text="Add"
+            imgSrc={ADD}
+            altText="Camera"
+            data={searched_data}
+            callback3={callback3_add_device}
+            callback4={callback4_search_results}
+          />
+          <ButtonCRUD
+            text="Delete"
+            imgSrc="https://upload.wikimedia.org/wikipedia/commons/5/5e/Flat_minus_icon_-_red.svg"
+            altText="Camera"
+            data={Devices.cameras[0]}
+            callback_switch_status={callback_switch_status}
+            callback_delete_device={callback2_delete_device}
+          />
+          <ButtonCRUD
+            text="Update"
+            imgSrc="https://upload.wikimedia.org/wikipedia/commons/6/62/Eo_circle_orange_repeat.svg"
+            altText="Camera"
+            data={Devices.cameras[0]}
+            callback_switch_status={callback_switch_status}
+            callback_delete_device={callback2_delete_device}
+          />
+        </>
+      )}
 
-        <ButtonCRUD text="View" imgSrc={view} altText="Camera" />
+        <ButtonCRUD
+          text="View"
+          imgSrc={view}
+          altText="Camera"
+          data={Devices.cameras[0]}
+          callback_view_device={handleSearchSubmit}
+        />
       </div>
       <div className="flex w-auto h-2/3">
-      <Map
+        <Map
           centerLatState={mapCenterLat}
           centerLngState={mapCenterLng}
           mapZoomState={mapZoom}
@@ -232,6 +288,7 @@ export default function Dashboard() {
           updateMapCoordinatesCallback={updateMapCoordinates}
           updateMapZoomCallback={updateMapZoomOnView}
           getMapCoordinates={getMapCoordinates}
+          incidentData={incidents}
           deviceData={Devices}
           container_height={container_height}
           container_width={container_width}
@@ -263,7 +320,13 @@ export default function Dashboard() {
               </h3>
             </div>
           </div>
-          <Streaming screenshot={screenshot} videoUrl={streamvideo} latitude={latitude} longitude={longitude} />
+          <Streaming
+            screenshot={screenshot}
+            videoUrl={streamvideo}
+            latitude={latitude}
+            longitude={longitude}
+            district={dist_id}
+          />
         </div>
       </div>
     </div>

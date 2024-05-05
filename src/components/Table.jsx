@@ -4,10 +4,15 @@ import ConfirmationPopup from "./ConfirmationPopup";
 
 export default function Table(props) {
   // State to manage the checked state of the switch
-  // Initialize the checked state with the enabled values from your data
-  const [checked, setChecked] = useState(props.data.map(item => item.enabled));
-
-  console.log(props.data);
+  const [checked, setChecked] = useState(
+    props.data.map((item) => {
+      if (item.status == "active") {
+        return true;
+      } else {
+        return false;
+      }
+    })
+  );
 
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 10;
@@ -21,18 +26,12 @@ export default function Table(props) {
   };
 
   // Function to handle switch state change
-  // Function to handle switch state change
   const handleChange = (id, index, newStatus) => {
     setChecked((prevChecked) => {
       const newChecked = [...prevChecked];
       newChecked[index] = newStatus;
       return newChecked;
     });
-    // Find the corresponding item in your data array and update its enabled property
-    const item = props.data.find(item => item.id === id);
-    if (item) {
-      item.enabled = newStatus;
-    }
     props.callback(id);
   };
 
@@ -57,7 +56,7 @@ export default function Table(props) {
               className={index % 2 === 0 ? "bg-gray-100" : "bg-white"}
             >
               <td className="border px-4 py-2 text-center">{item.id}</td>
-              <td className="border px-4 py-2 text-center">{item.district}</td>
+              <td className="border px-4 py-2 text-center">{item.dist_id}</td>
               <td className="border px-4 py-2 text-center">{item.latitude}</td>
               <td className="border px-4 py-2 text-center">{item.longitude}</td>
               <td className="border px-4 py-2 text-center">{item.address}</td>

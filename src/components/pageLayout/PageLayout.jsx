@@ -3,7 +3,7 @@ import Sidebar from "./Sidebar";
 
 export default function PageLayout({ children }) {
   return (
-    <div className="bg-slate-100">
+    <div className="w-full bg-slate-100">
       <div className="relative w-full top-0">
         <Topbar />
       </div>

@@ -1,7 +1,7 @@
 import ShiftingDropDown from "./ShiftingDropDown";
 import LoginIcon from "../../medias/auth/authIcon.png";
 
-export default function Sidebar() {
+export default function Topbar() {
   return (
     <nav className="bg-gray-800 py-4">
       <div className="flex justify-between max-w-full mx-auto px-12">
