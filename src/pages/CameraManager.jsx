@@ -203,7 +203,11 @@ export default function Dashboard() {
   const handleSearchSubmit = async (mapCenterLatInput, mapCenterLngInput, id) => {
     if (id !== "") {
       id = parseInt(id);
+      //if id not in my data then return
       let marker = Devices.cameras[0].filter((device) => device.id === id)[0];
+      if (marker === undefined) {
+        return;
+      }
       setMapCenterLat(parseFloat(marker.latitude));
       setMapCenterLng(parseFloat(marker.longitude));
       setMapZoom(15);
