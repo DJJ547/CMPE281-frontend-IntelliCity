@@ -67,6 +67,7 @@ export default function Dashboard() {
     setSelectedMarker(marker);
   };
   //----------------------variables-------------------------------------------------------------
+  const api_url = process.env.REACT_APP_CAMERA;
   let device = Devices.cameras[0].filter(
     (item) => item.id === selectedDevice
   )[0];
@@ -82,7 +83,7 @@ export default function Dashboard() {
   const callback_switch_status = async (id) => {
     try {
       const response = await fetch(
-        `http://localhost:8000/api/DisableDevice/?id=${id}`,
+        `${api_url}/api/DisableDevice/?id=${id}`,
         {
           method: "POST",
         }
@@ -99,7 +100,7 @@ export default function Dashboard() {
   const callback2_delete_device = async (id) => {
     try {
       const response = await fetch(
-        `http://localhost:8000/api/DeleteDevice?id=${id}`,
+        `${api_url}/api/DeleteDevice/?id=${id}`,
         {
           method: "DELETE",
         }
@@ -115,7 +116,7 @@ export default function Dashboard() {
   const callback3_add_device = async (id) => {
     try {
       const response = await fetch(
-        `http://localhost:8000/api/AddDevice/?id=${id}`,
+        `${api_url}/api/AddDevice/?id=${id}`,
         {
           method: "POST",
         }
@@ -135,7 +136,7 @@ export default function Dashboard() {
     }
     try {
       const response = await fetch(
-        `http://localhost:8000/api/SearchedDevice?search=${search_term}`,
+        `${api_url}/api/SearchedDevice?search=${search_term}`,
         {
           method: "GET",
         }
@@ -153,7 +154,7 @@ export default function Dashboard() {
     const fetchDevices = async () => {
       try {
         const response = await fetch(
-          "http://localhost:8000/api/GetAllDevices/",
+          `${api_url}/api/GetAllDevices/`,
           { method: "GET" }
         );
         const data = await response.json();
@@ -169,7 +170,7 @@ export default function Dashboard() {
     const fetchIncidences = async () => {
       try {
         const response = await fetch(
-          "http://localhost:8000/api/GetAllIncidences/",
+          `${api_url}/api/GetAllIncidences/`,
           { method: "GET" }
         );
         const data = await response.json();
@@ -185,7 +186,7 @@ export default function Dashboard() {
       const cleanup = async () => {
         try {
           const response = await fetch(
-            "http://localhost:8000/api/StopStream/",
+            `${api_url}/api/StopStream/`,
             {
               method: "GET",
             }

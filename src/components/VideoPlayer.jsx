@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 
 function VideoPlayer({ url, latitude, longitude, district}) {
   const [showPopup, setShowPopup] = useState(false);
-  const streamurl = `http://localhost:8000/api/StreamVideo/?url=${url}&latitude=${latitude}&longitude=${longitude}&district=${district}`;
+  const streamurl = `${process.env.REACT_APP_CAMERA}/api/StreamVideo/?url=${url}&latitude=${latitude}&longitude=${longitude}&district=${district}`;
 
   if (!url || !latitude || !longitude || !district) {
     return <img src="https://png.pngtree.com/png-vector/20220809/ourmid/pngtree-live-streaming-icon-red-png-image_6104752.png" alt="placeholder" />;
