@@ -14,7 +14,7 @@ const Toast = ({ message, type }) => {
 
   return (
     isVisible && (
-      <div className={`fixed top-5 left-1/2 transform -translate-x-1/2 px-6 py-4 border rounded-lg shadow-lg ${type === 'error' ? 'bg-red-500' : 'bg-green-500'} text-white`}>
+      <div style={{zIndex: 50}} className={`fixed top-5 left-1/2 transform -translate-x-1/2 px-6 py-4 border rounded-lg shadow-lg -z-50 ${type === 'error' ? 'bg-red-500' : 'bg-green-500'} text-white`}>
         {message}
       </div>
     )

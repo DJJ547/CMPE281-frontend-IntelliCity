@@ -122,7 +122,7 @@ function IOTMap(props) {
           libraries={libraries}
         >
           <GoogleMap
-            mapContainerStyle={{ width: '800px', height: '500px' }}
+            mapContainerStyle={{ width: '55vw', height: '68vh' }}
             center={{ lat: props.centerLatState, lng: props.centerLngState }}
             zoom={props.mapZoomState}
           >

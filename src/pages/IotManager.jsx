@@ -5,6 +5,7 @@ import view from "../medias/view.svg";
 import ButtonCRUD from "../components/ButtonCRUD";
 import { districts } from "../utils/mapDistrictCoordinates";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, Cell } from 'recharts';
+import Toast from "../components/Toast";
 
 
 const container_height = "65vh";
@@ -50,6 +51,9 @@ export default function Dashboard() {
   //----------------------states-------------------------------------------------------------
   const [selectLat, setSelectLat] = useState(null);
   const [selectLng, setSelectLng] = useState(null);
+
+  const [toast, setToast] = useState({ message: '', type: '' });
+
   const getMapCoordinates = (lat, lng) => {
     setSelectLat(lat);
     setSelectLng(lng);
@@ -108,6 +112,9 @@ export default function Dashboard() {
         body: JSON.stringify({ index: id }),
       });
       const data = await response.json();
+      // Set toast message
+      console.log('should see Toast here')
+      setToast({ message: `Device ${id} status updated`, type: 'success' });
       console.log("data", data);
       setUpdateUI(!updateUI);
     } catch (error) {
@@ -125,6 +132,7 @@ export default function Dashboard() {
         }
       );
       const data = await response.json();
+      setToast({ message: `Device ${id} deleted`, type: 'success' });
       setUpdateUI(!updateUI);
     } catch (error) {
       console.error("Error:", error);
@@ -149,6 +157,8 @@ export default function Dashboard() {
       );
       const res = await response.json();
       console.log("res", res);
+      setToast({ message: `Device ${id} status added`, type: 'success' });
+
       setUpdateUI(!updateUI);
     } catch (error) {
       console.error("Error:", error);
@@ -175,6 +185,7 @@ export default function Dashboard() {
     }
   };
 
+
   //get the devices data from backend
   useEffect(() => {
     const fetchDevices = async () => {
@@ -197,6 +208,33 @@ export default function Dashboard() {
 
     fetchDevices();
   }, [updateUI, mapCenterLat, mapCenterLng, mapZoom, selectedMarker]);
+
+  const handleSearchSubmit = async (mapCenterLatInput, mapCenterLngInput, id) => {
+    if (id !== "") {
+      id = parseInt(id);
+      let marker = Devices.filter((device) => device.id === id)[0];
+      setMapCenterLat(parseFloat(marker.latitude));
+      setMapCenterLng(parseFloat(marker.longitude));
+      setMapZoom(15);
+      setSelectedMarker(marker);
+      setSelectLat(marker.latitude);
+      setSelectLng(marker.longitude);
+      return;
+    }
+
+    setMapCenterLat(parseFloat(mapCenterLatInput));
+    setMapCenterLng(parseFloat(mapCenterLngInput));
+    let marker = Devices.find(
+      (device) =>
+        parseFloat(device.latitude) === parseFloat(mapCenterLatInput) &&
+        parseFloat(device.longitude) === parseFloat(mapCenterLngInput)
+    );
+
+    setMapZoom(15);
+    setSelectedMarker(marker);
+    setSelectLat(mapCenterLatInput);
+    setSelectLng(mapCenterLngInput);
+  };
 
   //----------------------functions-------------------------------------------------------------
   const Selected = async (id) => {
@@ -223,6 +261,7 @@ export default function Dashboard() {
               imgSrc="https://upload.wikimedia.org/wikipedia/commons/5/5e/Flat_minus_icon_-_red.svg"
               altText="IoT Device Delete"
               data={Devices}
+              type="iot"
               callback_switch_status={callback_switch_status}
               callback_delete_device={callback2_delete_device}
             />
@@ -231,6 +270,7 @@ export default function Dashboard() {
               imgSrc="https://upload.wikimedia.org/wikipedia/commons/6/62/Eo_circle_orange_repeat.svg"
               altText="IoT Device Update"
               data={Devices}
+              type="iot"
               callback_switch_status={callback_switch_status}
               callback_delete_device={callback2_delete_device}
             />
@@ -242,10 +282,11 @@ export default function Dashboard() {
           imgSrc={view}
           altText="IoT Device View"
           data={Devices}
-          callback={callback_switch_status}
+          callback_view_device={handleSearchSubmit}
         />
+        <Toast message={toast.message} type={toast.type} />
       </div>
-      <div className="flex w-auto h-2/3">
+      <div className="flex w-auto h-3/4">
         <IOTMap
           centerLatState={mapCenterLat}
           centerLngState={mapCenterLng}
