@@ -10,7 +10,10 @@ import StreamingDrone from "../components/StreamingDrone";
 const container_height = "65vh";
 const container_width = "55vw";
 
+const api_url = process.env.REACT_APP_DRONE;
 let agent = localStorage.getItem("is_agent");
+
+console.log(api_url)
 
 export default function DroneManager() {
   const [showAddForm, setShowAddForm] = useState(false);
@@ -117,8 +120,8 @@ export default function DroneManager() {
   // Function to fetch video URL for a given drone ID
   const fetchVideoUrlForDrone = async (id) => {
     try {
-        const response = await fetch("http://127.0.0.1:8000/getVideoUrls", {
-        //const response = await fetch("http://127.0.0.1:8000/StreamVideo", {
+        const response = await fetch(`${process.env.REACT_APP_DRONE}getVideoUrls`, {
+        //const response = await fetch("http://127.0.0.1:8000/getVideoUrls", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -141,8 +144,9 @@ export default function DroneManager() {
   useEffect(() => {
         const fetchDevices = async () => {
         try {
-          const response = await fetch(
-            "http://localhost:8000/getAllDevices",
+          //const response = await fetch("http://localhost:8000/getAllDevices",
+          const response = await fetch(`${process.env.REACT_APP_DRONE}getAllDevices`,
+
             { method: "GET" }
           );
           const data = await response.json();
@@ -157,8 +161,9 @@ export default function DroneManager() {
       };
       const fetchIncidences = async () => {
         try {
-          const response = await fetch(
-            "http://localhost:8000/api/GetAllIncidences/",
+          //const response = await fetch("http://localhost:8000/api/GetAllIncidences/",
+          const response = await fetch(`${process.env.REACT_APP_DRONE}/api/GetAllIncidences/`, 
+
             { method: "GET" }
           );
           const data = await response.json();
@@ -172,8 +177,9 @@ export default function DroneManager() {
       return () => {
         const cleanup = async () => {
           try {
-            const response = await fetch(
-              "http://localhost:8000/api/StopStream/",
+            //const response = await fetch("http://localhost:8000/api/StopStream/",
+            const response = await fetch(`${process.env.REACT_APP_DRONE}api/StopStream/`,
+
               {
                 method: "GET",
               }
@@ -212,7 +218,9 @@ export default function DroneManager() {
 
   const handleFormSubmit = async () => {
     try {
-      const response = await fetch("http://127.0.0.1:8000/addDevice", {
+      //const response = await fetch("http://127.0.0.1:8000/addDevice", {
+        const response = await fetch(`${process.env.REACT_APP_DRONE}addDevice`, {
+
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -246,7 +254,9 @@ export default function DroneManager() {
 
   const handleDelete = async () => {
     try {
-      const response = await fetch("http://127.0.0.1:8000/DeleteDevice", {
+      //const response = await fetch("http://127.0.0.1:8000/DeleteDevice", {
+        const response = await fetch(`${process.env.REACT_APP_DRONE}DeleteDevice`, {
+
         method: "DELETE",
         headers: {
           "Content-Type": "application/json",
@@ -275,7 +285,9 @@ export default function DroneManager() {
 
   const handleUpdate = async () => {
     try {
-      const response = await fetch("http://127.0.0.1:8000/UpdateDevice", {
+      //const response = await fetch("http://127.0.0.1:8000/UpdateDevice", {
+        const response = await fetch(`${process.env.REACT_APP_DRONE}UpdateDevice`, {
+
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
@@ -307,7 +319,8 @@ export default function DroneManager() {
     console.log("handleViewDevice function called");
     console.log("viewFormData:", viewFormData);
     try {
-      const response = await fetch("http://127.0.0.1:8000/GetDevice", {
+      //const response = await fetch("http://127.0.0.1:8000/GetDevice", {
+      const response = await fetch(`${process.env.REACT_APP_DRONE}GetDevice`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
