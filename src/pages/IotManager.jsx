@@ -104,7 +104,7 @@ export default function Dashboard() {
   //callback function to disable the device
   const callback_switch_status = async (id) => {
     try {
-      const response = await fetch(`${process.env.REACT_APP_DATA_SERVER_URL}/api/DisableDevice/`, {
+      const response = await fetch(`${process.env.REACT_APP_IOT_SERVER_URL}/api/DisableDevice/`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -126,7 +126,7 @@ export default function Dashboard() {
   const callback2_delete_device = async (id) => {
     try {
       const response = await fetch(
-        `${process.env.REACT_APP_DATA_SERVER_URL}/api/DeleteDevice?id=${id}`,
+        `${process.env.REACT_APP_IOT_SERVER_URL}/api/DeleteDevice?id=${id}`,
         {
           method: "DELETE",
         }
@@ -144,7 +144,7 @@ export default function Dashboard() {
     try {
 
       const response = await fetch(
-        `${process.env.REACT_APP_DATA_SERVER_URL}/api/AddDevice/`,
+        `${process.env.REACT_APP_IOT_SERVER_URL}/api/AddDevice/`,
         {
           method: "POST",
           headers: {
@@ -172,7 +172,7 @@ export default function Dashboard() {
     }
     try {
       const response = await fetch(
-        `${process.env.REACT_APP_DATA_SERVER_URL}/api/SearchedDevice?search=${search_term}`,
+        `${process.env.REACT_APP_IOT_SERVER_URL}/api/SearchedDevice?search=${search_term}`,
         {
           method: "GET",
         }
@@ -191,7 +191,7 @@ export default function Dashboard() {
     const fetchDevices = async () => {
       try {
         const response = await fetch(
-          `${process.env.REACT_APP_DATA_SERVER_URL}/api/GetAllDevices/`,
+          `${process.env.REACT_APP_IOT_SERVER_URL}/api/GetAllDevices/`,
           { method: "GET" }
         );
         const data = await response.json();
