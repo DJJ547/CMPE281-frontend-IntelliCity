@@ -170,9 +170,53 @@ export default function Dashboard() {
       });
   }, [mapCenterLat, mapCenterLng, mapZoom, selectedMarker]);
 
-  //request to backend for updating mysql incidents table every minute
+  // //request to backend for updating mysql incidents table every minute
+  // useEffect(() => {
+  //   const fetchData = async () => {
+  //     try {
+  //       const now = new Date();
+  //       const currentTime = `${now.getFullYear()}-${(now.getMonth() + 1)
+  //         .toString()
+  //         .padStart(2, "0")}-${now.getDate().toString().padStart(2, "0")}T${now
+  //         .getHours()
+  //         .toString()
+  //         .padStart(2, "0")}:${now
+  //         .getMinutes()
+  //         .toString()
+  //         .padStart(2, "0")}:${now.getSeconds().toString().padStart(2, "0")}`;
+  //       const response = await fetch(
+  //         `${process.env.REACT_APP_DATA_SERVER_URL}dashboard/updateIncidents/`,
+  //         {
+  //           method: "POST",
+  //           headers: {
+  //             "Content-Type": "application/json",
+  //           },
+  //           body: JSON.stringify({ currentTime }),
+  //         }
+  //       );
+  //       if (!response.ok) {
+  //         throw new Error("Network response was not ok");
+  //       }
+  //       const data = await response.json();
+  //       // Handle response data as needed
+  //     } catch (error) {
+  //       console.error("Error fetching data:", error);
+  //     }
+  //   };
+
+  //   // Fetch data initially
+  //   fetchData();
+
+  //   // Set up interval to fetch data every 1 minute
+  //   const intervalId = setInterval(fetchData, 60000);
+
+  //   // Clean up interval
+  //   return () => clearInterval(intervalId);
+  // }, []);
+
+  //request for congestions
   useEffect(() => {
-    const fetchData = async () => {
+    const fetchIncidents = async () => {
       try {
         const now = new Date();
         const currentTime = `${now.getFullYear()}-${(now.getMonth() + 1)
@@ -204,19 +248,7 @@ export default function Dashboard() {
       }
     };
 
-    // Fetch data initially
-    fetchData();
-
-    // Set up interval to fetch data every 1 minute
-    const intervalId = setInterval(fetchData, 60000);
-
-    // Clean up interval
-    return () => clearInterval(intervalId);
-  }, []);
-
-  //request for congestions
-  useEffect(() => {
-    const fetchData = async () => {
+    const fetchCongestions = async () => {
       try {
         const now = new Date();
         const currentTime = `${now.getFullYear()}-${(now.getMonth() + 1)
@@ -250,14 +282,18 @@ export default function Dashboard() {
       }
     };
 
-    // Fetch data initially
-    fetchData();
+    fetchIncidents();
+    fetchCongestions();
 
     // Set up interval to fetch data every 5 minutes
-    const intervalId = setInterval(fetchData, 300000);
+    const intervalId1 = setInterval(fetchIncidents, 300000);
+    const intervalId2 = setInterval(fetchCongestions, 300000);
 
     // Clean up interval
-    return () => clearInterval(intervalId);
+    return () => {
+      clearInterval(intervalId1);
+      clearInterval(intervalId2);
+    };
   }, [mapCenterLat, mapCenterLng, mapZoom]);
 
   const getMapCoordinates = (lat, lng) => {
