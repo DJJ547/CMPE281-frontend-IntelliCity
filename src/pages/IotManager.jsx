@@ -8,9 +8,8 @@ import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, Cell } fro
 import Toast from "../components/Toast";
 
 
-const container_height = "65vh";
-const container_width = "55vw";
-
+const container_height = "63vh";
+const container_width = "50vw";
 
 function SpeedChart({speeds}) {
   if (!speeds) {
@@ -46,8 +45,7 @@ function SpeedChart({speeds}) {
   );
 }
 
-
-export default function Dashboard() {
+export default function IotManager() {
   //----------------------states-------------------------------------------------------------
   const [selectLat, setSelectLat] = useState(null);
   const [selectLng, setSelectLng] = useState(null);

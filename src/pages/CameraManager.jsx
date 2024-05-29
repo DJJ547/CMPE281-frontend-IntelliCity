@@ -9,7 +9,7 @@ import { districts } from "../utils/mapDistrictCoordinates";
 const container_height = "65vh";
 const container_width = "55vw";
 
-export default function Dashboard() {
+export default function CameraManager() {
   //----------------------states-------------------------------------------------------------
   const [selectLat, setSelectLat] = useState(null);
   const [selectLng, setSelectLng] = useState(null);
@@ -67,7 +67,7 @@ export default function Dashboard() {
     setSelectedMarker(marker);
   };
   //----------------------variables-------------------------------------------------------------
-  const api_url = process.env.REACT_APP_CAMERA;
+  const api_url = process.env.REACT_APP_MAIN_SERVER_LOCALHOST_URL;
   let device = Devices.cameras[0].filter(
     (item) => item.id === selectedDevice
   )[0];
@@ -83,7 +83,7 @@ export default function Dashboard() {
   const callback_switch_status = async (id) => {
     try {
       const response = await fetch(
-        `${api_url}/api/DisableDevice/?id=${id}`,
+        `${api_url}/camera/DisableDevice/?id=${id}`,
         {
           method: "POST",
         }
@@ -100,7 +100,7 @@ export default function Dashboard() {
   const callback2_delete_device = async (id) => {
     try {
       const response = await fetch(
-        `${api_url}/api/DeleteDevice/?id=${id}`,
+        `${api_url}/camera/DeleteDevice/?id=${id}`,
         {
           method: "DELETE",
         }
@@ -116,7 +116,7 @@ export default function Dashboard() {
   const callback3_add_device = async (id) => {
     try {
       const response = await fetch(
-        `${api_url}/api/AddDevice/?id=${id}`,
+        `${api_url}/camera/AddDevice/?id=${id}`,
         {
           method: "POST",
         }
@@ -136,7 +136,7 @@ export default function Dashboard() {
     }
     try {
       const response = await fetch(
-        `${api_url}/api/SearchedDevice?search=${search_term}`,
+        `${api_url}/camera/SearchedDevice?search=${search_term}`,
         {
           method: "GET",
         }
@@ -154,7 +154,7 @@ export default function Dashboard() {
     const fetchDevices = async () => {
       try {
         const response = await fetch(
-          `${api_url}/api/GetAllDevices/`,
+          `${api_url}/camera/GetAllDevices/`,
           { method: "GET" }
         );
         const data = await response.json();
@@ -170,7 +170,7 @@ export default function Dashboard() {
     const fetchIncidences = async () => {
       try {
         const response = await fetch(
-          `${api_url}/api/GetAllIncidences/`,
+          `${api_url}/camera/GetAllIncidences/`,
           { method: "GET" }
         );
         const data = await response.json();
@@ -186,7 +186,7 @@ export default function Dashboard() {
       const cleanup = async () => {
         try {
           const response = await fetch(
-            `${api_url}/api/StopStream/`,
+            `${api_url}/camera/StopStream/`,
             {
               method: "GET",
             }

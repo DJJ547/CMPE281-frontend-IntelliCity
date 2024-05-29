@@ -11,6 +11,7 @@ import { districts } from "../utils/mapDistrictCoordinates";
 
 const container_height = "63vh";
 const container_width = "50vw";
+const api_url = process.env.REACT_APP_MAIN_SERVER_LOCALHOST_URL;
 
 export default function Dashboard() {
   const [mapCenterLatInput, setMapCenterLatInput] = useState("");
@@ -32,6 +33,22 @@ export default function Dashboard() {
       11: [],
       12: [],
     },
+  });
+
+  const [activeIncidents, setActiveIncidents] = useState({
+    0: [],
+    1: [],
+    2: [],
+    3: [],
+    4: [],
+    5: [],
+    6: [],
+    7: [],
+    8: [],
+    9: [],
+    10: [],
+    11: [],
+    12: [],
   });
 
   const [allIncidents, setAllIncidents] = useState({
@@ -86,8 +103,6 @@ export default function Dashboard() {
       { name: "active", value: 0 },
       { name: "inactive", value: 0 },
     ],
-    Incidents: 0,
-    Congestions: 0,
   });
 
   const processStatData = (allDevices) => {
@@ -104,8 +119,6 @@ export default function Dashboard() {
         { name: "active", value: 0 },
         { name: "inactive", value: 0 },
       ],
-      Incidents: 0,
-      Congestions: 0,
     };
     allDevices.all[0].forEach((device) => {
       if (device.status === "active" && device.type === "camera") {
@@ -155,7 +168,7 @@ export default function Dashboard() {
     // Fetch all data initially and every 10 minute
     const fetchAllData = () => {
       fetch(
-        `${process.env.REACT_APP_MAIN_SERVER_LOCALHOST_URL}dashboard/getAllDevices/`
+        `${api_url}/dashboard/getAllDevices/`
       )
         .then((response) => {
           if (!response.ok) {
@@ -176,7 +189,7 @@ export default function Dashboard() {
     // Fetch additional incidents every 1 minute
     const fetchAllIncidents = () => {
       fetch(
-        `${process.env.REACT_APP_MAIN_SERVER_LOCALHOST_URL}dashboard/getAllIncidents/`
+        `${api_url}/dashboard/getAllIncidents/`
       )
         .then((response) => {
           if (!response.ok) {
@@ -185,8 +198,9 @@ export default function Dashboard() {
           return response.json();
         })
         .then((data) => {
-          setAllIncidents(data.incidents);
-          setNumOfIncidents(data.incidents["0"].length);
+          setActiveIncidents(data.active);
+          setNumOfIncidents(data.active["0"].length);
+          setAllIncidents(data.all);
         })
         .catch((error) => console.error("Failed to fetch incidents:", error));
     };
@@ -195,7 +209,7 @@ export default function Dashboard() {
     // Fetch congestion data every 5 minutes
     const fetchAllCongestions = () => {
       fetch(
-        `${process.env.REACT_APP_MAIN_SERVER_LOCALHOST_URL}dashboard/getAllCongestions/`
+        `${api_url}/dashboard/getAllCongestions/`
       )
         .then((response) => {
           if (!response.ok) {
@@ -222,50 +236,6 @@ export default function Dashboard() {
       clearInterval(congestionsInterval);
     };
   }, []);
-
-  // //request to backend for updating mysql incidents table every minute
-  // useEffect(() => {
-  //   const fetchData = async () => {
-  //     try {
-  //       const now = new Date();
-  //       const currentTime = `${now.getFullYear()}-${(now.getMonth() + 1)
-  //         .toString()
-  //         .padStart(2, "0")}-${now.getDate().toString().padStart(2, "0")}T${now
-  //         .getHours()
-  //         .toString()
-  //         .padStart(2, "0")}:${now
-  //         .getMinutes()
-  //         .toString()
-  //         .padStart(2, "0")}:${now.getSeconds().toString().padStart(2, "0")}`;
-  //       const response = await fetch(
-  //         `${process.env.REACT_APP_DATA_SERVER_URL}dashboard/updateIncidents/`,
-  //         {
-  //           method: "POST",
-  //           headers: {
-  //             "Content-Type": "application/json",
-  //           },
-  //           body: JSON.stringify({ currentTime }),
-  //         }
-  //       );
-  //       if (!response.ok) {
-  //         throw new Error("Network response was not ok");
-  //       }
-  //       const data = await response.json();
-  //       // Handle response data as needed
-  //     } catch (error) {
-  //       console.error("Error fetching data:", error);
-  //     }
-  //   };
-
-  //   // Fetch data initially
-  //   fetchData();
-
-  //   // Set up interval to fetch data every 1 minute
-  //   const intervalId = setInterval(fetchData, 60000);
-
-  //   // Clean up interval
-  //   return () => clearInterval(intervalId);
-  // }, []);
 
   const getMapCoordinates = (lat, lng) => {
     setSelectLat(lat);
@@ -373,7 +343,7 @@ export default function Dashboard() {
           updateMapZoomCallback={updateMapZoomOnView}
           getMapCoordinates={getMapCoordinates}
           deviceData={allDevices}
-          incidentData={allIncidents}
+          incidentData={activeIncidents}
           congestionData={allCongestions}
           container_height={container_height}
           container_width={container_width}
