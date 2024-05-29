@@ -150,25 +150,78 @@ export default function Dashboard() {
     setSelectedMarker(marker);
   };
 
-  //request to get all data include devices and incidents
+  //request to get all data include devices, incidents and congestions
   useEffect(() => {
-    fetch(`${process.env.REACT_APP_DATA_SERVER_URL}dashboard/getAllData`)
-      .then((response) => {
-        if (!response.ok) {
-          throw new Error("bad request");
-        }
-        return response.json();
-      })
-      .then((data) => {
-        setAllDevices(data.devices);
-        setAllIncidents(data.incidents.incidents);
-        setNumOfIncidents(data.incidents.incidents[0].length);
-        setStatData(processStatData(data.devices));
-      })
-      .catch((error) => {
-        console.error("error:", error);
-      });
-  }, [mapCenterLat, mapCenterLng, mapZoom, selectedMarker]);
+    // Fetch all data initially and every 10 minute
+    const fetchAllData = () => {
+      fetch(
+        `${process.env.REACT_APP_MAIN_SERVER_LOCALHOST_URL}dashboard/getAllDevices/`
+      )
+        .then((response) => {
+          if (!response.ok) {
+            throw new Error("Bad request");
+          }
+          return response.json();
+        })
+        .then((data) => {
+          setAllDevices(data.devices);
+          setStatData(processStatData(data.devices));
+        })
+        .catch((error) => {
+          console.error("Failed to fetch devices:", error);
+        });
+    };
+    const allDataInterval = setInterval(fetchAllData, 600000);
+
+    // Fetch additional incidents every 1 minute
+    const fetchAllIncidents = () => {
+      fetch(
+        `${process.env.REACT_APP_MAIN_SERVER_LOCALHOST_URL}dashboard/getAllIncidents/`
+      )
+        .then((response) => {
+          if (!response.ok) {
+            throw new Error("Bad request");
+          }
+          return response.json();
+        })
+        .then((data) => {
+          setAllIncidents(data.incidents);
+          setNumOfIncidents(data.incidents["0"].length);
+        })
+        .catch((error) => console.error("Failed to fetch incidents:", error));
+    };
+    const incidentsInterval = setInterval(fetchAllIncidents, 60000);
+
+    // Fetch congestion data every 5 minutes
+    const fetchAllCongestions = () => {
+      fetch(
+        `${process.env.REACT_APP_MAIN_SERVER_LOCALHOST_URL}dashboard/getAllCongestions/`
+      )
+        .then((response) => {
+          if (!response.ok) {
+            throw new Error("Bad request");
+          }
+          return response.json();
+        })
+        .then((data) => {
+          setAllCongestions(data.congestions);
+          setNumOfCongestions(data.congestions["0"].length)
+        })
+        .catch((error) => console.error("Failed to fetch congestions:", error));
+    };
+    const congestionsInterval = setInterval(fetchAllCongestions, 300000);
+
+    fetchAllData()
+    fetchAllIncidents()
+    fetchAllCongestions()
+
+    // Cleanup function to clear intervals when the component unmounts or dependencies change
+    return () => {
+      clearInterval(allDataInterval);
+      clearInterval(incidentsInterval);
+      clearInterval(congestionsInterval);
+    };
+  }, []);
 
   // //request to backend for updating mysql incidents table every minute
   // useEffect(() => {
@@ -213,88 +266,6 @@ export default function Dashboard() {
   //   // Clean up interval
   //   return () => clearInterval(intervalId);
   // }, []);
-
-  //request for congestions
-  useEffect(() => {
-    const fetchIncidents = async () => {
-      try {
-        const now = new Date();
-        const currentTime = `${now.getFullYear()}-${(now.getMonth() + 1)
-          .toString()
-          .padStart(2, "0")}-${now.getDate().toString().padStart(2, "0")}T${now
-          .getHours()
-          .toString()
-          .padStart(2, "0")}:${now
-          .getMinutes()
-          .toString()
-          .padStart(2, "0")}:${now.getSeconds().toString().padStart(2, "0")}`;
-        const response = await fetch(
-          `${process.env.REACT_APP_DATA_SERVER_URL}dashboard/updateIncidents/`,
-          {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({ currentTime }),
-          }
-        );
-        if (!response.ok) {
-          throw new Error("Network response was not ok");
-        }
-        const data = await response.json();
-        // Handle response data as needed
-      } catch (error) {
-        console.error("Error fetching data:", error);
-      }
-    };
-
-    const fetchCongestions = async () => {
-      try {
-        const now = new Date();
-        const currentTime = `${now.getFullYear()}-${(now.getMonth() + 1)
-          .toString()
-          .padStart(2, "0")}-${now.getDate().toString().padStart(2, "0")}T${now
-          .getHours()
-          .toString()
-          .padStart(2, "0")}:${now
-          .getMinutes()
-          .toString()
-          .padStart(2, "0")}:${now.getSeconds().toString().padStart(2, "0")}`;
-        const response = await fetch(
-          `${process.env.REACT_APP_DATA_SERVER_URL}dashboard/updateCongestions/`,
-          {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({ currentTime }),
-          }
-        );
-        if (!response.ok) {
-          throw new Error("Network response was not ok");
-        }
-        const data = await response.json();
-        setAllCongestions(data.congestions);
-        setNumOfCongestions(data.congestions[0].length);
-        // Handle response data as needed
-      } catch (error) {
-        console.error("Error fetching data:", error);
-      }
-    };
-
-    fetchIncidents();
-    fetchCongestions();
-
-    // Set up interval to fetch data every 5 minutes
-    const intervalId1 = setInterval(fetchIncidents, 300000);
-    const intervalId2 = setInterval(fetchCongestions, 300000);
-
-    // Clean up interval
-    return () => {
-      clearInterval(intervalId1);
-      clearInterval(intervalId2);
-    };
-  }, [mapCenterLat, mapCenterLng, mapZoom]);
 
   const getMapCoordinates = (lat, lng) => {
     setSelectLat(lat);

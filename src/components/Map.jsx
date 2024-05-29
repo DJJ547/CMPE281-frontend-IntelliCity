@@ -817,7 +817,7 @@ function Map(props) {
                   disableAutoPan: true,
                 }}
               >
-                <div className="w-50 text-md">
+                <div className="flex-col w-36 text-md items-center">
                   {props.selectedMarkerState.timestamp && (
                     <h1>Time: {props.selectedMarkerState.timestamp.replace('T', ' ').replace('Z', '')}</h1>
                   )}

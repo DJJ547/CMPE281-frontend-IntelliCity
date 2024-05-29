@@ -14,7 +14,7 @@ export default function Signup() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    fetch(`${process.env.REACT_APP_DATA_SERVER_URL}auth/signup/`, {
+    fetch(`${process.env.REACT_APP_MAIN_SERVER_LOCALHOST_URL}auth/signup/`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
