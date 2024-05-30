@@ -25,7 +25,7 @@ export default function CustomChart(props) {
     setSelectedData(e.target.value);
   };
 
-  const reformatData = () => {
+  const reformatData = (data) => {
     const now = new Date();
     // const options = {timeZone: 'America/Los_Angeles'};
     // const time_str = time.toLocaleString('en-US', options);
@@ -59,6 +59,7 @@ export default function CustomChart(props) {
     });
     props.allData2.forEach((data2) => {
       const data2Date = new Date(data2.timestamp);
+      console.log()
       const parsedData2Date = new Date(data2Date.getTime() + (losAngelesOffset * 60000))
       if (parsedData2Date.getDate() === now.getDate()) {
         const hour = parsedData2Date.getHours();
@@ -114,7 +115,7 @@ export default function CustomChart(props) {
             />
             <Tooltip />
             <Legend />
-            <Bar dataKey={selectedData} fill="#B8860B" />
+            <Bar dataKey={selectedData} fill={selectedData === "data1" ? "#B8860B" : "#0000FF"} />
           </BarChart>
         ) : selectChartType === 2 ? (
           <LineChart
@@ -135,8 +136,8 @@ export default function CustomChart(props) {
             <Line
               type="monotone"
               dataKey={selectedData}
-              stroke="#B8860B"
-              fill="#B8860B"
+              stroke={selectedData === "data1" ? "#B8860B" : "#0000FF"}
+              fill={selectedData === "data1" ? "#B8860B" : "#0000FF"}
             />
           </LineChart>
         ) : (

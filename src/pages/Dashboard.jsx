@@ -70,6 +70,21 @@ export default function Dashboard() {
   const [numOfIncidents, setNumOfIncidents] = useState(0);
   const [numOfCongestions, setNumOfCongestions] = useState(0);
 
+  const [activeCongestions, setActiveCongestions] = useState({
+    0: [],
+    1: [],
+    2: [],
+    3: [],
+    4: [],
+    5: [],
+    6: [],
+    7: [],
+    8: [],
+    9: [],
+    10: [],
+    11: [],
+    12: [],
+  });
   const [allCongestions, setAllCongestions] = useState({
     0: [],
     1: [],
@@ -198,9 +213,9 @@ export default function Dashboard() {
           return response.json();
         })
         .then((data) => {
-          setActiveIncidents(data.active);
-          setNumOfIncidents(data.active["0"].length);
-          setAllIncidents(data.all);
+          setActiveIncidents(data.incidents.active);
+          setNumOfIncidents(data.incidents.active["0"].length);
+          setAllIncidents(data.incidents.all);
         })
         .catch((error) => console.error("Failed to fetch incidents:", error));
     };
@@ -218,8 +233,9 @@ export default function Dashboard() {
           return response.json();
         })
         .then((data) => {
-          setAllCongestions(data.congestions);
-          setNumOfCongestions(data.congestions["0"].length)
+          setActiveCongestions(data.congestions.active);
+          setNumOfCongestions(data.congestions.active["0"].length)
+          setAllCongestions(data.congestions.all)
         })
         .catch((error) => console.error("Failed to fetch congestions:", error));
     };
@@ -344,7 +360,7 @@ export default function Dashboard() {
           getMapCoordinates={getMapCoordinates}
           deviceData={allDevices}
           incidentData={activeIncidents}
-          congestionData={allCongestions}
+          congestionData={activeCongestions}
           container_height={container_height}
           container_width={container_width}
         />
