@@ -118,7 +118,7 @@ export default function DroneManager() {
   // Function to fetch video URL for a given drone ID
   const fetchVideoUrlForDrone = async (id) => {
     try {
-        const response = await fetch(`${process.env.REACT_APP_DRONE}/getVideoUrls`, {
+        const response = await fetch(`${process.env.REACT_APP_DRONE}/drone/getVideoUrls`, {
         //const response = await fetch("http://127.0.0.1:8000/getVideoUrls", {
         method: "POST",
         headers: {
