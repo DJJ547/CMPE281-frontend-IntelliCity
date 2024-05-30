@@ -1,5 +1,5 @@
 import { React, useEffect, useState } from "react";
-import IOTMap from "../components/IOTMap";
+import Map from "../components/Map";
 import ADD from "../medias/plus.png";
 import view from "../medias/view.svg";
 import ButtonCRUD from "../components/ButtonCRUD";
@@ -10,6 +10,7 @@ import Toast from "../components/Toast";
 
 const container_height = "63vh";
 const container_width = "50vw";
+const api_url = process.env.REACT_APP_MAIN_SERVER_LOCALHOST_URL;
 
 function SpeedChart({speeds}) {
   if (!speeds) {
@@ -84,25 +85,34 @@ export default function IotManager() {
   //==============================================================
 
   const [updateUI, setUpdateUI] = useState(false);
-  const [Devices, setDevices] = useState([]);
+  const [Devices, setDevices] = useState({
+    cameras: {
+      0: [],
+      1: [],
+      2: [],
+      3: [],
+      4: [],
+      5: [],
+      6: [],
+      7: [],
+      8: [],
+      9: [],
+      10: [],
+      11: [],
+      12: [],
+    },
+  });
   const [searched_data, setSearchedData] = useState([]);
   const [selectedDevice, setSelectedDevice] = useState(null);
 
   //----------------------variables-------------------------------------------------------------
-  let device = Devices.filter(
-    (item) => item.id === selectedDevice
-  )[0];
-  let status = device ? device.status : "N/A";
-  let location = device ? `(${device.latitude}, ${device.longitude})` : "N/A";
-  let dist_id = device ? device.dist_id : "N/A";
-  let address = device ? device.address : "N/A";
   let agent = localStorage.getItem("is_agent");
 
   //----------------------API Request-------------------------------------------------------------
   //callback function to disable the device
   const callback_switch_status = async (id) => {
     try {
-      const response = await fetch(`${process.env.REACT_APP_IOT_SERVER_URL}/api/DisableDevice/`, {
+      const response = await fetch(`${process.env.REACT_APP_IOT_SERVER_URL}/iot/DisableDevice/`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -124,7 +134,7 @@ export default function IotManager() {
   const callback2_delete_device = async (id) => {
     try {
       const response = await fetch(
-        `${process.env.REACT_APP_IOT_SERVER_URL}/api/DeleteDevice?id=${id}`,
+        `${process.env.REACT_APP_IOT_SERVER_URL}/iot/DeleteDevice?id=${id}`,
         {
           method: "DELETE",
         }
@@ -142,7 +152,7 @@ export default function IotManager() {
     try {
 
       const response = await fetch(
-        `${process.env.REACT_APP_IOT_SERVER_URL}/api/AddDevice/`,
+        `${process.env.REACT_APP_IOT_SERVER_URL}/iot/AddDevice/`,
         {
           method: "POST",
           headers: {
@@ -170,7 +180,7 @@ export default function IotManager() {
     }
     try {
       const response = await fetch(
-        `${process.env.REACT_APP_IOT_SERVER_URL}/api/SearchedDevice?search=${search_term}`,
+        `${process.env.REACT_APP_IOT_SERVER_URL}/iot/SearchedDevice?search=${search_term}`,
         {
           method: "GET",
         }
@@ -184,28 +194,27 @@ export default function IotManager() {
   };
 
 
-  //get the devices data from backend
   useEffect(() => {
-    const fetchDevices = async () => {
-      try {
-        const response = await fetch(
-          `${process.env.REACT_APP_IOT_SERVER_URL}/api/GetAllDevices/`,
-          { method: "GET" }
-        );
-        const data = await response.json();
-        console.log(data)
-        // Only update the state if the data has changed
-        if (JSON.stringify(data) !== JSON.stringify(Devices)) {
-          setDevices(data);
-          console.log(Devices)
-        }
-      } catch (error) {
-        console.error("Error:", error);
-      }
+    // Fetch all data initially and every 10 minute
+    const fetchAllData = () => {
+      fetch(
+        `${api_url}/iot/getAllDevices/`
+      )
+        .then((response) => {
+          if (!response.ok) {
+            throw new Error("Bad request");
+          }
+          return response.json();
+        })
+        .then((data) => {
+          setDevices(data.devices);
+        })
+        .catch((error) => {
+          console.error("Failed to fetch devices:", error);
+        });
     };
-
-    fetchDevices();
-  }, [updateUI, mapCenterLat, mapCenterLng, mapZoom, selectedMarker]);
+    fetchAllData()
+  }, [])
 
   const handleSearchSubmit = async (mapCenterLatInput, mapCenterLngInput, id) => {
     if (id !== "") {
@@ -285,7 +294,7 @@ export default function IotManager() {
         <Toast message={toast.message} type={toast.type} />
       </div>
       <div className="flex w-auto h-3/4">
-        <IOTMap
+        <Map
           centerLatState={mapCenterLat}
           centerLngState={mapCenterLng}
           mapZoomState={mapZoom}
