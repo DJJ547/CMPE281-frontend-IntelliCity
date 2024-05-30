@@ -352,8 +352,8 @@ export default function Dashboard() {
           {/* <Notifications /> */}
           <WeatherBox latState={selectLat} lngState={selectLng} />
           <CustomChart
-            incidents={allIncidents[0]}
-            congestions={allCongestions[0]}
+            allData1={allIncidents[0]}
+            allData2={allCongestions[0]}
           />
         </div>
       </div>

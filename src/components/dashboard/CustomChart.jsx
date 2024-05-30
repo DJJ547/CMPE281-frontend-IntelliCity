@@ -12,15 +12,26 @@ import {
   ResponsiveContainer,
 } from "recharts";
 
-export default function Chart(props) {
+const losAngelesOffset = 420; 
+
+export default function CustomChart(props) {
   const [selectChartType, setSelectChartType] = useState(1);
+  const [selectedData, setSelectedData] = useState("data1"); // Track selected data
   const handleChartTypeChange = (e) => {
-    setSelectChartType(e.target.value);
+    setSelectChartType(parseInt(e.target.value));
   };
 
-  // Function to categorize incidents by hour
+  const handleDataChange = (e) => {
+    setSelectedData(e.target.value);
+  };
+
   const reformatData = () => {
-    const now = new Date(); // Get current date and time
+    const now = new Date();
+    // const options = {timeZone: 'America/Los_Angeles'};
+    // const time_str = time.toLocaleString('en-US', options);
+    // console.log(time_str)
+    // const now = new Date(time_str);
+    // console.log(now)
     const startOfDay = new Date(
       now.getFullYear(),
       now.getMonth(),
@@ -28,23 +39,30 @@ export default function Chart(props) {
       0,
       0,
       0
-    ); // Set time to 00:00:00 for the current day
-
-    // Initialize counts for all hours with 0 incidents
+    );
     const combinedData = Array.from({ length: 24 }, (_, hour) => {
-      const hourStart = new Date(startOfDay.getTime() + hour * 3600000); // Calculate the start time of each hour
-      const hourEnd = new Date(startOfDay.getTime() + (hour + 1) * 3600000); // Calculate the end time of each hour
+      const hourStart = new Date(startOfDay.getTime() + hour * 3600000);
+      const hourEnd = new Date(startOfDay.getTime() + (hour + 1) * 3600000);
       return {
         hour: `${hourStart.getHours()}:00 - ${hourEnd.getHours()}:00`,
-        congestions: 0,
-        incidents: 0,
+        data1: 0,
+        data2: 0,
       };
     });
-    props.incidents.forEach((incident) => {
-      const incident_date = new Date(incident.timestamp);
-      if (incident_date.getDate === now.getDate) {
-        const hour = incident_date.getHours();
-        combinedData[(hour + 7) % 24].incidents += 1;
+    props.allData1.forEach((data1) => {
+      const data1Date = new Date(data1.timestamp);
+      const parsedData1Date = new Date(data1Date.getTime() + (losAngelesOffset * 60000))
+      if (parsedData1Date.getDate() === now.getDate()) {
+        const hour = parsedData1Date.getHours();
+        combinedData[(hour) % 24].data1 += 1;
+      }
+    });
+    props.allData2.forEach((data2) => {
+      const data2Date = new Date(data2.timestamp);
+      const parsedData2Date = new Date(data2Date.getTime() + (losAngelesOffset * 60000))
+      if (parsedData2Date.getDate() === now.getDate()) {
+        const hour = parsedData2Date.getHours();
+        combinedData[(hour) % 24].data2 += 1;
       }
     });
     return combinedData;
@@ -69,9 +87,21 @@ export default function Chart(props) {
             Line chart
           </option>
         </select>
+        <label className="font-bold" htmlFor="dataSelect">
+          Select Data:
+        </label>
+        <select
+          className="bg-gray-300"
+          id="dataSelect"
+          value={selectedData}
+          onChange={handleDataChange}
+        >
+          <option value="data1">Data 1</option>
+          <option value="data2">Data 2</option>
+        </select>
       </div>
       <ResponsiveContainer width="100%" height={370}>
-        {parseInt(selectChartType) === 1 ? (
+        {selectChartType === 1 ? (
           <BarChart data={reformatData()}>
             <CartesianGrid strokeDasharray="3 3" />
             <XAxis
@@ -84,17 +114,12 @@ export default function Chart(props) {
             />
             <Tooltip />
             <Legend />
-            <Bar dataKey="incidents" fill="#B8860B" />
+            <Bar dataKey={selectedData} fill="#B8860B" />
           </BarChart>
-        ) : parseInt(selectChartType) === 2 ? (
+        ) : selectChartType === 2 ? (
           <LineChart
             data={reformatData()}
-            margin={{
-              top: 5,
-              right: 30,
-              left: 20,
-              bottom: 5,
-            }}
+            margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
           >
             <CartesianGrid strokeDasharray="3 3" />
             <XAxis
@@ -109,7 +134,7 @@ export default function Chart(props) {
             <Legend />
             <Line
               type="monotone"
-              dataKey="incidents"
+              dataKey={selectedData}
               stroke="#B8860B"
               fill="#B8860B"
             />
