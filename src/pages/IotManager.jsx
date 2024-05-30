@@ -1,57 +1,22 @@
 import { React, useEffect, useState } from "react";
 import Map from "../components/Map";
+import CustomChart from "../components/dashboard/CustomChart";
 import ADD from "../medias/plus.png";
 import view from "../medias/view.svg";
 import ButtonCRUD from "../components/ButtonCRUD";
 import { districts } from "../utils/mapDistrictCoordinates";
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, Cell } from 'recharts';
 import Toast from "../components/Toast";
 
-
-const container_height = "63vh";
-const container_width = "50vw";
+const container_height = "65vh";
+const container_width = "55vw";
 const api_url = process.env.REACT_APP_MAIN_SERVER_LOCALHOST_URL;
-
-function SpeedChart({speeds}) {
-  if (!speeds) {
-    return <p>No data available</p>;
-  }
-  // Transform speeds into an array of objects for Recharts
-  const data = speeds.map((speed, index) => ({
-    hour: index, speed
-  }));
-
-  // Determine the color of each bar based on the speed value
-  const getColor = (speed) => {
-    if (speed > 60) return '#4CAF50'; // green
-    if (speed >= 40) return '#FFEB3B'; // yellow
-    return '#F44336'; // red
-  };
-
-  return (
-    <BarChart width={730} height={250} data={data} margin={{ top: 20, right: 30, left: 20, bottom: 5 }}>
-      <CartesianGrid strokeDasharray="3 3" />
-      <XAxis dataKey="hour" />
-      <YAxis label={{ value: 'Speed (mph)', angle: -90, position: 'insideLeft' }} />
-      <Tooltip />
-      <Legend />
-      <Bar dataKey="speed" fill="#8884d8">
-        {
-          data.map((entry, index) => (
-            <Cell key={`cell-${index}`} fill={getColor(entry.speed)} />
-          ))
-        }
-      </Bar>
-    </BarChart>
-  );
-}
 
 export default function IotManager() {
   //----------------------states-------------------------------------------------------------
   const [selectLat, setSelectLat] = useState(null);
   const [selectLng, setSelectLng] = useState(null);
 
-  const [toast, setToast] = useState({ message: '', type: '' });
+  const [toast, setToast] = useState({ message: "", type: "" });
 
   const getMapCoordinates = (lat, lng) => {
     setSelectLat(lat);
@@ -59,6 +24,7 @@ export default function IotManager() {
   };
 
   //==================For View Button============================
+  //these are the map center states
   //these are the map center states
   const [mapCenterLat, setMapCenterLat] = useState(districts[0].lat);
   const [mapCenterLng, setMapCenterLng] = useState(districts[0].lng);
@@ -72,8 +38,8 @@ export default function IotManager() {
   //this is the map zoom state
   const [mapZoom, setMapZoom] = useState(6);
   //this is the map zoom call back function
-  const updateMapZoomOnView = () => {
-    setMapZoom(15);
+  const updateMapZoomOnView = (zoom) => {
+    setMapZoom(zoom);
   };
 
   //this is the map selected marker state
@@ -82,11 +48,13 @@ export default function IotManager() {
   const updateSelectedMarker = (marker) => {
     setSelectedMarker(marker);
   };
+
+  const [stationData, setStationData] = useState([])
   //==============================================================
 
   const [updateUI, setUpdateUI] = useState(false);
   const [Devices, setDevices] = useState({
-    cameras: {
+    iots: {
       0: [],
       1: [],
       2: [],
@@ -102,27 +70,63 @@ export default function IotManager() {
       12: [],
     },
   });
+  const [activeCongestions, setActiveCongestions] = useState({
+    0: [],
+    1: [],
+    2: [],
+    3: [],
+    4: [],
+    5: [],
+    6: [],
+    7: [],
+    8: [],
+    9: [],
+    10: [],
+    11: [],
+    12: [],
+  });
+  const [allCongestions, setAllCongestions] = useState({
+    0: [],
+    1: [],
+    2: [],
+    3: [],
+    4: [],
+    5: [],
+    6: [],
+    7: [],
+    8: [],
+    9: [],
+    10: [],
+    11: [],
+    12: [],
+  });
   const [searched_data, setSearchedData] = useState([]);
   const [selectedDevice, setSelectedDevice] = useState(null);
 
   //----------------------variables-------------------------------------------------------------
   let agent = localStorage.getItem("is_agent");
+  let device = Devices.iots[0].filter(
+    (item) => item.id === selectedDevice
+  )[0];
 
   //----------------------API Request-------------------------------------------------------------
   //callback function to disable the device
   const callback_switch_status = async (id) => {
     try {
-      const response = await fetch(`${process.env.REACT_APP_IOT_SERVER_URL}/iot/DisableDevice/`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ index: id }),
-      });
+      const response = await fetch(
+        `${api_url}/iot/DisableDevice/`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ index: id }),
+        }
+      );
       const data = await response.json();
       // Set toast message
-      console.log('should see Toast here')
-      setToast({ message: `Device ${id} status updated`, type: 'success' });
+      console.log("should see Toast here");
+      setToast({ message: `Device ${id} status updated`, type: "success" });
       console.log("data", data);
       setUpdateUI(!updateUI);
     } catch (error) {
@@ -134,13 +138,13 @@ export default function IotManager() {
   const callback2_delete_device = async (id) => {
     try {
       const response = await fetch(
-        `${process.env.REACT_APP_IOT_SERVER_URL}/iot/DeleteDevice?id=${id}`,
+        `${api_url}/iot/DeleteDevice?id=${id}`,
         {
           method: "DELETE",
         }
       );
       const data = await response.json();
-      setToast({ message: `Device ${id} deleted`, type: 'success' });
+      setToast({ message: `Device ${id} deleted`, type: "success" });
       setUpdateUI(!updateUI);
     } catch (error) {
       console.error("Error:", error);
@@ -150,22 +154,21 @@ export default function IotManager() {
   //callback3 function to add the device
   const callback3_add_device = async (id) => {
     try {
-
       const response = await fetch(
-        `${process.env.REACT_APP_IOT_SERVER_URL}/iot/AddDevice/`,
+        `${api_url}/iot/addDevice/`,
         {
           method: "POST",
           headers: {
-            'Content-Type': 'application/json'
+            "Content-Type": "application/json",
           },
           body: JSON.stringify({
-            "id": id
-          })
+            id: id,
+          }),
         }
       );
       const res = await response.json();
       console.log("res", res);
-      setToast({ message: `Device ${id} status added`, type: 'success' });
+      setToast({ message: `Device ${id} status added`, type: "success" });
 
       setUpdateUI(!updateUI);
     } catch (error) {
@@ -180,7 +183,7 @@ export default function IotManager() {
     }
     try {
       const response = await fetch(
-        `${process.env.REACT_APP_IOT_SERVER_URL}/iot/SearchedDevice?search=${search_term}`,
+        `${api_url}/iot/searchedDevice?search=${search_term}`,
         {
           method: "GET",
         }
@@ -193,13 +196,23 @@ export default function IotManager() {
     }
   };
 
+  // const fetchGraphData = async () => {
+  //   try {
+  //     const response = await fetch(`${api_url}/iot/getFlowSpeed/`);
+  //     if (!response.ok) {
+  //       throw new Error("Bad request");
+  //     }
+  //     const jsonData = await response.json();
+  //     setData(jsonData);
+  //   } catch (error) {
+  //     console.error('Error fetching graph data:', error);
+  //   }
+  // };
 
   useEffect(() => {
     // Fetch all data initially and every 10 minute
     const fetchAllData = () => {
-      fetch(
-        `${api_url}/iot/getAllDevices/`
-      )
+      fetch(`${api_url}/iot/getAllDevices/`)
         .then((response) => {
           if (!response.ok) {
             throw new Error("Bad request");
@@ -213,10 +226,64 @@ export default function IotManager() {
           console.error("Failed to fetch devices:", error);
         });
     };
-    fetchAllData()
-  }, [])
+    fetchAllData();
 
-  const handleSearchSubmit = async (mapCenterLatInput, mapCenterLngInput, id) => {
+    const fetchStationData = () => {
+      fetch(`${api_url}/iot/getFlowSpeed/`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          id: selectedDevice
+        }),
+      })
+        .then((response) => {
+          if (!response.ok) {
+            throw new Error("Bad request");
+          }
+          return response.json();
+        })
+        .then((data) => {
+          setStationData(data.station_data);
+          console.log(data.station_data)
+        })
+        .catch((error) => {
+          console.error("Failed to fetch devices:", error);
+        });
+    };
+    fetchStationData();
+
+    // Fetch congestion data every 5 minutes
+    const fetchAllCongestions = () => {
+      fetch(
+        `${api_url}/iot/getAllCongestions/`
+      )
+        .then((response) => {
+          if (!response.ok) {
+            throw new Error("Bad request");
+          }
+          return response.json();
+        })
+        .then((data) => {
+          setActiveCongestions(data.congestions.active);
+          setAllCongestions(data.congestions.all)
+        })
+        .catch((error) => console.error("Failed to fetch congestions:", error));
+    };
+    const congestionsInterval = setInterval(fetchAllCongestions, 300000);
+    fetchAllCongestions()
+    // Cleanup function to clear intervals when the component unmounts or dependencies change
+    return () => {
+      clearInterval(congestionsInterval);
+    };
+  }, [selectedDevice]);
+
+  const handleSearchSubmit = async (
+    mapCenterLatInput,
+    mapCenterLngInput,
+    id
+  ) => {
     if (id !== "") {
       id = parseInt(id);
       let marker = Devices.filter((device) => device.id === id)[0];
@@ -253,7 +320,7 @@ export default function IotManager() {
   return (
     <div className="flex flex-col w-full h-full">
       <div className="flex mb-4 justify-between">
-        {agent !== '0' && (
+        {agent !== "0" && (
           <>
             <ButtonCRUD
               text="Add"
@@ -293,7 +360,7 @@ export default function IotManager() {
         />
         <Toast message={toast.message} type={toast.type} />
       </div>
-      <div className="flex w-auto h-3/4">
+      <div className="flex w-full h-2/3">
         <Map
           centerLatState={mapCenterLat}
           centerLngState={mapCenterLng}
@@ -304,44 +371,42 @@ export default function IotManager() {
           updateMapZoomCallback={updateMapZoomOnView}
           getMapCoordinates={getMapCoordinates}
           deviceData={Devices}
+          congestionData={activeCongestions}
           container_height={container_height}
           container_width={container_width}
           Selected={Selected}
         />
-        <div className="flex ml-5 flex-col ">
-          <div className="flex flex-col w-96 h-96 bg-white shadow-lg mb-6">
-            <div className="flex flex-col p-2">
-              <h2 className="text-lg font-bold text-center">Status</h2>
-              <h3 className="text-lg">
-                <strong>Device ID: </strong>
-                {selectedMarker.id}
-              </h3>
-              <h3 className="text-lg">
-                <strong>Device Status: </strong>
-                {selectedMarker.enabled ? "Enabled" : "Disabled"}
-              </h3>
-              <h3 className="text-lg">
-                <strong>Location: </strong>
-                {selectedMarker.latitude ? `(${selectedMarker.latitude}, ${selectedMarker.longitude})` : "N/A"}
-              </h3>
-              <h3 className="text-lg">
-                <strong>Dist ID: </strong>
-                {selectedMarker.district}
-              </h3>
-              <h3 className="text-lg">
-                <strong>Address: </strong>
-                {selectedMarker.address}
-              </h3>
-            </div>
+        <div className="flex flex-col w-full h-full">
+          <div className="flex flex-col w-[450px] h-[160px] bg-white shadow-lg ml-5 mb-6 p-2">
+            <h2 className="text-2xl font-bold text-center">Status</h2>
+            <h3 className="text-lg">
+              <strong>Device ID: </strong>
+              {selectedMarker ? selectedDevice : 'N/A'}
+            </h3>
+            <h3 className="text-lg">
+              <strong>Location: </strong>
+              {selectedMarker ? `(${device.latitude}, ${device.longitude})` : 'N/A'}
+            </h3>
+            <h3 className="text-lg">
+              <strong>Address: </strong>
+              {selectedMarker ? device.address : 'N/A'}
+            </h3>
+            <h3 className="text-lg">
+              <strong>Status: </strong>
+              {selectedMarker ? device.status : 'N/A'}
+            </h3>
           </div>
-          <div className="flex flex-col w-96 h-96 bg-white shadow-lg">
-            <div className="flex justify-between p-2">
-              <h2 className="text-lg font-bold">Hourly Speed</h2>
-            </div>
-            <div className="flex justify-center px-2 h-full">
-              <SpeedChart speeds={selectedMarker.hourlySpeed} />
-            </div>
-          </div>
+        {selectedMarker && stationData? (
+          <CustomChart
+            type={"value"}
+            data1Name={"flow"}
+            data2Name={"speed"}
+            allData1={stationData}
+            allData2={stationData}
+          />
+        ) : (
+          <></>
+        )}
         </div>
       </div>
     </div>

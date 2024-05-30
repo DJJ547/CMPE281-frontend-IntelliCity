@@ -533,6 +533,7 @@ function Map(props) {
                           }}
                           title="Iot Marker"
                           onClick={() => {
+                            props.Selected(device.id);
                             setSelectedMarker(device);
                             props.getMapCoordinates(
                               device.latitude,
@@ -565,6 +566,7 @@ function Map(props) {
                     }}
                     title="Iot Marker"
                     onClick={() => {
+                      props.Selected(device.id);
                       setSelectedMarker(device);
                       props.getMapCoordinates(
                         device.latitude,

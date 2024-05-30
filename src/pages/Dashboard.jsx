@@ -368,6 +368,7 @@ export default function Dashboard() {
           {/* <Notifications /> */}
           <WeatherBox latState={selectLat} lngState={selectLng} />
           <CustomChart
+            type={"occurence"}
             data1Name={"incidents"}
             data2Name={"congestions"}
             allData1={allIncidents[0]}

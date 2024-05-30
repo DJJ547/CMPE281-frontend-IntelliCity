@@ -99,12 +99,9 @@ export default function CameraManager() {
   //callback function to delete the device
   const callback2_delete_device = async (id) => {
     try {
-      const response = await fetch(
-        `${api_url}/camera/DeleteDevice/?id=${id}`,
-        {
-          method: "DELETE",
-        }
-      );
+      const response = await fetch(`${api_url}/camera/DeleteDevice/?id=${id}`, {
+        method: "DELETE",
+      });
       const data = await response.json();
       setUpdateUI(!updateUI);
     } catch (error) {
@@ -115,12 +112,9 @@ export default function CameraManager() {
   //callback3 function to add the device
   const callback3_add_device = async (id) => {
     try {
-      const response = await fetch(
-        `${api_url}/camera/AddDevice/?id=${id}`,
-        {
-          method: "POST",
-        }
-      );
+      const response = await fetch(`${api_url}/camera/AddDevice/?id=${id}`, {
+        method: "POST",
+      });
       const res = await response.json();
       console.log("res", res);
       setUpdateUI(!updateUI);
@@ -153,10 +147,9 @@ export default function CameraManager() {
   useEffect(() => {
     const fetchDevices = async () => {
       try {
-        const response = await fetch(
-          `${api_url}/camera/GetAllDevices/`,
-          { method: "GET" }
-        );
+        const response = await fetch(`${api_url}/camera/GetAllDevices/`, {
+          method: "GET",
+        });
         const data = await response.json();
 
         // Only update the state if the data has changed
@@ -169,10 +162,9 @@ export default function CameraManager() {
     };
     const fetchIncidences = async () => {
       try {
-        const response = await fetch(
-          `${api_url}/camera/GetAllIncidences/`,
-          { method: "GET" }
-        );
+        const response = await fetch(`${api_url}/camera/GetAllIncidences/`, {
+          method: "GET",
+        });
         const data = await response.json();
         setIncidents(data);
       } catch (error) {
@@ -185,12 +177,9 @@ export default function CameraManager() {
     return () => {
       const cleanup = async () => {
         try {
-          const response = await fetch(
-            `${api_url}/camera/StopStream/`,
-            {
-              method: "GET",
-            }
-          );
+          const response = await fetch(`${api_url}/camera/StopStream/`, {
+            method: "GET",
+          });
           const data = await response.json();
         } catch (error) {
           console.error("Error:", error);
@@ -200,7 +189,11 @@ export default function CameraManager() {
     };
   }, [updateUI]);
 
-  const handleSearchSubmit = async (mapCenterLatInput, mapCenterLngInput, id) => {
+  const handleSearchSubmit = async (
+    mapCenterLatInput,
+    mapCenterLngInput,
+    id
+  ) => {
     if (id !== "") {
       id = parseInt(id);
       //if id not in my data then return
@@ -245,34 +238,34 @@ export default function CameraManager() {
   return (
     <div className="flex flex-col w-full h-full">
       <div className="flex mb-4 justify-between">
-      {agent !== '0' && (
-        <>
-          <ButtonCRUD
-            text="Add"
-            imgSrc={ADD}
-            altText="Camera"
-            data={searched_data}
-            callback3={callback3_add_device}
-            callback4={callback4_search_results}
-          />
-          <ButtonCRUD
-            text="Delete"
-            imgSrc="https://upload.wikimedia.org/wikipedia/commons/5/5e/Flat_minus_icon_-_red.svg"
-            altText="Camera"
-            data={Devices.cameras[0]}
-            callback_switch_status={callback_switch_status}
-            callback_delete_device={callback2_delete_device}
-          />
-          <ButtonCRUD
-            text="Update"
-            imgSrc="https://upload.wikimedia.org/wikipedia/commons/6/62/Eo_circle_orange_repeat.svg"
-            altText="Camera"
-            data={Devices.cameras[0]}
-            callback_switch_status={callback_switch_status}
-            callback_delete_device={callback2_delete_device}
-          />
-        </>
-      )}
+        {agent !== "0" && (
+          <>
+            <ButtonCRUD
+              text="Add"
+              imgSrc={ADD}
+              altText="Camera"
+              data={searched_data}
+              callback3={callback3_add_device}
+              callback4={callback4_search_results}
+            />
+            <ButtonCRUD
+              text="Delete"
+              imgSrc="https://upload.wikimedia.org/wikipedia/commons/5/5e/Flat_minus_icon_-_red.svg"
+              altText="Camera"
+              data={Devices.cameras[0]}
+              callback_switch_status={callback_switch_status}
+              callback_delete_device={callback2_delete_device}
+            />
+            <ButtonCRUD
+              text="Update"
+              imgSrc="https://upload.wikimedia.org/wikipedia/commons/6/62/Eo_circle_orange_repeat.svg"
+              altText="Camera"
+              data={Devices.cameras[0]}
+              callback_switch_status={callback_switch_status}
+              callback_delete_device={callback2_delete_device}
+            />
+          </>
+        )}
 
         <ButtonCRUD
           text="View"
@@ -304,23 +297,25 @@ export default function CameraManager() {
               <h2 className="text-lg font-bold text-center">Status</h2>
               <h3 className="text-lg">
                 <strong>Device ID: </strong>
-                {selectedDevice}
-              </h3>
-              <h3 className="text-lg">
-                <strong>Device Status: </strong>
-                {status}
+                {selectedMarker ? selectedDevice : "N/A"}
               </h3>
               <h3 className="text-lg">
                 <strong>Location: </strong>
-                {location}
-              </h3>
-              <h3 className="text-lg">
-                <strong>Dist ID: </strong>
-                {dist_id}
+                {selectedMarker
+                  ? `(${device.latitude}, ${device.longitude})`
+                  : "N/A"}
               </h3>
               <h3 className="text-lg">
                 <strong>Address: </strong>
-                {address}
+                {selectedMarker ? device.address : "N/A"}
+              </h3>
+              <h3 className="text-lg">
+                <strong>District: </strong>
+                {selectedMarker ? device.dist_id : "N/A"}
+              </h3>
+              <h3 className="text-lg">
+                <strong>Status: </strong>
+                {selectedMarker ? device.status : "N/A"}
               </h3>
             </div>
           </div>

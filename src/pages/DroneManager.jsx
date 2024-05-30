@@ -13,8 +13,6 @@ const container_width = "55vw";
 const api_url = process.env.REACT_APP_DRONE;
 let agent = localStorage.getItem("is_agent");
 
-console.log(api_url)
-
 export default function DroneManager() {
   const [showAddForm, setShowAddForm] = useState(false);
   const [showDeleteForm, setShowDeleteForm] = useState(false);
@@ -145,7 +143,7 @@ export default function DroneManager() {
         const fetchDevices = async () => {
         try {
           //const response = await fetch("http://localhost:8000/getAllDevices",
-          const response = await fetch(`${process.env.REACT_APP_DRONE}/getAllDevices`,
+          const response = await fetch(`${api_url}/drone/getAllDevices`,
 
             { method: "GET" }
           );
@@ -162,7 +160,7 @@ export default function DroneManager() {
       const fetchIncidences = async () => {
         try {
           //const response = await fetch("http://localhost:8000/api/GetAllIncidences/",
-          const response = await fetch(`${process.env.REACT_APP_DRONE}/api/GetAllIncidences/`, 
+          const response = await fetch(`${api_url}/api/GetAllIncidences/`, 
 
             { method: "GET" }
           );
@@ -178,7 +176,7 @@ export default function DroneManager() {
         const cleanup = async () => {
           try {
             //const response = await fetch("http://localhost:8000/api/StopStream/",
-            const response = await fetch(`${process.env.REACT_APP_DRONE}/api/StopStream/`,
+            const response = await fetch(`${api_url}/api/StopStream/`,
 
               {
                 method: "GET",
@@ -192,7 +190,7 @@ export default function DroneManager() {
         };
         cleanup();
       };
-    }, [updateUI, mapCenterLat, mapCenterLng, mapZoom, selectedMarker, selectedVideoUrl])
+    }, [updateUI])
 
 
   const handleUpdateInputChange = (e) => {
@@ -219,7 +217,7 @@ export default function DroneManager() {
   const handleFormSubmit = async () => {
     try {
       //const response = await fetch("http://127.0.0.1:8000/addDevice", {
-        const response = await fetch(`${process.env.REACT_APP_DRONE}/addDevice`, {
+        const response = await fetch(`${api_url}/addDevice`, {
 
         method: "POST",
         headers: {
@@ -255,7 +253,7 @@ export default function DroneManager() {
   const handleDelete = async () => {
     try {
       //const response = await fetch("http://127.0.0.1:8000/DeleteDevice", {
-        const response = await fetch(`${process.env.REACT_APP_DRONE}/DeleteDevice`, {
+        const response = await fetch(`${api_url}/DeleteDevice`, {
 
         method: "DELETE",
         headers: {
@@ -286,7 +284,7 @@ export default function DroneManager() {
   const handleUpdate = async () => {
     try {
       //const response = await fetch("http://127.0.0.1:8000/UpdateDevice", {
-        const response = await fetch(`${process.env.REACT_APP_DRONE}/UpdateDevice`, {
+        const response = await fetch(`${api_url}/UpdateDevice`, {
 
         method: "PUT",
         headers: {
@@ -320,7 +318,7 @@ export default function DroneManager() {
     console.log("viewFormData:", viewFormData);
     try {
       //const response = await fetch("http://127.0.0.1:8000/GetDevice", {
-      const response = await fetch(`${process.env.REACT_APP_DRONE}/GetDevice`, {
+      const response = await fetch(`${api_url}/GetDevice`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

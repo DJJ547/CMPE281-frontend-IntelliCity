@@ -6,8 +6,8 @@ export default function WeatherBox(props) {
 
   useEffect(() => {
     if (props.latState === null && props.lngState === null) {
-        setWeatherData(null);
-    }else {
+      setWeatherData(null);
+    } else {
       fetch(API_URL)
         .then((response) => response.json())
         .then((data) => {
@@ -46,12 +46,16 @@ export default function WeatherBox(props) {
 
   if (!weatherData) {
     return (
-      <div className="flex w-[630px] h-[400px] bg-white items-center justify-center rounded-lg shadow-xl text-xl shadow-blue-gray-900 mx-5 my-2"><h1 className="font-bold text-center">Click on a Marker to See Weather Info</h1></div>
+      <div className="flex w-[630px] h-[380px] bg-white items-center justify-center rounded-lg shadow-xl text-xl shadow-blue-gray-900 mx-5 my-2">
+        <h1 className="font-bold text-center">
+          Click on a Marker to See Weather Info
+        </h1>
+      </div>
     );
   }
 
   return (
-    <div className="flex flex-col w-[630px] h-[400px] p-2 bg-white rounded-lg shadow-xl shadow-blue-gray-900 mx-5 my-2">
+    <div className="flex flex-col w-[630px] h-[380px] p-2 bg-white rounded-lg shadow-xl shadow-blue-gray-900 mx-5 my-2">
       <h2 className="text-2xl font-bold mb-2">
         Current Weather in{" "}
         <span className="text-blue-600">{weatherData.name}</span>
