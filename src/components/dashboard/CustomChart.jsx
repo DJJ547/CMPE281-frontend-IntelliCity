@@ -43,27 +43,27 @@ export default function CustomChart(props) {
     const combinedData = Array.from({ length: 24 }, (_, hour) => {
       const hourStart = new Date(startOfDay.getTime() + hour * 3600000);
       const hourEnd = new Date(startOfDay.getTime() + (hour + 1) * 3600000);
-      return {
-        hour: `${hourStart.getHours()}:00 - ${hourEnd.getHours()}:00`,
-        data1: 0,
-        data2: 0,
-      };
+      let output = {}
+      output["hour"] = `${hourStart.getHours()}:00 - ${hourEnd.getHours()}:00`
+      output[props.data1Name] = 0
+      output[props.data2Name] = 0
+      return output;
     });
-    props.allData1.forEach((data1) => {
-      const data1Date = new Date(data1.timestamp);
+    props.allData1.forEach((dt1) => {
+      const data1Date = new Date(dt1.timestamp);
       const parsedData1Date = new Date(data1Date.getTime() + (losAngelesOffset * 60000))
       if (parsedData1Date.getDate() === now.getDate()) {
         const hour = parsedData1Date.getHours();
-        combinedData[(hour) % 24].data1 += 1;
+        combinedData[(hour) % 24][props.data1Name] += 1;
       }
     });
-    props.allData2.forEach((data2) => {
-      const data2Date = new Date(data2.timestamp);
+    props.allData2.forEach((dt2) => {
+      const data2Date = new Date(dt2.timestamp);
       console.log()
       const parsedData2Date = new Date(data2Date.getTime() + (losAngelesOffset * 60000))
       if (parsedData2Date.getDate() === now.getDate()) {
         const hour = parsedData2Date.getHours();
-        combinedData[(hour) % 24].data2 += 1;
+        combinedData[(hour) % 24][props.data2Name] += 1;
       }
     });
     return combinedData;
@@ -115,7 +115,7 @@ export default function CustomChart(props) {
             />
             <Tooltip />
             <Legend />
-            <Bar dataKey={selectedData} fill={selectedData === "data1" ? "#B8860B" : "#0000FF"} />
+            <Bar dataKey={selectedData === "data1" ? props.data1Name : props.data2Name} fill={selectedData === "data1" ? "#B8860B" : "#0000FF"} />
           </BarChart>
         ) : selectChartType === 2 ? (
           <LineChart
@@ -135,7 +135,7 @@ export default function CustomChart(props) {
             <Legend />
             <Line
               type="monotone"
-              dataKey={selectedData}
+              dataKey={selectedData === "data1" ? props.data1Name : props.data2Name}
               stroke={selectedData === "data1" ? "#B8860B" : "#0000FF"}
               fill={selectedData === "data1" ? "#B8860B" : "#0000FF"}
             />
