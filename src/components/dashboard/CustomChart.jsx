@@ -206,6 +206,7 @@ export default function CustomChart(props) {
                       : "predicted " + props.data2Name,
                   position: "insideTopRight", // Adjust the position of the label
                   fill: "red", // Adjust the color of the label
+                  style: { fontWeight: "bold" }
                 }}
               />
             )}
@@ -254,6 +255,7 @@ export default function CustomChart(props) {
                       : "predicted " + props.data2Name,
                   position: "insideTopRight", // Adjust the position of the label
                   fill: "red", // Adjust the color of the label
+                  style: { fontWeight: "bold" }
                 }}
               />
             )}
