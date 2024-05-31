@@ -195,12 +195,14 @@ export default function DroneManager() {
       if (marker === undefined) {
         return;
       }
+      console.log(marker.videoUrl)
       setMapCenterLat(parseFloat(marker.latitude));
       setMapCenterLng(parseFloat(marker.longitude));
       setMapZoom(15);
       setSelectedMarker(marker);
       setSelectLat(marker.latitude);
       setSelectLng(marker.longitude);
+      setstreamvideo(marker.videoUrl);
       return;
     }
 
@@ -216,6 +218,7 @@ export default function DroneManager() {
     setSelectedMarker(marker);
     setSelectLat(mapCenterLatInput);
     setSelectLng(mapCenterLngInput);
+    setstreamvideo(marker.videoUrl);
   };
   //----------------------functions-------------------------------------------------------------
   const Selected = async (id) => {
@@ -311,7 +314,7 @@ export default function DroneManager() {
               </h3>
             </div>
           </div>
-          <StreamingDrone droneId={selectedDevice} />
+          <StreamingDrone droneId={selectedMarker.id} />
         </div>
       </div>
     </div>
