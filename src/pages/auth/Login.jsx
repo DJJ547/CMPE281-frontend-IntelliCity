@@ -2,6 +2,8 @@ import React, { useState } from "react";
 import LoginIcon from "../../medias/auth/authIcon.png";
 import Toast from "../../components/Toast";
 
+const api_url = process.env.REACT_APP_DASHBOARD;
+
 export default function Login() {
   const [formData, setFormData] = useState({
     email: "",
@@ -16,7 +18,7 @@ export default function Login() {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    fetch(`${process.env.REACT_APP_MAIN_SERVER_LOCALHOST_URL}auth/login/`, {
+    fetch(`${api_url}/auth/login/`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -34,7 +36,7 @@ export default function Login() {
         localStorage.setItem("email", data.email);
         localStorage.setItem("firstname", data.firstname);
         localStorage.setItem("lastname", data.lastname);
-        localStorage.setItem("is_agent", data.is_agent);
+        localStorage.setItem("is_agent", data.is_staff === true? 1 : 0);
         window.location.href = "/";
       })
       .catch((error) => {

@@ -11,7 +11,7 @@ import { districts } from "../utils/mapDistrictCoordinates";
 
 const container_height = "63vh";
 const container_width = "50vw";
-const api_url = process.env.REACT_APP_MAIN_SERVER_LOCALHOST_URL;
+const api_url = process.env.REACT_APP_DASHBOARD;
 
 export default function Dashboard() {
   const [mapCenterLatInput, setMapCenterLatInput] = useState("");
@@ -368,6 +368,8 @@ export default function Dashboard() {
           {/* <Notifications /> */}
           <WeatherBox latState={selectLat} lngState={selectLng} />
           <CustomChart
+            height={400}
+            width={'100%'}
             type={"occurence"}
             data1Name={"incidents"}
             data2Name={"congestions"}

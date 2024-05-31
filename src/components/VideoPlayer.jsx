@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-
 function VideoPlayer({ url, latitude, longitude, district}) {
   const [showPopup, setShowPopup] = useState(false);
   const streamurl = `${process.env.REACT_APP_CAMERA}/camera/StreamVideo/?url=${url}&latitude=${latitude}&longitude=${longitude}&district=${district}`;

@@ -1,6 +1,8 @@
 import React, { useState } from "react";
 import SignupIcon from "../../medias/auth/authIcon.png";
 
+const api_url = process.env.REACT_APP_DASHBOARD;
+
 export default function Signup() {
   const [formData, setFormData] = useState({
     email: "",
@@ -14,7 +16,7 @@ export default function Signup() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    fetch(`${process.env.REACT_APP_MAIN_SERVER_LOCALHOST_URL}auth/signup/`, {
+    fetch(`${api_url}/auth/signup/`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -28,10 +30,10 @@ export default function Signup() {
         return response.json();
       })
       .then((data) => {
-        window.location.href = "/";
+        window.location.href = "/auth/login";
       })
       .catch((error) => {
-        console.error("Login error:", error);
+        console.error("Signup error:", error);
       });
   };
 

@@ -9,7 +9,7 @@ import Toast from "../components/Toast";
 
 const container_height = "65vh";
 const container_width = "55vw";
-const api_url = process.env.REACT_APP_MAIN_SERVER_LOCALHOST_URL;
+const api_url = process.env.REACT_APP_IOT;
 
 export default function IotManager() {
   //----------------------states-------------------------------------------------------------
@@ -104,7 +104,7 @@ export default function IotManager() {
   const [selectedDevice, setSelectedDevice] = useState(null);
 
   //----------------------variables-------------------------------------------------------------
-  let agent = localStorage.getItem("is_agent");
+  let agent = parseInt(localStorage.getItem("is_agent"));
   let device = Devices.iots[0].filter(
     (item) => item.id === selectedDevice
   )[0];
@@ -195,19 +195,6 @@ export default function IotManager() {
       console.error("Error:", error);
     }
   };
-
-  // const fetchGraphData = async () => {
-  //   try {
-  //     const response = await fetch(`${api_url}/iot/getFlowSpeed/`);
-  //     if (!response.ok) {
-  //       throw new Error("Bad request");
-  //     }
-  //     const jsonData = await response.json();
-  //     setData(jsonData);
-  //   } catch (error) {
-  //     console.error('Error fetching graph data:', error);
-  //   }
-  // };
 
   useEffect(() => {
     // Fetch all data initially and every 10 minute
@@ -320,7 +307,7 @@ export default function IotManager() {
   return (
     <div className="flex flex-col w-full h-full">
       <div className="flex mb-4 justify-between">
-        {agent !== "0" && (
+        {agent === 1 && (
           <>
             <ButtonCRUD
               text="Add"
@@ -381,23 +368,25 @@ export default function IotManager() {
             <h2 className="text-2xl font-bold text-center">Status</h2>
             <h3 className="text-lg">
               <strong>Device ID: </strong>
-              {selectedMarker ? selectedDevice : 'N/A'}
+              {selectedMarker && !selectedMarker.source ? selectedDevice : 'N/A'}
             </h3>
             <h3 className="text-lg">
               <strong>Location: </strong>
-              {selectedMarker ? `(${device.latitude}, ${device.longitude})` : 'N/A'}
+              {selectedMarker && !selectedMarker.source ? `(${device.latitude}, ${device.longitude})` : 'N/A'}
             </h3>
             <h3 className="text-lg">
               <strong>Address: </strong>
-              {selectedMarker ? device.address : 'N/A'}
+              {selectedMarker && !selectedMarker.source ? device.address : 'N/A'}
             </h3>
             <h3 className="text-lg">
               <strong>Status: </strong>
-              {selectedMarker ? device.status : 'N/A'}
+              {selectedMarker && !selectedMarker.source ? device.status : 'N/A'}
             </h3>
           </div>
         {selectedMarker && stationData? (
           <CustomChart
+            height={400}
+            width={450}
             type={"value"}
             data1Name={"flow"}
             data2Name={"speed"}
