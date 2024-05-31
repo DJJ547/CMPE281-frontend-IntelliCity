@@ -72,7 +72,7 @@ export default function CameraManager() {
     console.log(marker);
     if (marker === null) {
       cleanup();
-      console.log("stopped")
+      console.log("stopped");
     }
   };
   //----------------------variables-------------------------------------------------------------
@@ -209,6 +209,8 @@ export default function CameraManager() {
       setSelectedMarker(marker);
       setSelectLat(marker.latitude);
       setSelectLng(marker.longitude);
+      setscreenshot(marker ? marker.image_url : "");
+      setstreamvideo(marker ? marker.video_url : "");
       return;
     }
 
@@ -224,6 +226,8 @@ export default function CameraManager() {
     setSelectedMarker(marker);
     setSelectLat(mapCenterLatInput);
     setSelectLng(mapCenterLngInput);
+    setscreenshot(marker ? marker.image_url : "");
+    setstreamvideo(marker ? marker.video_url : "");
   };
   //----------------------functions-------------------------------------------------------------
   const Selected = async (id) => {
