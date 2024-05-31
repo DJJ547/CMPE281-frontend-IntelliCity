@@ -252,7 +252,7 @@ export default function IotManager() {
     return () => {
       clearInterval(congestionsInterval);
     };
-  }, [selectedDevice, updateUI]);
+  }, [updateUI]);
 
   const handleSearchSubmit = async (
     mapCenterLatInput,
@@ -261,37 +261,32 @@ export default function IotManager() {
   ) => {
     if (id !== "") {
       id = parseInt(id);
-      if (Devices.iots[0].filter((device) => device.id === id)[0]) {
-        let marker = Devices.iots[0].filter((device) => device.id === id)[0];
-        setMapCenterLat(marker["latitude"].toFixed(6));
-        setMapCenterLng(marker["longitude"].toFixed(6));
-        setMapZoom(15);
-        setSelectedMarker(marker);
-        setSelectLat(marker["latitude"].toFixed(6));
-        setSelectLng(marker["longitude"].toFixed(6));
+      //if id not in my data then return
+      let marker = Devices.iots[0].filter((device) => device.id === id)[0];
+      if (marker === undefined) {
+        return;
       }
+      setMapCenterLat(parseFloat(marker.latitude));
+      setMapCenterLng(parseFloat(marker.longitude));
+      setMapZoom(15);
+      setSelectedMarker(marker);
+      setSelectLat(marker.latitude);
+      setSelectLng(marker.longitude);
       return;
     }
 
     setMapCenterLat(parseFloat(mapCenterLatInput));
     setMapCenterLng(parseFloat(mapCenterLngInput));
-    if (
-      Devices.iots[0].filter(
-        (device) =>
-          device.latitude.toFixed(6) === mapCenterLatInput &&
-          device.longitude.toFixed(6) === mapCenterLngInput
-      )[0]
-    ) {
-      let marker = Devices.iots[0].filter(
-        (device) =>
-          device.latitude.toFixed(6) === mapCenterLatInput &&
-          device.longitude.toFixed(6) === mapCenterLngInput
-      )[0];
-      setMapZoom(15);
-      setSelectedMarker(marker);
-      setSelectLat(mapCenterLatInput);
-      setSelectLng(mapCenterLngInput);
-    }
+    let marker = Devices.iots[0].find(
+      (device) =>
+        parseFloat(device.latitude) === parseFloat(mapCenterLatInput) &&
+        parseFloat(device.longitude) === parseFloat(mapCenterLngInput)
+    );
+
+    setMapZoom(15);
+    setSelectedMarker(marker);
+    setSelectLat(mapCenterLatInput);
+    setSelectLng(mapCenterLngInput);
   };
 
   //----------------------functions-------------------------------------------------------------
