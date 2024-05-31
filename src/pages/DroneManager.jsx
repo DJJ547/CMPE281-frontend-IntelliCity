@@ -314,7 +314,8 @@ export default function DroneManager() {
               </h3>
             </div>
           </div>
-          <StreamingDrone droneId={selectedMarker.id} />
+          
+          <StreamingDrone droneId={selectedMarker ? selectedMarker.id : ''} />
         </div>
       </div>
     </div>
