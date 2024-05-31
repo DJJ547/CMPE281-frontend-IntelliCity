@@ -10,11 +10,15 @@ import {
   Tooltip,
   Legend,
   ResponsiveContainer,
+  ReferenceLine,
 } from "recharts";
 
 const losAngelesOffset = 420;
 
 export default function CustomChart(props) {
+  let arrayName1 = props.data1Name + "Array";
+  let arrayName2 = props.data2Name + "Array";
+
   let data1MaxY = 0;
   let data2MaxY = 0;
   const [selectChartType, setSelectChartType] = useState(1);
@@ -46,8 +50,10 @@ export default function CustomChart(props) {
         output[props.data1Name] = 0;
         output[props.data2Name] = 0;
       } else if (props.type === "value") {
-        output[props.data1Name] = [];
-        output[props.data2Name] = [];
+        output[props.data1Name] = 0;
+        output[props.data2Name] = 0;
+        output[arrayName1] = [];
+        output[arrayName2] = [];
       }
       return output;
     });
@@ -88,20 +94,19 @@ export default function CustomChart(props) {
         );
         if (parsedData1Date.getDate() === now.getDate()) {
           const hour = parsedData1Date.getHours();
-          combinedData[hour % 24][props.data1Name].push(dt1[props.data1Name]);
+          combinedData[hour % 24][arrayName1].push(dt1[props.data1Name]);
         }
       });
       combinedData.forEach((dt1) => {
         let sum = 0;
-        for (let i = 0; i < dt1[props.data1Name].length; i++) {
-          if (isNaN(dt1[props.data1Name][i])) {
-            break;
-          }
-          sum += dt1[props.data1Name][i];
+        for (let i = 0; i < dt1[arrayName1].length; i++) {
+          sum += dt1[arrayName1][i];
         }
-        const average = sum / dt1[props.data1Name].length;
+        const average = sum / dt1[arrayName1].length;
         dt1[props.data1Name] = average.toFixed(2);
-        data1MaxY = Math.max(average.toFixed(2), data1MaxY);
+        if (!isNaN(dt1[props.data1Name])) {
+          data1MaxY = Math.max(dt1[props.data1Name], data1MaxY);
+        }
       });
 
       props.allData2.forEach((dt2) => {
@@ -111,26 +116,21 @@ export default function CustomChart(props) {
         );
         if (parsedData2Date.getDate() === now.getDate()) {
           const hour = parsedData2Date.getHours();
-          combinedData[hour % 24][props.data2Name].push(dt2[props.data2Name]);
+          combinedData[hour % 24][arrayName2].push(dt2[props.data2Name]);
         }
       });
-      console.log(combinedData)
       combinedData.forEach((dt2) => {
         let sum = 0;
-        for (let i = 0; i < dt2[props.data2Name].length; i++) {
-          if (isNaN(dt2[props.data1Name][i])) {
-            sum = 0;
-            break;
-          }
-          sum += dt2[props.data2Name][i];
+        for (let i = 0; i < dt2[arrayName2].length; i++) {
+          sum += dt2[arrayName2][i];
         }
-        const average = sum / dt2[props.data2Name].length;
+        const average = sum / dt2[arrayName2].length;
         dt2[props.data2Name] = average.toFixed(2);
-        data2MaxY = Math.max(average.toFixed(2), data2MaxY);
+        if (!isNaN(dt2[props.data2Name])) {
+          data2MaxY = Math.max(dt2[props.data2Name], data2MaxY);
+        }
       });
     }
-    console.log("data1:",data1MaxY)
-    console.log("data2:",data2MaxY)
     return combinedData;
   };
 
@@ -166,7 +166,7 @@ export default function CustomChart(props) {
           <option value="data2">{props.data2Name}</option>
         </select>
       </div>
-      <ResponsiveContainer width="100%" height={400}>
+      <ResponsiveContainer width={props.width} height={props.height}>
         {selectChartType === 1 ? (
           <BarChart data={reformatData()}>
             <CartesianGrid strokeDasharray="3 3" />
@@ -177,7 +177,11 @@ export default function CustomChart(props) {
             <YAxis
               interval={1}
               label={{ value: "Occurrence", angle: -90, position: "middle" }}
-              domain={selectedData === "data1" ? [0, data1MaxY+10] : [0, data2MaxY+10]}
+              domain={
+                selectedData === "data1"
+                  ? [0, data1MaxY + 10]
+                  : [0, data2MaxY + 10]
+              }
             />
             <Tooltip />
             <Legend />
@@ -185,8 +189,27 @@ export default function CustomChart(props) {
               dataKey={
                 selectedData === "data1" ? props.data1Name : props.data2Name
               }
-              fill={selectedData === "data1" ? "#B8860B" : "#0000FF"}
+              fill={selectedData === "data1" ? "#B8860B" : "#1E90FF"}
             />
+            {props.predictedData && (
+              <ReferenceLine
+                y={
+                  selectedData === "data1"
+                    ? props.predictedData[1]
+                    : props.predictedData[0]
+                }
+                stroke="red"
+                label={{
+                  value:
+                    selectedData === "data1"
+                      ? "predicted " + props.data1Name
+                      : "predicted " + props.data2Name,
+                  position: "insideTopRight", // Adjust the position of the label
+                  fill: "red", // Adjust the color of the label
+                  style: { fontWeight: "bold" }
+                }}
+              />
+            )}
           </BarChart>
         ) : selectChartType === 2 ? (
           <LineChart
@@ -201,7 +224,11 @@ export default function CustomChart(props) {
             <YAxis
               interval={1}
               label={{ value: "Occurrence", angle: -90, position: "middle" }}
-              domain={selectedData === "data1" ? [0, data1MaxY+10] : [0, data2MaxY+10]}
+              domain={
+                selectedData === "data1"
+                  ? [0, data1MaxY + 10]
+                  : [0, data2MaxY + 10]
+              }
             />
             <Tooltip />
             <Legend />
@@ -210,9 +237,28 @@ export default function CustomChart(props) {
               dataKey={
                 selectedData === "data1" ? props.data1Name : props.data2Name
               }
-              stroke={selectedData === "data1" ? "#B8860B" : "#0000FF"}
-              fill={selectedData === "data1" ? "#B8860B" : "#0000FF"}
+              stroke={selectedData === "data1" ? "#B8860B" : "#1E90FF"}
+              fill={selectedData === "data1" ? "#B8860B" : "#1E90FF"}
             />
+            {props.predictedData && (
+              <ReferenceLine
+                y={
+                  selectedData === "data1"
+                    ? props.predictedData[1]
+                    : props.predictedData[0]
+                }
+                stroke="red"
+                label={{
+                  value:
+                    selectedData === "data1"
+                      ? "predicted " + props.data1Name
+                      : "predicted " + props.data2Name,
+                  position: "insideTopRight", // Adjust the position of the label
+                  fill: "red", // Adjust the color of the label
+                  style: { fontWeight: "bold" }
+                }}
+              />
+            )}
           </LineChart>
         ) : (
           <></>

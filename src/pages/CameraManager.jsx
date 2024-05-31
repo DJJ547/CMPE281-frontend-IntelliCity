@@ -67,7 +67,7 @@ export default function CameraManager() {
     setSelectedMarker(marker);
   };
   //----------------------variables-------------------------------------------------------------
-  const api_url = process.env.REACT_APP_MAIN_SERVER_LOCALHOST_URL;
+  const api_url = process.env.REACT_APP_CAMERA;
   let device = Devices.cameras[0].filter(
     (item) => item.id === selectedDevice
   )[0];
@@ -77,7 +77,7 @@ export default function CameraManager() {
   let location = device ? `(${device.latitude}, ${device.longitude})` : "N/A";
   let dist_id = device ? device.dist_id : "N/A";
   let address = device ? device.address : "N/A";
-  let agent = localStorage.getItem("is_agent");
+  let agent = parseInt(localStorage.getItem("is_agent"));
   //----------------------API Request-------------------------------------------------------------
   //callback function to disable the device
   const callback_switch_status = async (id) => {
@@ -238,7 +238,7 @@ export default function CameraManager() {
   return (
     <div className="flex flex-col w-full h-full">
       <div className="flex mb-4 justify-between">
-        {agent !== "0" && (
+        {agent === 1 && (
           <>
             <ButtonCRUD
               text="Add"

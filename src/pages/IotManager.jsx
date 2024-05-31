@@ -9,12 +9,13 @@ import Toast from "../components/Toast";
 
 const container_height = "65vh";
 const container_width = "55vw";
-const api_url = process.env.REACT_APP_MAIN_SERVER_LOCALHOST_URL;
+const api_url = process.env.REACT_APP_IOT;
 
 export default function IotManager() {
   //----------------------states-------------------------------------------------------------
   const [selectLat, setSelectLat] = useState(null);
   const [selectLng, setSelectLng] = useState(null);
+  const [predictedAvg, setPredictedAverage] = useState([]);
 
   const [toast, setToast] = useState({ message: "", type: "" });
 
@@ -49,7 +50,7 @@ export default function IotManager() {
     setSelectedMarker(marker);
   };
 
-  const [stationData, setStationData] = useState([])
+  const [stationData, setStationData] = useState([]);
   //==============================================================
 
   const [updateUI, setUpdateUI] = useState(false);
@@ -104,25 +105,20 @@ export default function IotManager() {
   const [selectedDevice, setSelectedDevice] = useState(null);
 
   //----------------------variables-------------------------------------------------------------
-  let agent = localStorage.getItem("is_agent");
-  let device = Devices.iots[0].filter(
-    (item) => item.id === selectedDevice
-  )[0];
+  let agent = parseInt(localStorage.getItem("is_agent"));
+  let device = Devices.iots[0].filter((item) => item.id === selectedDevice)[0];
 
   //----------------------API Request-------------------------------------------------------------
   //callback function to disable the device
   const callback_switch_status = async (id) => {
     try {
-      const response = await fetch(
-        `${api_url}/iot/DisableDevice/`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ index: id }),
-        }
-      );
+      const response = await fetch(`${api_url}/iot/disableDevice/`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ index: id }),
+      });
       const data = await response.json();
       // Set toast message
       console.log("should see Toast here");
@@ -137,12 +133,9 @@ export default function IotManager() {
   //callback function to delete the device
   const callback2_delete_device = async (id) => {
     try {
-      const response = await fetch(
-        `${api_url}/iot/DeleteDevice?id=${id}`,
-        {
-          method: "DELETE",
-        }
-      );
+      const response = await fetch(`${api_url}/iot/deleteDevice?id=${id}`, {
+        method: "DELETE",
+      });
       const data = await response.json();
       setToast({ message: `Device ${id} deleted`, type: "success" });
       setUpdateUI(!updateUI);
@@ -154,18 +147,15 @@ export default function IotManager() {
   //callback3 function to add the device
   const callback3_add_device = async (id) => {
     try {
-      const response = await fetch(
-        `${api_url}/iot/addDevice/`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            id: id,
-          }),
-        }
-      );
+      const response = await fetch(`${api_url}/iot/addDevice/`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          id: id,
+        }),
+      });
       const res = await response.json();
       console.log("res", res);
       setToast({ message: `Device ${id} status added`, type: "success" });
@@ -196,19 +186,6 @@ export default function IotManager() {
     }
   };
 
-  // const fetchGraphData = async () => {
-  //   try {
-  //     const response = await fetch(`${api_url}/iot/getFlowSpeed/`);
-  //     if (!response.ok) {
-  //       throw new Error("Bad request");
-  //     }
-  //     const jsonData = await response.json();
-  //     setData(jsonData);
-  //   } catch (error) {
-  //     console.error('Error fetching graph data:', error);
-  //   }
-  // };
-
   useEffect(() => {
     // Fetch all data initially and every 10 minute
     const fetchAllData = () => {
@@ -230,12 +207,12 @@ export default function IotManager() {
 
     const fetchStationData = () => {
       fetch(`${api_url}/iot/getFlowSpeed/`, {
-        method: 'POST',
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          id: selectedDevice
+          id: selectedDevice,
         }),
       })
         .then((response) => {
@@ -246,7 +223,7 @@ export default function IotManager() {
         })
         .then((data) => {
           setStationData(data.station_data);
-          console.log(data.station_data)
+          setPredictedAverage(data.predicted_average);
         })
         .catch((error) => {
           console.error("Failed to fetch devices:", error);
@@ -256,9 +233,7 @@ export default function IotManager() {
 
     // Fetch congestion data every 5 minutes
     const fetchAllCongestions = () => {
-      fetch(
-        `${api_url}/iot/getAllCongestions/`
-      )
+      fetch(`${api_url}/iot/getAllCongestions/`)
         .then((response) => {
           if (!response.ok) {
             throw new Error("Bad request");
@@ -267,17 +242,17 @@ export default function IotManager() {
         })
         .then((data) => {
           setActiveCongestions(data.congestions.active);
-          setAllCongestions(data.congestions.all)
+          setAllCongestions(data.congestions.all);
         })
         .catch((error) => console.error("Failed to fetch congestions:", error));
     };
     const congestionsInterval = setInterval(fetchAllCongestions, 300000);
-    fetchAllCongestions()
+    fetchAllCongestions();
     // Cleanup function to clear intervals when the component unmounts or dependencies change
     return () => {
       clearInterval(congestionsInterval);
     };
-  }, [selectedDevice]);
+  }, [selectedDevice, updateUI]);
 
   const handleSearchSubmit = async (
     mapCenterLatInput,
@@ -286,28 +261,37 @@ export default function IotManager() {
   ) => {
     if (id !== "") {
       id = parseInt(id);
-      let marker = Devices.filter((device) => device.id === id)[0];
-      setMapCenterLat(parseFloat(marker.latitude));
-      setMapCenterLng(parseFloat(marker.longitude));
-      setMapZoom(15);
-      setSelectedMarker(marker);
-      setSelectLat(marker.latitude);
-      setSelectLng(marker.longitude);
+      if (Devices.iots[0].filter((device) => device.id === id)[0]) {
+        let marker = Devices.iots[0].filter((device) => device.id === id)[0];
+        setMapCenterLat(marker["latitude"].toFixed(6));
+        setMapCenterLng(marker["longitude"].toFixed(6));
+        setMapZoom(15);
+        setSelectedMarker(marker);
+        setSelectLat(marker["latitude"].toFixed(6));
+        setSelectLng(marker["longitude"].toFixed(6));
+      }
       return;
     }
 
     setMapCenterLat(parseFloat(mapCenterLatInput));
     setMapCenterLng(parseFloat(mapCenterLngInput));
-    let marker = Devices.find(
-      (device) =>
-        parseFloat(device.latitude) === parseFloat(mapCenterLatInput) &&
-        parseFloat(device.longitude) === parseFloat(mapCenterLngInput)
-    );
-
-    setMapZoom(15);
-    setSelectedMarker(marker);
-    setSelectLat(mapCenterLatInput);
-    setSelectLng(mapCenterLngInput);
+    if (
+      Devices.iots[0].filter(
+        (device) =>
+          device.latitude.toFixed(6) === mapCenterLatInput &&
+          device.longitude.toFixed(6) === mapCenterLngInput
+      )[0]
+    ) {
+      let marker = Devices.iots[0].filter(
+        (device) =>
+          device.latitude.toFixed(6) === mapCenterLatInput &&
+          device.longitude.toFixed(6) === mapCenterLngInput
+      )[0];
+      setMapZoom(15);
+      setSelectedMarker(marker);
+      setSelectLat(mapCenterLatInput);
+      setSelectLng(mapCenterLngInput);
+    }
   };
 
   //----------------------functions-------------------------------------------------------------
@@ -320,7 +304,7 @@ export default function IotManager() {
   return (
     <div className="flex flex-col w-full h-full">
       <div className="flex mb-4 justify-between">
-        {agent !== "0" && (
+        {agent === 1 && (
           <>
             <ButtonCRUD
               text="Add"
@@ -334,7 +318,7 @@ export default function IotManager() {
               text="Delete"
               imgSrc="https://upload.wikimedia.org/wikipedia/commons/5/5e/Flat_minus_icon_-_red.svg"
               altText="IoT Device Delete"
-              data={Devices}
+              data={Devices.iots[0]}
               type="iot"
               callback_switch_status={callback_switch_status}
               callback_delete_device={callback2_delete_device}
@@ -343,7 +327,7 @@ export default function IotManager() {
               text="Update"
               imgSrc="https://upload.wikimedia.org/wikipedia/commons/6/62/Eo_circle_orange_repeat.svg"
               altText="IoT Device Update"
-              data={Devices}
+              data={Devices.iots[0]}
               type="iot"
               callback_switch_status={callback_switch_status}
               callback_delete_device={callback2_delete_device}
@@ -381,32 +365,47 @@ export default function IotManager() {
             <h2 className="text-2xl font-bold text-center">Status</h2>
             <h3 className="text-lg">
               <strong>Device ID: </strong>
-              {selectedMarker ? selectedDevice : 'N/A'}
+              {selectedMarker && !selectedMarker.source
+                ? selectedDevice
+                : "N/A"}
             </h3>
             <h3 className="text-lg">
               <strong>Location: </strong>
-              {selectedMarker ? `(${device.latitude}, ${device.longitude})` : 'N/A'}
+              {selectedMarker && selectedMarker.type === "iot"
+                ? `(${selectedMarker.latitude}, ${selectedMarker.longitude})`
+                : "N/A"}
             </h3>
             <h3 className="text-lg">
               <strong>Address: </strong>
-              {selectedMarker ? device.address : 'N/A'}
+              {selectedMarker && selectedMarker.type === "iot"
+                ? selectedMarker.address
+                : "N/A"}
             </h3>
             <h3 className="text-lg">
               <strong>Status: </strong>
-              {selectedMarker ? device.status : 'N/A'}
+              {selectedMarker && selectedMarker.type === "iot"
+                ? selectedMarker.status
+                : "N/A"}
             </h3>
           </div>
-        {selectedMarker && stationData? (
-          <CustomChart
-            type={"value"}
-            data1Name={"flow"}
-            data2Name={"speed"}
-            allData1={stationData}
-            allData2={stationData}
-          />
-        ) : (
-          <></>
-        )}
+          {selectedMarker && stationData ? (
+            <CustomChart
+              height={430}
+              width={"100%"}
+              type={"value"}
+              predictedData={predictedAvg}
+              data1Name={"flow"}
+              data2Name={"speed"}
+              allData1={stationData}
+              allData2={stationData}
+            />
+          ) : (
+            <div className="flex w-[450px] h-[655px] bg-white items-center justify-center rounded-lg shadow-xl text-xl shadow-blue-gray-900 mx-5 my-2">
+              <h1 className="font-bold text-center">
+                Click on a Marker to Show <br /> Station Flow and Speed
+              </h1>
+            </div>
+          )}
         </div>
       </div>
     </div>
