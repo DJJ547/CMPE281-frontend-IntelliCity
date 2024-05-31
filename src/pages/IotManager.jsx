@@ -15,6 +15,7 @@ export default function IotManager() {
   //----------------------states-------------------------------------------------------------
   const [selectLat, setSelectLat] = useState(null);
   const [selectLng, setSelectLng] = useState(null);
+  const [predictedAvg, setPredictedAverage] = useState([]);
 
   const [toast, setToast] = useState({ message: "", type: "" });
 
@@ -49,7 +50,7 @@ export default function IotManager() {
     setSelectedMarker(marker);
   };
 
-  const [stationData, setStationData] = useState([])
+  const [stationData, setStationData] = useState([]);
   //==============================================================
 
   const [updateUI, setUpdateUI] = useState(false);
@@ -105,24 +106,19 @@ export default function IotManager() {
 
   //----------------------variables-------------------------------------------------------------
   let agent = parseInt(localStorage.getItem("is_agent"));
-  let device = Devices.iots[0].filter(
-    (item) => item.id === selectedDevice
-  )[0];
+  let device = Devices.iots[0].filter((item) => item.id === selectedDevice)[0];
 
   //----------------------API Request-------------------------------------------------------------
   //callback function to disable the device
   const callback_switch_status = async (id) => {
     try {
-      const response = await fetch(
-        `${api_url}/iot/DisableDevice/`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ index: id }),
-        }
-      );
+      const response = await fetch(`${api_url}/iot/DisableDevice/`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ index: id }),
+      });
       const data = await response.json();
       // Set toast message
       console.log("should see Toast here");
@@ -137,12 +133,9 @@ export default function IotManager() {
   //callback function to delete the device
   const callback2_delete_device = async (id) => {
     try {
-      const response = await fetch(
-        `${api_url}/iot/DeleteDevice?id=${id}`,
-        {
-          method: "DELETE",
-        }
-      );
+      const response = await fetch(`${api_url}/iot/DeleteDevice?id=${id}`, {
+        method: "DELETE",
+      });
       const data = await response.json();
       setToast({ message: `Device ${id} deleted`, type: "success" });
       setUpdateUI(!updateUI);
@@ -154,18 +147,15 @@ export default function IotManager() {
   //callback3 function to add the device
   const callback3_add_device = async (id) => {
     try {
-      const response = await fetch(
-        `${api_url}/iot/addDevice/`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            id: id,
-          }),
-        }
-      );
+      const response = await fetch(`${api_url}/iot/addDevice/`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          id: id,
+        }),
+      });
       const res = await response.json();
       console.log("res", res);
       setToast({ message: `Device ${id} status added`, type: "success" });
@@ -217,12 +207,12 @@ export default function IotManager() {
 
     const fetchStationData = () => {
       fetch(`${api_url}/iot/getFlowSpeed/`, {
-        method: 'POST',
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          id: selectedDevice
+          id: selectedDevice,
         }),
       })
         .then((response) => {
@@ -233,7 +223,7 @@ export default function IotManager() {
         })
         .then((data) => {
           setStationData(data.station_data);
-          console.log(data.station_data)
+          setPredictedAverage(data.predicted_average);
         })
         .catch((error) => {
           console.error("Failed to fetch devices:", error);
@@ -243,9 +233,7 @@ export default function IotManager() {
 
     // Fetch congestion data every 5 minutes
     const fetchAllCongestions = () => {
-      fetch(
-        `${api_url}/iot/getAllCongestions/`
-      )
+      fetch(`${api_url}/iot/getAllCongestions/`)
         .then((response) => {
           if (!response.ok) {
             throw new Error("Bad request");
@@ -254,12 +242,12 @@ export default function IotManager() {
         })
         .then((data) => {
           setActiveCongestions(data.congestions.active);
-          setAllCongestions(data.congestions.all)
+          setAllCongestions(data.congestions.all);
         })
         .catch((error) => console.error("Failed to fetch congestions:", error));
     };
     const congestionsInterval = setInterval(fetchAllCongestions, 300000);
-    fetchAllCongestions()
+    fetchAllCongestions();
     // Cleanup function to clear intervals when the component unmounts or dependencies change
     return () => {
       clearInterval(congestionsInterval);
@@ -368,34 +356,45 @@ export default function IotManager() {
             <h2 className="text-2xl font-bold text-center">Status</h2>
             <h3 className="text-lg">
               <strong>Device ID: </strong>
-              {selectedMarker && !selectedMarker.source ? selectedDevice : 'N/A'}
+              {selectedMarker && !selectedMarker.source
+                ? selectedDevice
+                : "N/A"}
             </h3>
             <h3 className="text-lg">
               <strong>Location: </strong>
-              {selectedMarker && !selectedMarker.source ? `(${device.latitude}, ${device.longitude})` : 'N/A'}
+              {selectedMarker && !selectedMarker.source
+                ? `(${device.latitude}, ${device.longitude})`
+                : "N/A"}
             </h3>
             <h3 className="text-lg">
               <strong>Address: </strong>
-              {selectedMarker && !selectedMarker.source ? device.address : 'N/A'}
+              {selectedMarker && !selectedMarker.source
+                ? device.address
+                : "N/A"}
             </h3>
             <h3 className="text-lg">
               <strong>Status: </strong>
-              {selectedMarker && !selectedMarker.source ? device.status : 'N/A'}
+              {selectedMarker && !selectedMarker.source ? device.status : "N/A"}
             </h3>
           </div>
-        {selectedMarker && stationData? (
-          <CustomChart
-            height={400}
-            width={450}
-            type={"value"}
-            data1Name={"flow"}
-            data2Name={"speed"}
-            allData1={stationData}
-            allData2={stationData}
-          />
-        ) : (
-          <></>
-        )}
+          {selectedMarker && stationData ? (
+            <CustomChart
+              height={430}
+              width={"100%"}
+              type={"value"}
+              predictedData={predictedAvg}
+              data1Name={"flow"}
+              data2Name={"speed"}
+              allData1={stationData}
+              allData2={stationData}
+            />
+          ) : (
+            <div className="flex w-[450px] h-[655px] bg-white items-center justify-center rounded-lg shadow-xl text-xl shadow-blue-gray-900 mx-5 my-2">
+              <h1 className="font-bold text-center">
+                Click on a Marker to Show <br /> Station Flow and Speed
+              </h1>
+            </div>
+          )}
         </div>
       </div>
     </div>

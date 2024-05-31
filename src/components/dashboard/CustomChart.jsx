@@ -10,6 +10,7 @@ import {
   Tooltip,
   Legend,
   ResponsiveContainer,
+  ReferenceLine,
 } from "recharts";
 
 const losAngelesOffset = 420;
@@ -118,7 +119,6 @@ export default function CustomChart(props) {
           combinedData[hour % 24][arrayName2].push(dt2[props.data2Name]);
         }
       });
-      console.log(combinedData);
       combinedData.forEach((dt2) => {
         let sum = 0;
         for (let i = 0; i < dt2[arrayName2].length; i++) {
@@ -131,8 +131,6 @@ export default function CustomChart(props) {
         }
       });
     }
-    console.log("data1:", data1MaxY);
-    console.log("data2:", data2MaxY);
     return combinedData;
   };
 
@@ -191,8 +189,26 @@ export default function CustomChart(props) {
               dataKey={
                 selectedData === "data1" ? props.data1Name : props.data2Name
               }
-              fill={selectedData === "data1" ? "#B8860B" : "#0000FF"}
+              fill={selectedData === "data1" ? "#B8860B" : "#1E90FF"}
             />
+            {props.predictedData && (
+              <ReferenceLine
+                y={
+                  selectedData === "data1"
+                    ? props.predictedData[1]
+                    : props.predictedData[0]
+                }
+                stroke="red"
+                label={{
+                  value:
+                    selectedData === "data1"
+                      ? "predicted " + props.data1Name
+                      : "predicted " + props.data2Name,
+                  position: "insideTopRight", // Adjust the position of the label
+                  fill: "red", // Adjust the color of the label
+                }}
+              />
+            )}
           </BarChart>
         ) : selectChartType === 2 ? (
           <LineChart
@@ -220,9 +236,27 @@ export default function CustomChart(props) {
               dataKey={
                 selectedData === "data1" ? props.data1Name : props.data2Name
               }
-              stroke={selectedData === "data1" ? "#B8860B" : "#0000FF"}
-              fill={selectedData === "data1" ? "#B8860B" : "#0000FF"}
+              stroke={selectedData === "data1" ? "#B8860B" : "#1E90FF"}
+              fill={selectedData === "data1" ? "#B8860B" : "#1E90FF"}
             />
+            {props.predictedData && (
+              <ReferenceLine
+                y={
+                  selectedData === "data1"
+                    ? props.predictedData[1]
+                    : props.predictedData[0]
+                }
+                stroke="red"
+                label={{
+                  value:
+                    selectedData === "data1"
+                      ? "predicted " + props.data1Name
+                      : "predicted " + props.data2Name,
+                  position: "insideTopRight", // Adjust the position of the label
+                  fill: "red", // Adjust the color of the label
+                }}
+              />
+            )}
           </LineChart>
         ) : (
           <></>
