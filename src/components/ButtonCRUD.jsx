@@ -53,7 +53,6 @@ export default function ButtonCRUD(props) {
       {showPopup && (
         <PopupWindow
           onClick={() => setShowPopup(false)}
-          type={props.type}
           data={props.data}
           callback={props.callback_switch_status}
           callback2={props.callback_delete_device}

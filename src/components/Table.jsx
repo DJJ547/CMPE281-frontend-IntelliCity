@@ -6,11 +6,7 @@ export default function Table(props) {
   // State to manage the checked state of the switch
 
   const [checked, setChecked] = useState(() => {
-    if (props.type === 'iot') {
-      return props.data.map(item => item.enabled);
-    } else {
-      return props.data.map(item => item.status === "active");
-    }
+    return props.data.map(item => item.status === "active");
   });
 
   const [currentPage, setCurrentPage] = useState(1);
