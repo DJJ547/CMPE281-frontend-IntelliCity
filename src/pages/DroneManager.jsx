@@ -5,6 +5,7 @@ import view from "../medias/view.svg";
 import ButtonCRUD from "../components/ButtonCRUD";
 import StreamingDrone from "../components/StreamingDrone";
 import { districts } from "../utils/mapDistrictCoordinates";
+import Toast from "../components/Toast";
 
 const container_height = "65vh";
 const container_width = "55vw";
@@ -13,6 +14,9 @@ export default function DroneManager() {
   //----------------------states-------------------------------------------------------------
   const [selectLat, setSelectLat] = useState(null);
   const [selectLng, setSelectLng] = useState(null);
+
+  const [toast, setToast] = useState({ message: "", type: "" });
+
   const getMapCoordinates = (lat, lng) => {
     setSelectLat(lat);
     setSelectLng(lng);
@@ -40,7 +44,6 @@ export default function DroneManager() {
   const [searched_data, setSearchedData] = useState([]);
   const [incidents, setIncidents] = useState([]);
   const [streamvideo, setstreamvideo] = useState("");
-  const [selectedDevice, setSelectedDevice] = useState(null);
   //==================For View Button============================
   //these are the map center states
   const [mapCenterLat, setMapCenterLat] = useState(districts[0].lat);
@@ -64,17 +67,11 @@ export default function DroneManager() {
   //this is the map selected marker call back function
   const updateSelectedMarker = (marker) => {
     setSelectedMarker(marker);
+    setstreamvideo(marker ? marker.videoUrl : "");
+    setUpdateUI(!updateUI);
   };
   //----------------------variables-------------------------------------------------------------
-  let device = Devices.drones[0].filter(
-    (item) => item.id === selectedDevice
-  )[0];
-  let status = device ? device.status : "N/A";
-  let latitude = device ? device.latitude : null;
-  let longitude = device ? device.longitude : null;
-  let dist_id = device ? device.dist_id : "N/A";
   let agent = localStorage.getItem("is_agent");
-  let screenshot = null;
   //----------------------API Request-------------------------------------------------------------
   //callback function to disable the device
   const callback_switch_status = async (id) => {
@@ -83,7 +80,7 @@ export default function DroneManager() {
         method: "POST",
       });
       const data = await response.json();
-      console.log("data", data);
+      setToast({ message: data ? `Device ${id} successfully changed status` : `Device ${id} failed to change status`, type: data ? 'success' : 'error' });
       setUpdateUI(!updateUI);
     } catch (error) {
       console.error("Error:", error);
@@ -97,6 +94,7 @@ export default function DroneManager() {
         method: "DELETE",
       });
       const data = await response.json();
+      setToast({ message: data ? `Device ${id} successfully deleted` : `Device ${id} failed to delete`, type: data ? 'success' : 'error' });
       setUpdateUI(!updateUI);
     } catch (error) {
       console.error("Error:", error);
@@ -109,8 +107,8 @@ export default function DroneManager() {
       const response = await fetch(`${api_url}/drone/AddDevice/?id=${id}`, {
         method: "POST",
       });
-      const res = await response.json();
-      console.log("res", res);
+      const data = await response.json();
+      setToast({ message: data ? `Device ${id} successfully added` : `Device ${id} failed to add`, type: data ? 'success' : 'error' });
       setUpdateUI(!updateUI);
     } catch (error) {
       console.error("Error:", error);
@@ -129,9 +127,9 @@ export default function DroneManager() {
           method: "GET",
         }
       );
-      const res = await response.json();
-      setSearchedData(res);
-      console.log("searched data", res);
+      const data = await response.json();
+      setSearchedData(data)
+      console.log("searched data", data);
     } catch (error) {
       console.error("Error:", error);
     }
@@ -220,15 +218,6 @@ export default function DroneManager() {
     setSelectLng(mapCenterLngInput);
     setstreamvideo(marker.videoUrl);
   };
-  //----------------------functions-------------------------------------------------------------
-  const Selected = async (id) => {
-    let item = Devices.drones[0].filter((item) => item.id === id)[0];
-    let videoUrl = item.video_url;
-    console.log(videoUrl)
-    setSelectedDevice(id);
-    setstreamvideo(videoUrl);
-    setUpdateUI(!updateUI);
-  };
 
   //----------------------return-------------------------------------------------------------
   return (
@@ -270,6 +259,7 @@ export default function DroneManager() {
           data={Devices}
           callback_view_device={handleSearchSubmit}
         />
+        <Toast message={toast.message} type={toast.type} />
       </div>
       <div className="flex w-auto h-2/3">
         <Map
@@ -284,7 +274,6 @@ export default function DroneManager() {
           deviceData={Devices}
           container_height={container_height}
           container_width={container_width}
-          Selected={Selected}
         />
         <div className="flex ml-5 flex-col ">
           <div className="flex flex-col w-96 h-96 bg-white shadow-lg mb-6">
@@ -292,7 +281,7 @@ export default function DroneManager() {
               <h2 className="text-lg font-bold text-center">Status</h2>
               <h3 className="text-lg">
                 <strong>Device ID: </strong>
-                {selectedMarker ? selectedDevice : "N/A"}
+                {selectedMarker ? selectedMarker.id : "N/A"}
               </h3>
               <h3 className="text-lg">
                 <strong>Location: </strong>

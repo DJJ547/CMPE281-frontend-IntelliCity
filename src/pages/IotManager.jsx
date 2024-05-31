@@ -48,6 +48,7 @@ export default function IotManager() {
   //this is the map selected marker call back function
   const updateSelectedMarker = (marker) => {
     setSelectedMarker(marker);
+    marker && fetchStationData(marker.id);
   };
 
   const [stationData, setStationData] = useState([]);
@@ -102,11 +103,9 @@ export default function IotManager() {
     12: [],
   });
   const [searched_data, setSearchedData] = useState([]);
-  const [selectedDevice, setSelectedDevice] = useState(null);
 
   //----------------------variables-------------------------------------------------------------
   let agent = parseInt(localStorage.getItem("is_agent"));
-  let device = Devices.iots[0].filter((item) => item.id === selectedDevice)[0];
 
   //----------------------API Request-------------------------------------------------------------
   //callback function to disable the device
@@ -120,10 +119,7 @@ export default function IotManager() {
         body: JSON.stringify({ id: id }),
       });
       const data = await response.json();
-      // Set toast message
-      console.log("should see Toast here");
-      setToast({ message: `Device ${id} status updated`, type: "success" });
-      console.log("data", data);
+      setToast({ message: data ? `Device ${id} successfully changed status` : `Device ${id} failed to change status`, type: data ? 'success' : 'error' });
       setUpdateUI(!updateUI);
     } catch (error) {
       console.error("Error:", error);
@@ -137,7 +133,7 @@ export default function IotManager() {
         method: "DELETE",
       });
       const data = await response.json();
-      setToast({ message: `Device ${id} deleted`, type: "success" });
+      setToast({ message: data ? `Device ${id} successfully deleted` : `Device ${id} failed to delete`, type: data ? 'success' : 'error' });
       setUpdateUI(!updateUI);
     } catch (error) {
       console.error("Error:", error);
@@ -156,10 +152,8 @@ export default function IotManager() {
           id: id,
         }),
       });
-      const res = await response.json();
-      console.log("res", res);
-      setToast({ message: `Device ${id} status added`, type: "success" });
-
+      const data = await response.json();
+      setToast({ message: data ? `Device ${id} successfully added` : `Device ${id} failed to add`, type: data ? 'success' : 'error' });
       setUpdateUI(!updateUI);
     } catch (error) {
       console.error("Error:", error);
@@ -178,12 +172,38 @@ export default function IotManager() {
           method: "GET",
         }
       );
-      const res = await response.json();
+      const data = await response.json();
 
-      setSearchedData(res);
+      setSearchedData(data);
     } catch (error) {
       console.error("Error:", error);
     }
+  };
+
+  const fetchStationData = (staion_id) => {
+    fetch(`${api_url}/iot/getFlowSpeed/`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        id: staion_id,
+      }),
+    })
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error("Bad request");
+        }
+        return response.json();
+      })
+      .then((data) => {
+        setStationData(data.station_data);
+        console.log('station data here')
+        setPredictedAverage(data.predicted_average);
+      })
+      .catch((error) => {
+        console.error("Failed to fetch devices:", error);
+      });
   };
 
   useEffect(() => {
@@ -204,32 +224,6 @@ export default function IotManager() {
         });
     };
     fetchAllData();
-
-    const fetchStationData = () => {
-      fetch(`${api_url}/iot/getFlowSpeed/`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          id: selectedDevice,
-        }),
-      })
-        .then((response) => {
-          if (!response.ok) {
-            throw new Error("Bad request");
-          }
-          return response.json();
-        })
-        .then((data) => {
-          setStationData(data.station_data);
-          setPredictedAverage(data.predicted_average);
-        })
-        .catch((error) => {
-          console.error("Failed to fetch devices:", error);
-        });
-    };
-    fetchStationData();
 
     // Fetch congestion data every 5 minutes
     const fetchAllCongestions = () => {
@@ -272,6 +266,8 @@ export default function IotManager() {
       setSelectedMarker(marker);
       setSelectLat(marker.latitude);
       setSelectLng(marker.longitude);
+      console.log(id)
+      fetchStationData(id);
       return;
     }
 
@@ -287,12 +283,7 @@ export default function IotManager() {
     setSelectedMarker(marker);
     setSelectLat(mapCenterLatInput);
     setSelectLng(mapCenterLngInput);
-  };
-
-  //----------------------functions-------------------------------------------------------------
-  const Selected = async (id) => {
-    setSelectedDevice(id);
-    setUpdateUI(!updateUI);
+    fetchStationData(id);
   };
 
   //----------------------return-------------------------------------------------------------
@@ -351,7 +342,6 @@ export default function IotManager() {
           congestionData={activeCongestions}
           container_height={container_height}
           container_width={container_width}
-          Selected={Selected}
         />
         <div className="flex flex-col w-full h-full">
           <div className="flex flex-col w-[450px] h-[160px] bg-white shadow-lg ml-5 mb-6 p-2">
@@ -359,7 +349,7 @@ export default function IotManager() {
             <h3 className="text-lg">
               <strong>Device ID: </strong>
               {selectedMarker && selectedMarker.type === "iot"
-                ? selectedDevice
+                ? selectedMarker.id
                 : "N/A"}
             </h3>
             <h3 className="text-lg">

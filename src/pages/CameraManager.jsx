@@ -5,6 +5,7 @@ import view from "../medias/view.svg";
 import ButtonCRUD from "../components/ButtonCRUD";
 import Streaming from "../components/Streaming";
 import { districts } from "../utils/mapDistrictCoordinates";
+import Toast from "../components/Toast";
 
 const container_height = "65vh";
 const container_width = "55vw";
@@ -13,6 +14,7 @@ export default function CameraManager() {
   //----------------------states-------------------------------------------------------------
   const [selectLat, setSelectLat] = useState(null);
   const [selectLng, setSelectLng] = useState(null);
+  const [toast, setToast] = useState({ message: "", type: "" });
   const getMapCoordinates = (lat, lng) => {
     setSelectLat(lat);
     setSelectLng(lng);
@@ -41,7 +43,6 @@ export default function CameraManager() {
   const [incidents, setIncidents] = useState([]);
   const [screenshot, setscreenshot] = useState("");
   const [streamvideo, setstreamvideo] = useState("");
-  const [selectedDevice, setSelectedDevice] = useState(null);
   //==================For View Button============================
   //these are the map center states
   const [mapCenterLat, setMapCenterLat] = useState(districts[0].lat);
@@ -65,9 +66,10 @@ export default function CameraManager() {
   //this is the map selected marker call back function
   const updateSelectedMarker = (marker) => {
     setSelectedMarker(marker);
-    setSelectedDevice(marker ? marker.id : null);
-    setscreenshot(marker ? marker.image_url : "");
-    setstreamvideo(marker ? marker.video_url : "");
+    setscreenshot(marker && marker.status === "active" ? marker.image_url : "");
+    setstreamvideo(
+      marker && marker.status === "active" ? marker.video_url : ""
+    );
     setUpdateUI(!updateUI);
     console.log(marker);
     if (marker === null) {
@@ -89,7 +91,12 @@ export default function CameraManager() {
         }
       );
       const data = await response.json();
-      console.log("data", data);
+      setToast({
+        message: data
+          ? `Device ${id} successfully changed status`
+          : `Device ${id} failed to change status`,
+        type: data ? "success" : "error",
+      });
       setUpdateUI(!updateUI);
     } catch (error) {
       console.error("Error:", error);
@@ -103,6 +110,12 @@ export default function CameraManager() {
         method: "DELETE",
       });
       const data = await response.json();
+      setToast({
+        message: data
+          ? `Device ${id} successfully deleted`
+          : `Device ${id} failed to delete`,
+        type: data ? "success" : "error",
+      });
       setUpdateUI(!updateUI);
     } catch (error) {
       console.error("Error:", error);
@@ -115,8 +128,13 @@ export default function CameraManager() {
       const response = await fetch(`${api_url}/camera/AddDevice/?id=${id}`, {
         method: "POST",
       });
-      const res = await response.json();
-      console.log("res", res);
+      const data = await response.json();
+      setToast({
+        message: data
+          ? `Device ${id} successfully added`
+          : `Device ${id} failed to add`,
+        type: data ? "success" : "error",
+      });
       setUpdateUI(!updateUI);
     } catch (error) {
       console.error("Error:", error);
@@ -135,9 +153,9 @@ export default function CameraManager() {
           method: "GET",
         }
       );
-      const res = await response.json();
+      const data = await response.json();
 
-      setSearchedData(res);
+      setSearchedData(data);
     } catch (error) {
       console.error("Error:", error);
     }
@@ -229,16 +247,6 @@ export default function CameraManager() {
     setscreenshot(marker ? marker.image_url : "");
     setstreamvideo(marker ? marker.video_url : "");
   };
-  //----------------------functions-------------------------------------------------------------
-  const Selected = async (id) => {
-    let item = Devices.cameras[0].filter((item) => item.id === id)[0];
-    let screenshot1 = item.image_url;
-    let videoUrl = item.video_url;
-    setSelectedDevice(id);
-    setscreenshot(screenshot1);
-    setstreamvideo(videoUrl);
-    setUpdateUI(!updateUI);
-  };
 
   //----------------------return-------------------------------------------------------------
   return (
@@ -280,6 +288,7 @@ export default function CameraManager() {
           data={Devices.cameras[0]}
           callback_view_device={handleSearchSubmit}
         />
+        <Toast message={toast.message} type={toast.type} />
       </div>
       <div className="flex w-auto h-2/3">
         <Map
@@ -295,7 +304,6 @@ export default function CameraManager() {
           deviceData={Devices}
           container_height={container_height}
           container_width={container_width}
-          Selected={Selected}
         />
         <div className="flex ml-5 flex-col ">
           <div className="flex flex-col w-96 h-96 bg-white shadow-lg mb-6">
@@ -303,7 +311,7 @@ export default function CameraManager() {
               <h2 className="text-lg font-bold text-center">Status</h2>
               <h3 className="text-lg">
                 <strong>Device ID: </strong>
-                {selectedMarker ? selectedDevice : "N/A"}
+                {selectedMarker ? selectedMarker.id : "N/A"}
               </h3>
               <h3 className="text-lg">
                 <strong>Location: </strong>
