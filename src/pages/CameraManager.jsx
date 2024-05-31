@@ -69,6 +69,11 @@ export default function CameraManager() {
     setscreenshot(marker ? marker.image_url : "");
     setstreamvideo(marker ? marker.video_url : "");
     setUpdateUI(!updateUI);
+    console.log(marker);
+    if (marker === null) {
+      cleanup();
+      console.log("stopped")
+    }
   };
   //----------------------variables-------------------------------------------------------------
   const api_url = process.env.REACT_APP_CAMERA;
@@ -138,6 +143,18 @@ export default function CameraManager() {
     }
   };
 
+  const cleanup = async () => {
+    try {
+      const response = await fetch(`${api_url}/camera/StopStream/`, {
+        method: "GET",
+      });
+      const data = await response.json();
+      setUpdateUI(!updateUI);
+    } catch (error) {
+      console.error("Error:", error);
+    }
+  };
+
   //get the devices data from backend
   useEffect(() => {
     const fetchDevices = async () => {
@@ -170,16 +187,6 @@ export default function CameraManager() {
     fetchDevices();
     fetchIncidences();
     return () => {
-      const cleanup = async () => {
-        try {
-          const response = await fetch(`${api_url}/camera/StopStream/`, {
-            method: "GET",
-          });
-          const data = await response.json();
-        } catch (error) {
-          console.error("Error:", error);
-        }
-      };
       cleanup();
     };
   }, [updateUI]);
@@ -315,12 +322,12 @@ export default function CameraManager() {
             </div>
           </div>
           <Streaming
-            id={selectedMarker ? selectedMarker.id : ''}
+            id={selectedMarker ? selectedMarker.id : ""}
             screenshot={screenshot}
             videoUrl={streamvideo}
-            latitude={selectedMarker ? selectedMarker.latitude : ''}
-            longitude={selectedMarker ? selectedMarker.longitude : ''}
-            district={selectedMarker ? selectedMarker.dist_id : ''}
+            latitude={selectedMarker ? selectedMarker.latitude : ""}
+            longitude={selectedMarker ? selectedMarker.longitude : ""}
+            district={selectedMarker ? selectedMarker.dist_id : ""}
           />
         </div>
       </div>
