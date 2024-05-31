@@ -365,7 +365,7 @@ export default function IotManager() {
             <h2 className="text-2xl font-bold text-center">Status</h2>
             <h3 className="text-lg">
               <strong>Device ID: </strong>
-              {selectedMarker && !selectedMarker.source
+              {selectedMarker && selectedMarker.type === "iot"
                 ? selectedDevice
                 : "N/A"}
             </h3>
