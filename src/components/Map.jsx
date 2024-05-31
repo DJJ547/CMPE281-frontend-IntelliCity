@@ -523,7 +523,7 @@ function Map(props) {
                           }}
                           label={{
                             text:
-                              device.status === "active" ? "\ue51e" : "\uf239",
+                              device.status === "active" ? "\ue51e" : "\ue51f",
                             fontFamily: "Material Icons, sans-serif",
                             color:
                               device.status === "active"
@@ -559,7 +559,7 @@ function Map(props) {
                       lng: device.longitude,
                     }}
                     label={{
-                      text: device.status === "active" ? "\ue51e" : "\uf239",
+                      text: device.status === "active" ? "\ue51e" : "\ue51f",
                       fontFamily: "Material Icons, sans-serif",
                       color: device.status === "active" ? "#ffffff" : "#000000",
                       fontSize: "20px",
@@ -612,7 +612,6 @@ function Map(props) {
                           }}
                           title="Drone Marker"
                           onClick={() => {
-                            props.Selected(device.id);
                             setSelectedMarker(device);
                             props.getMapCoordinates(
                               device.latitude,
@@ -648,7 +647,6 @@ function Map(props) {
                       }}
                       title="Drone Marker"
                       onClick={() => {
-                        props.Selected(device.id);
                         setSelectedMarker(device);
                         props.getMapCoordinates(
                           device.latitude,
