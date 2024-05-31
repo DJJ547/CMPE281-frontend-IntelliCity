@@ -117,7 +117,7 @@ export default function IotManager() {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ index: id }),
+        body: JSON.stringify({ id: id }),
       });
       const data = await response.json();
       // Set toast message
@@ -319,7 +319,6 @@ export default function IotManager() {
               imgSrc="https://upload.wikimedia.org/wikipedia/commons/5/5e/Flat_minus_icon_-_red.svg"
               altText="IoT Device Delete"
               data={Devices.iots[0]}
-              type="iot"
               callback_switch_status={callback_switch_status}
               callback_delete_device={callback2_delete_device}
             />
@@ -328,7 +327,6 @@ export default function IotManager() {
               imgSrc="https://upload.wikimedia.org/wikipedia/commons/6/62/Eo_circle_orange_repeat.svg"
               altText="IoT Device Update"
               data={Devices.iots[0]}
-              type="iot"
               callback_switch_status={callback_switch_status}
               callback_delete_device={callback2_delete_device}
             />
