@@ -302,20 +302,20 @@ export default function CameraManager() {
               <h3 className="text-lg">
                 <strong>Location: </strong>
                 {selectedMarker
-                  ? `(${device.latitude}, ${device.longitude})`
+                  ? `(${selectedMarker.latitude}, ${selectedMarker.longitude})`
                   : "N/A"}
               </h3>
               <h3 className="text-lg">
                 <strong>Address: </strong>
-                {selectedMarker ? device.address : "N/A"}
+                {selectedMarker ? selectedMarker.address : "N/A"}
               </h3>
               <h3 className="text-lg">
                 <strong>District: </strong>
-                {selectedMarker ? device.dist_id : "N/A"}
+                {selectedMarker ? selectedMarker.dist_id : "N/A"}
               </h3>
               <h3 className="text-lg">
                 <strong>Status: </strong>
-                {selectedMarker ? device.status : "N/A"}
+                {selectedMarker ? selectedMarker.status : "N/A"}
               </h3>
             </div>
           </div>

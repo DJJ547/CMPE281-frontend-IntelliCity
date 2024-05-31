@@ -181,7 +181,7 @@ export default function DroneManager() {
       };
       cleanup();
     };
-  }, [selectedDevice, updateUI]);
+  }, [selectedMarker, updateUI]);
 
   const handleSearchSubmit = async (
     mapCenterLatInput,
@@ -227,6 +227,7 @@ export default function DroneManager() {
   const Selected = async (id) => {
     let item = Devices.drones[0].filter((item) => item.id === id)[0];
     let videoUrl = item.video_url;
+    console.log(videoUrl)
     setSelectedDevice(id);
     setstreamvideo(videoUrl);
     setUpdateUI(!updateUI);
@@ -269,7 +270,7 @@ export default function DroneManager() {
           text="View"
           imgSrc={view}
           altText="Drone"
-          data={Devices.drones[0]}
+          data={Devices}
           callback_view_device={handleSearchSubmit}
         />
       </div>
