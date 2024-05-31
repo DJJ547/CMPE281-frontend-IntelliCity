@@ -8,8 +8,8 @@ import { districts } from "../utils/mapDistrictCoordinates";
 
 const container_height = "65vh";
 const container_width = "55vw";
-
-export default function CameraManager() {
+const api_url = process.env.REACT_APP_DRONE;
+export default function DroneManager() {
   //----------------------states-------------------------------------------------------------
   const [selectLat, setSelectLat] = useState(null);
   const [selectLng, setSelectLng] = useState(null);
@@ -66,7 +66,6 @@ export default function CameraManager() {
     setSelectedMarker(marker);
   };
   //----------------------variables-------------------------------------------------------------
-  const api_url = process.env.REACT_APP_MAIN_SERVER_LOCALHOST_URL;
   let device = Devices.drones[0].filter(
     (item) => item.id === selectedDevice
   )[0];
@@ -182,7 +181,7 @@ export default function CameraManager() {
       };
       cleanup();
     };
-  }, [updateUI]);
+  }, [selectedDevice, updateUI]);
 
   const handleSearchSubmit = async (
     mapCenterLatInput,
@@ -191,32 +190,38 @@ export default function CameraManager() {
   ) => {
     if (id !== "") {
       id = parseInt(id);
-      //if id not in my data then return
-      let marker = Devices.drones[0].filter((device) => device.id === id)[0];
-      if (marker === undefined) {
-        return;
+      if (Devices.drones[0].filter((device) => device.id === id)[0]) {
+        let marker = Devices.drones[0].filter((device) => device.id === id)[0];
+        console.log(marker)
+        setMapCenterLat(marker["latitude"].toFixed(6));
+        setMapCenterLng(marker["longitude"].toFixed(6));
+        setMapZoom(15);
+        setSelectedMarker(marker);
+        setSelectLat(marker["latitude"].toFixed(6));
+        setSelectLng(marker["longitude"].toFixed(6));
       }
-      setMapCenterLat(parseFloat(marker.latitude));
-      setMapCenterLng(parseFloat(marker.longitude));
-      setMapZoom(15);
-      setSelectedMarker(marker);
-      setSelectLat(marker.latitude);
-      setSelectLng(marker.longitude);
       return;
     }
 
     setMapCenterLat(parseFloat(mapCenterLatInput));
     setMapCenterLng(parseFloat(mapCenterLngInput));
-    let marker = Devices.drones[0].find(
-      (device) =>
-        parseFloat(device.latitude) === parseFloat(mapCenterLatInput) &&
-        parseFloat(device.longitude) === parseFloat(mapCenterLngInput)
-    );
-
-    setMapZoom(15);
-    setSelectedMarker(marker);
-    setSelectLat(mapCenterLatInput);
-    setSelectLng(mapCenterLngInput);
+    if (
+      Devices.drones[0].filter(
+        (device) =>
+          device.latitude.toFixed(6) === mapCenterLatInput &&
+          device.longitude.toFixed(6) === mapCenterLngInput
+      )[0]
+    ) {
+      let marker = Devices.drones[0].filter(
+        (device) =>
+          device.latitude.toFixed(6) === mapCenterLatInput &&
+          device.longitude.toFixed(6) === mapCenterLngInput
+      )[0];
+      setMapZoom(15);
+      setSelectedMarker(marker);
+      setSelectLat(mapCenterLatInput);
+      setSelectLng(mapCenterLngInput);
+    }
   };
   //----------------------functions-------------------------------------------------------------
   const Selected = async (id) => {
@@ -236,7 +241,7 @@ export default function CameraManager() {
             <ButtonCRUD
               text="Add"
               imgSrc={ADD}
-              altText="Camera"
+              altText="Drone"
               data={searched_data}
               callback3={callback3_add_device}
               callback4={callback4_search_results}
@@ -244,7 +249,7 @@ export default function CameraManager() {
             <ButtonCRUD
               text="Delete"
               imgSrc="https://upload.wikimedia.org/wikipedia/commons/5/5e/Flat_minus_icon_-_red.svg"
-              altText="Camera"
+              altText="Drone"
               data={Devices.drones[0]}
               callback_switch_status={callback_switch_status}
               callback_delete_device={callback2_delete_device}
@@ -252,7 +257,7 @@ export default function CameraManager() {
             <ButtonCRUD
               text="Update"
               imgSrc="https://upload.wikimedia.org/wikipedia/commons/6/62/Eo_circle_orange_repeat.svg"
-              altText="Camera"
+              altText="Drone"
               data={Devices.drones[0]}
               callback_switch_status={callback_switch_status}
               callback_delete_device={callback2_delete_device}
@@ -263,7 +268,7 @@ export default function CameraManager() {
         <ButtonCRUD
           text="View"
           imgSrc={view}
-          altText="Camera"
+          altText="Drone"
           data={Devices.drones[0]}
           callback_view_device={handleSearchSubmit}
         />
@@ -294,20 +299,20 @@ export default function CameraManager() {
               <h3 className="text-lg">
                 <strong>Location: </strong>
                 {selectedMarker
-                  ? `(${device.latitude}, ${device.longitude})`
+                  ? `(${selectedMarker.latitude}, ${selectedMarker.longitude})`
                   : "N/A"}
               </h3>
               <h3 className="text-lg">
                 <strong>Address: </strong>
-                {selectedMarker ? device.address : "N/A"}
+                {selectedMarker ? selectedMarker.address : "N/A"}
               </h3>
               <h3 className="text-lg">
                 <strong>District: </strong>
-                {selectedMarker ? device.dist_id : "N/A"}
+                {selectedMarker ? selectedMarker.dist_id : "N/A"}
               </h3>
               <h3 className="text-lg">
                 <strong>Status: </strong>
-                {selectedMarker ? device.status : "N/A"}
+                {selectedMarker ? selectedMarker.status : "N/A"}
               </h3>
             </div>
           </div>
