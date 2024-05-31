@@ -30,7 +30,7 @@ export default function Streaming(props) {
           {selectedTab === "liveStream" && (
             <div className="flex flex-col bg-white shadow-lg">
               <div className="flex justify-center">
-                <VideoPlayer url={props.videoUrl} latitude={props.latitude} longitude={props.longitude} district={props.district} />
+                <VideoPlayer id={props.id} url={props.videoUrl} latitude={props.latitude} longitude={props.longitude} district={props.district} />
               </div>
             </div>
           )}

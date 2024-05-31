@@ -65,18 +65,13 @@ export default function CameraManager() {
   //this is the map selected marker call back function
   const updateSelectedMarker = (marker) => {
     setSelectedMarker(marker);
+    setSelectedDevice(marker ? marker.id : null);
+    setscreenshot(marker ? marker.image_url : "");
+    setstreamvideo(marker ? marker.video_url : "");
+    setUpdateUI(!updateUI);
   };
   //----------------------variables-------------------------------------------------------------
   const api_url = process.env.REACT_APP_CAMERA;
-  let device = Devices.cameras[0].filter(
-    (item) => item.id === selectedDevice
-  )[0];
-  let status = device ? device.status : "N/A";
-  let latitude = device ? device.latitude : null;
-  let longitude = device ? device.longitude : null;
-  let location = device ? `(${device.latitude}, ${device.longitude})` : "N/A";
-  let dist_id = device ? device.dist_id : "N/A";
-  let address = device ? device.address : "N/A";
   let agent = parseInt(localStorage.getItem("is_agent"));
   //----------------------API Request-------------------------------------------------------------
   //callback function to disable the device
@@ -320,11 +315,12 @@ export default function CameraManager() {
             </div>
           </div>
           <Streaming
+            id={selectedMarker ? selectedMarker.id : ''}
             screenshot={screenshot}
             videoUrl={streamvideo}
-            latitude={latitude}
-            longitude={longitude}
-            district={dist_id}
+            latitude={selectedMarker ? selectedMarker.latitude : ''}
+            longitude={selectedMarker ? selectedMarker.longitude : ''}
+            district={selectedMarker ? selectedMarker.dist_id : ''}
           />
         </div>
       </div>
