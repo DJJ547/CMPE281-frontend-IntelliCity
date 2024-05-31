@@ -112,7 +112,7 @@ export default function IotManager() {
   //callback function to disable the device
   const callback_switch_status = async (id) => {
     try {
-      const response = await fetch(`${api_url}/iot/DisableDevice/`, {
+      const response = await fetch(`${api_url}/iot/disableDevice/`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -133,7 +133,7 @@ export default function IotManager() {
   //callback function to delete the device
   const callback2_delete_device = async (id) => {
     try {
-      const response = await fetch(`${api_url}/iot/DeleteDevice?id=${id}`, {
+      const response = await fetch(`${api_url}/iot/deleteDevice?id=${id}`, {
         method: "DELETE",
       });
       const data = await response.json();
@@ -252,7 +252,7 @@ export default function IotManager() {
     return () => {
       clearInterval(congestionsInterval);
     };
-  }, [selectedDevice]);
+  }, [selectedDevice, updateUI]);
 
   const handleSearchSubmit = async (
     mapCenterLatInput,
@@ -261,28 +261,37 @@ export default function IotManager() {
   ) => {
     if (id !== "") {
       id = parseInt(id);
-      let marker = Devices.filter((device) => device.id === id)[0];
-      setMapCenterLat(parseFloat(marker.latitude));
-      setMapCenterLng(parseFloat(marker.longitude));
-      setMapZoom(15);
-      setSelectedMarker(marker);
-      setSelectLat(marker.latitude);
-      setSelectLng(marker.longitude);
+      if (Devices.iots[0].filter((device) => device.id === id)[0]) {
+        let marker = Devices.iots[0].filter((device) => device.id === id)[0];
+        setMapCenterLat(marker["latitude"].toFixed(6));
+        setMapCenterLng(marker["longitude"].toFixed(6));
+        setMapZoom(15);
+        setSelectedMarker(marker);
+        setSelectLat(marker["latitude"].toFixed(6));
+        setSelectLng(marker["longitude"].toFixed(6));
+      }
       return;
     }
 
     setMapCenterLat(parseFloat(mapCenterLatInput));
     setMapCenterLng(parseFloat(mapCenterLngInput));
-    let marker = Devices.find(
-      (device) =>
-        parseFloat(device.latitude) === parseFloat(mapCenterLatInput) &&
-        parseFloat(device.longitude) === parseFloat(mapCenterLngInput)
-    );
-
-    setMapZoom(15);
-    setSelectedMarker(marker);
-    setSelectLat(mapCenterLatInput);
-    setSelectLng(mapCenterLngInput);
+    if (
+      Devices.iots[0].filter(
+        (device) =>
+          device.latitude.toFixed(6) === mapCenterLatInput &&
+          device.longitude.toFixed(6) === mapCenterLngInput
+      )[0]
+    ) {
+      let marker = Devices.iots[0].filter(
+        (device) =>
+          device.latitude.toFixed(6) === mapCenterLatInput &&
+          device.longitude.toFixed(6) === mapCenterLngInput
+      )[0];
+      setMapZoom(15);
+      setSelectedMarker(marker);
+      setSelectLat(mapCenterLatInput);
+      setSelectLng(mapCenterLngInput);
+    }
   };
 
   //----------------------functions-------------------------------------------------------------
@@ -309,7 +318,7 @@ export default function IotManager() {
               text="Delete"
               imgSrc="https://upload.wikimedia.org/wikipedia/commons/5/5e/Flat_minus_icon_-_red.svg"
               altText="IoT Device Delete"
-              data={Devices}
+              data={Devices.iots[0]}
               type="iot"
               callback_switch_status={callback_switch_status}
               callback_delete_device={callback2_delete_device}
@@ -318,7 +327,7 @@ export default function IotManager() {
               text="Update"
               imgSrc="https://upload.wikimedia.org/wikipedia/commons/6/62/Eo_circle_orange_repeat.svg"
               altText="IoT Device Update"
-              data={Devices}
+              data={Devices.iots[0]}
               type="iot"
               callback_switch_status={callback_switch_status}
               callback_delete_device={callback2_delete_device}
@@ -362,19 +371,21 @@ export default function IotManager() {
             </h3>
             <h3 className="text-lg">
               <strong>Location: </strong>
-              {selectedMarker && !selectedMarker.source
-                ? `(${device.latitude}, ${device.longitude})`
+              {selectedMarker && selectedMarker.type === "iot"
+                ? `(${selectedMarker.latitude}, ${selectedMarker.longitude})`
                 : "N/A"}
             </h3>
             <h3 className="text-lg">
               <strong>Address: </strong>
-              {selectedMarker && !selectedMarker.source
-                ? device.address
+              {selectedMarker && selectedMarker.type === "iot"
+                ? selectedMarker.address
                 : "N/A"}
             </h3>
             <h3 className="text-lg">
               <strong>Status: </strong>
-              {selectedMarker && !selectedMarker.source ? device.status : "N/A"}
+              {selectedMarker && selectedMarker.type === "iot"
+                ? selectedMarker.status
+                : "N/A"}
             </h3>
           </div>
           {selectedMarker && stationData ? (
