@@ -5,7 +5,7 @@ function VideoPlayerDrone({ droneId }) {
     
     console.log("Videoplayer for ",droneId)
     //const streamurl = `http://localhost:8000/StreamVideo/?id=${droneId}`;
-    const streamurl = `${process.env.REACT_APP_DRONE}/StreamVideo/?id=${droneId}`;
+    const streamurl = `${process.env.REACT_APP_DRONE}/drone/StreamVideo/?id=${droneId}`;
     
     if (!droneId) {
     return <img src="https://png.pngtree.com/png-vector/20220809/ourmid/pngtree-live-streaming-icon-red-png-image_6104752.png" alt="placeholder" />;
