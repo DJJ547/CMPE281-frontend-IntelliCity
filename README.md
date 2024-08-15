@@ -33,7 +33,7 @@ cmpe281frontend/
 ├── tailwindcss.config.js
 ```
   
-## How to run our React Front-end:
+## How to run our React front-end locally:
 - install node.js. https://nodejs.org/en
 - after installation of node.js. run the following command to install the dependencies and neccessary files for this project.
 ```
